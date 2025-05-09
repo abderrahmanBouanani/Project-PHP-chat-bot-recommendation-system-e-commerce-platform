@@ -1,0 +1,130 @@
+:root {
+    --primary-green: #2f4f4f;
+    --light-green: #3c5f5f;
+    --accent-yellow: #ffd700;
+    --text-white: #ffffff;
+  }
+
+  body {
+    background-color: #fafcfc;
+    margin-left: 280px;
+  }
+
+  .sidebar {
+    background-color: var(--primary-green);
+    height: 100vh;
+    width: 280px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+  }
+
+  .custom-navbar {
+    margin-bottom: 30px;
+  }
+
+  .navbar-brand {
+    color: var(--text-white);
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .navbar-brand span {
+    color: var(--accent-yellow);
+  }
+
+  .side-bar-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-link {
+    color: var(--text-white);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link:hover {
+    background-color: var(--light-green);
+    color: var(--text-white);
+  }
+
+  .nav-link.active {
+    background-color: var(--light-green);
+    color: var(--text-white);
+    border-left: 3px solid var(--accent-yellow);
+  }
+
+  .main-content {
+    padding: 40px;
+  }
+
+  .user-info-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+
+  .user-info-card h2 {
+    color: var(--primary-green);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  .user-info-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .user-info-item:hover {
+    background-color: #e9ecef;
+  }
+
+  .user-info-label {
+    font-weight: 600;
+    color: var(--primary-green);
+  }
+
+  .user-info-value {
+    color: #495057;
+  }
+
+  .btn-edit {
+    background-color: var(--primary-green);
+    color: var(--text-white);
+    border: none;
+  }
+
+  .btn-edit:hover {
+    background-color: var(--light-green);
+    color: var(--text-white);
+  }
+
+  @media (max-width: 768px) {
+    body {
+      margin-left: 0;
+    }
+
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      border-radius: 0;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }

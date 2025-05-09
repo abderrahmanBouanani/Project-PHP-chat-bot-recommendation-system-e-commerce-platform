@@ -1,0 +1,201 @@
+/* Main Styles for User Information Section - Green Theme */
+:root {
+  --primary-color: #2d5d4b; /* Dark green from the header */
+  --secondary-color: #3a7563; /* Slightly lighter green */
+  --accent-color: #f8f9fa; /* Light accent */
+  --light-color: #ffffff;
+  --dark-color: #333333;
+  --gray-light: #f8f9fa;
+  --gray-medium: #e9ecef;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --transition: all 0.25s ease;
+}
+
+/* Main Content Area */
+.main-content {
+  padding: 40px 0;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: var(--gray-light);
+}
+
+/* User Info Card */
+.user-info-card {
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px 40px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  border: none;
+}
+
+.user-info-card h2 {
+  color: var(--primary-color);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--gray-medium);
+}
+
+/* User info rows */
+.user-info-card p {
+  margin: 16px 0;
+  padding: 12px 0;
+  display: flex;
+  border-bottom: 1px solid var(--gray-medium);
+  transition: var(--transition);
+}
+
+.user-info-card p:last-of-type {
+  border-bottom: none;
+}
+
+.user-info-card p:hover {
+  background-color: rgba(45, 93, 75, 0.03);
+}
+
+.user-info-card strong {
+  font-weight: 600;
+  color: var(--dark-color);
+  min-width: 180px;
+  display: inline-block;
+  position: relative;
+}
+
+.user-info-card strong:after {
+  content: ":";
+  position: absolute;
+  right: 10px;
+}
+
+/* Error message styling */
+.user-info-card p:only-child {
+  background-color: #fff8e6;
+  color: #805b10;
+  text-align: center;
+  padding: 20px;
+  border-left: 4px solid #ffbe0b;
+  display: block;
+}
+
+/* Add icons to each field */
+.user-info-card p:nth-of-type(1) strong:before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f007";
+  margin-right: 10px;
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.user-info-card p:nth-of-type(2) strong:before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f007";
+  margin-right: 10px;
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.user-info-card p:nth-of-type(3) strong:before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f0e0";
+  margin-right: 10px;
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.user-info-card p:nth-of-type(4) strong:before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f095";
+  margin-right: 10px;
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+.user-info-card p:nth-of-type(5) strong:before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f2bd";
+  margin-right: 10px;
+  color: var(--primary-color);
+  font-weight: 900;
+}
+
+/* Subtle card enhancement */
+.user-info-card:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--primary-color);
+  opacity: 0.7;
+}
+
+/* Animation for card appearance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-info-card {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px;
+  }
+
+  .user-info-card {
+    padding: 25px 20px;
+  }
+
+  .user-info-card p {
+    flex-direction: column;
+    padding: 12px 0;
+  }
+
+  .user-info-card strong {
+    margin-bottom: 5px;
+    min-width: auto;
+    display: block;
+  }
+
+  .user-info-card strong:after {
+    display: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .main-content {
+    padding: 0;
+    min-height: auto;
+  }
+
+  .user-info-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .user-info-card:before {
+    display: none;
+  }
+}

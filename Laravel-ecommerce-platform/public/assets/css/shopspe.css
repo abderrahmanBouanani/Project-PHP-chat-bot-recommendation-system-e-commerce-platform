@@ -1,0 +1,44 @@
+/* Style global pour les inputs */
+.hero input,
+.hero select {
+  border: 2px solid #fff;
+  border-radius: 5px;
+  padding: 10px;
+  color: #333;
+  background-color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+/* Survol des inputs */
+.hero input:focus,
+.hero select:focus {
+  outline: none; /* Supprime le contour par défaut */
+  border-color: #007bff; /* Bordure bleue au survol */
+  background-color: #fff; /* Fond solide */
+}
+
+/* Style pour le label */
+.hero .form-label {
+  font-weight: bold; /* Texte en gras */
+  margin-bottom: 5px; /* Espacement sous le label */
+  display: block; /* Label au-dessus des inputs */
+}
+
+/* Style spécifique pour les conteneurs */
+.hero .form-control {
+  margin-bottom: 15px; /* Espacement entre les champs */
+}
+
+/* Style spécifique pour le champ de recherche */
+.hero #search {
+  width: 80%; /* Largeur personnalisée */
+  max-width: 400px; /* Largeur maximum */
+}
+
+/* Style spécifique pour le champ de filtrage */
+.hero #filtrer {
+  width: 80%; /* Largeur personnalisée */
+  max-width: 400px; /* Largeur maximum */
+}
