@@ -18,7 +18,7 @@ use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request as HttpRequest;
 use App\Http\Controllers\LivreurController;
 
-// connexion & signup 
+// ---connexion & signup--- 
 
 // Afficher le formulaire de connexion
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
@@ -197,5 +197,5 @@ Route::post('/livreur/update-profile', [LivreurController::class, 'updateProfile
 // Routes API pour la recherche
 Route::get('/api/admin/commande/search', [AdminOrderController::class, 'search']);
 Route::get('/api/admin/produit/search', [AdminProductController::class, 'search']);
-Route::get('/api/admin/users/search', [AdminUserController::class, 'search']);
 Route::get('/api/livreur/livraison/search', [LivreurController::class, 'search']);
+Route::get('/api/admin/users/search', [AdminUserController::class, 'search']);

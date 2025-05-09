@@ -10,6 +10,7 @@ nltk.download('stopwords')
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
+CORS(app, resources={r"/ask": {"origins": "http://localhost:5000/ask"}})
 
 # Connexion à la base de données MySQL
 db = mysql.connector.connect(
