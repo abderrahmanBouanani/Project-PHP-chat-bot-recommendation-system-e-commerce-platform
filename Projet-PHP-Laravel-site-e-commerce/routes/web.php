@@ -199,3 +199,6 @@ Route::get('/api/admin/commande/search', [AdminOrderController::class, 'search']
 Route::get('/api/admin/produit/search', [AdminProductController::class, 'search']);
 Route::get('/api/livreur/livraison/search', [LivreurController::class, 'search']);
 Route::get('/api/admin/users/search', [AdminUserController::class, 'search']);
+
+// Chatbot Route
+Route::post('/chatbot/ask', [\App\Http\Controllers\ChatController::class, 'ask']);

@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/shop.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/shopspe.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
+    <link href="{{ asset('assets/css/chatbot.css')}}" rel="stylesheet" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
   </head>
 
@@ -255,5 +256,6 @@
     @if(request()->is('client_contact'))
     <script src="{{ asset('assets/js/contact.js') }}"></script>
     @endif
+    <script src="{{ asset('assets/js/chatbot.js') }}"></script>
   </body>
 </html>

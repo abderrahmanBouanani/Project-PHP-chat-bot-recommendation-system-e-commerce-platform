@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import mysql.connector
 import nltk
 from nltk.tokenize import word_tokenize
@@ -10,7 +11,7 @@ nltk.download('stopwords')
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
-CORS(app, resources={r"/ask": {"origins": "http://localhost:5000/ask"}})
+CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:8000"}})
 
 # Connexion à la base de données MySQL
 db = mysql.connector.connect(
