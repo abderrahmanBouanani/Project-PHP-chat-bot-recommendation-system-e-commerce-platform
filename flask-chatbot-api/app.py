@@ -11,7 +11,14 @@ nltk.download('stopwords')
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
-CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:8000"}})
+
+# Configuration CORS
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 # Connexion à la base de données MySQL
 db = mysql.connector.connect(
@@ -38,7 +45,7 @@ def search_products(keywords):
     return results
 
 # Route API pour le chatbot
-@app.route('/ask', methods=['POST'])
+@app.route('/ask', methods=['POST', 'OPTIONS'])
 def chatbot():
     # Récupérer le message envoyé par l'utilisateur
     data = request.get_json()
