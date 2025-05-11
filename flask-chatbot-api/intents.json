@@ -1,0 +1,140 @@
+{
+    "intents": [
+      {
+        "tag": "salutation",
+        "patterns": ["bonjour", "salut", "hey", "hello", "coucou", "bonsoir", "yo", "hola"],
+        "responses": [
+          "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
+          "Salut ! Que recherchez-vous sur notre boutique ?",
+          "Bonjour, bienvenue sur ShopAll ! Je peux vous aider à trouver des produits ou répondre à vos questions."
+        ]
+      },
+      {
+        "tag": "au_revoir",
+        "patterns": ["au revoir", "à bientôt", "à plus tard", "bye", "adieu", "salut", "à la prochaine"],
+        "responses": [
+          "Au revoir ! Merci d'avoir visité ShopAll.",
+          "À bientôt ! N'hésitez pas à revenir si vous avez d'autres questions.",
+          "Merci de votre visite, à la prochaine !"
+        ]
+      },
+      {
+        "tag": "merci",
+        "patterns": ["merci", "merci beaucoup", "je vous remercie", "c'est gentil", "thanks"],
+        "responses": [
+          "Je vous en prie !",
+          "C'est avec plaisir que je vous aide.",
+          "Pas de problème, je suis là pour ça !"
+        ]
+      },
+      {
+        "tag": "aide",
+        "patterns": ["aide", "help", "besoin d'aide", "comment ça marche", "que peux-tu faire", "aide-moi"],
+        "responses": [
+          "Je peux vous aider à trouver des produits, répondre à vos questions sur notre boutique, ou vous donner des informations sur les commandes et livraisons.",
+          "Je suis votre assistant ShopAll. Je peux rechercher des produits, vous informer sur notre politique de retour, ou répondre à vos questions générales.",
+          "Comment puis-je vous aider ? Je peux rechercher des produits, vous renseigner sur votre commande ou répondre à vos questions sur notre service."
+        ]
+      },
+      {
+        "tag": "horaires",
+        "patterns": ["horaires", "heures d'ouverture", "quand êtes-vous ouvert", "fermé quand", "ouvert le dimanche"],
+        "responses": [
+          "Notre boutique en ligne est disponible 24h/24 et 7j/7. Notre service client est disponible du lundi au vendredi de 9h à 18h.",
+          "Vous pouvez commander sur notre site à tout moment. Notre équipe de support répond à vos questions du lundi au vendredi, de 9h à 18h.",
+          "ShopAll est toujours ouvert en ligne ! Notre service client est joignable en semaine de 9h à 18h."
+        ]
+      },
+      {
+        "tag": "livraison",
+        "patterns": [
+          "livraison",
+          "délai de livraison",
+          "quand vais-je recevoir ma commande",
+          "frais de livraison",
+          "livraison gratuite"
+        ],
+        "responses": [
+          "Nos délais de livraison sont généralement de 3 à 5 jours ouvrés. La livraison est gratuite pour toute commande supérieure à 50€.",
+          "Votre commande sera livrée dans un délai de 3 à 5 jours ouvrés. Les frais de livraison sont offerts dès 50€ d'achat.",
+          "Nous livrons habituellement en 3-5 jours ouvrés. Pour plus de détails sur votre commande spécifique, veuillez consulter votre espace client."
+        ]
+      },
+      {
+        "tag": "retours",
+        "patterns": [
+          "retour",
+          "remboursement",
+          "comment retourner",
+          "politique de retour",
+          "produit défectueux",
+          "échange"
+        ],
+        "responses": [
+          "Vous pouvez retourner un produit dans les 14 jours suivant sa réception. Rendez-vous dans votre espace client pour initier un retour.",
+          "Notre politique de retour vous permet de renvoyer un article dans les 14 jours. Les remboursements sont traités sous 5 jours ouvrés après réception du colis.",
+          "Pour effectuer un retour, connectez-vous à votre compte et suivez les instructions dans la section 'Mes commandes'. Vous avez 14 jours pour retourner un produit."
+        ]
+      },
+      {
+        "tag": "paiement",
+        "patterns": [
+          "paiement",
+          "modes de paiement",
+          "carte bancaire",
+          "paypal",
+          "payer en plusieurs fois",
+          "sécurité paiement"
+        ],
+        "responses": [
+          "Nous acceptons les cartes Visa, Mastercard, ainsi que PayPal. Tous nos paiements sont sécurisés.",
+          "Vous pouvez payer par carte bancaire ou PayPal. Pour certains produits, le paiement en 3 fois sans frais est disponible.",
+          "ShopAll propose plusieurs méthodes de paiement sécurisées : carte bancaire, PayPal, et dans certains cas, le paiement en plusieurs fois."
+        ]
+      },
+      {
+        "tag": "compte",
+        "patterns": [
+          "créer un compte",
+          "inscription",
+          "connexion",
+          "mot de passe oublié",
+          "modifier mes informations",
+          "supprimer mon compte"
+        ],
+        "responses": [
+          "Vous pouvez créer un compte en cliquant sur 'S'inscrire' en haut à droite de la page. Si vous avez oublié votre mot de passe, utilisez l'option 'Mot de passe oublié' sur la page de connexion.",
+          "Pour gérer votre compte, connectez-vous et accédez à 'Mon profil'. Vous pourrez y modifier vos informations personnelles ou votre mot de passe.",
+          "L'inscription est simple et rapide ! Cliquez sur 'S'inscrire' et suivez les instructions. Vous pourrez ensuite accéder à votre historique de commandes et gérer vos informations."
+        ]
+      },
+      {
+        "tag": "promotions",
+        "patterns": ["promotion", "réduction", "code promo", "soldes", "offre spéciale", "remise"],
+        "responses": [
+          "Nos promotions sont régulièrement mises à jour. Consultez notre page 'Offres' pour découvrir les dernières réductions.",
+          "Pour ne manquer aucune promotion, inscrivez-vous à notre newsletter. Vous recevrez nos codes promo et offres spéciales en avant-première.",
+          "Nous proposons régulièrement des offres spéciales. Les codes promo peuvent être appliqués lors du paiement dans le champ prévu à cet effet."
+        ]
+      },
+      {
+        "tag": "contact",
+        "patterns": ["contact", "service client", "numéro de téléphone", "email", "contacter", "parler à quelqu'un"],
+        "responses": [
+          "Vous pouvez contacter notre service client par email à support@shopall.com ou par téléphone au 01 23 45 67 89 du lundi au vendredi de 9h à 18h.",
+          "Notre équipe de support est joignable par email (support@shopall.com) ou par téléphone (01 23 45 67 89) en semaine de 9h à 18h.",
+          "Besoin de nous parler ? Envoyez-nous un email à support@shopall.com ou appelez-nous au 01 23 45 67 89 pendant nos heures d'ouverture."
+        ]
+      },
+      {
+        "tag": "default",
+        "patterns": [],
+        "responses": [
+          "Je ne suis pas sûr de comprendre. Pouvez-vous reformuler votre question ?",
+          "Désolé, je n'ai pas saisi votre demande. Pourriez-vous préciser ?",
+          "Je ne peux pas répondre à cette question pour le moment. Souhaitez-vous que je vous aide à trouver un produit à la place ?"
+        ]
+      }
+    ]
+  }
+  

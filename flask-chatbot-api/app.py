@@ -4,6 +4,7 @@ import mysql.connector
 import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
+import json
 
 # Initialisation de NLTK
 nltk.download('punkt')
@@ -22,12 +23,24 @@ db = mysql.connector.connect(
 )
 cursor = db.cursor(dictionary=True)
 
+# Charger les intentions depuis intents.json
+with open('intents.json', 'r', encoding='utf-8') as file:
+    intents_data = json.load(file)
+
 # Prétraitement du texte
 stop_words = set(stopwords.words('french'))
 
 def extract_keywords(text):
     tokens = word_tokenize(text.lower())
     return [t for t in tokens if t not in stop_words]
+
+def detect_intent(message):
+    message_lower = message.lower()
+    for intent in intents_data['intents']:
+        for pattern in intent['patterns']:
+            if pattern.lower() in message_lower:
+                return intent
+    return None
 
 # Fonction de recherche des produits
 def search_products(keywords):
@@ -43,6 +56,11 @@ def chatbot():
     # Récupérer le message envoyé par l'utilisateur
     data = request.get_json()
     question = data.get('message', '')
+    
+    # Détecter l'intention
+    intent = detect_intent(question)
+    if intent:
+        return jsonify({"status": "intent", "response": intent['responses'][0]})
     
     # Extraire les mots-clés de la question
     keywords = extract_keywords(question)

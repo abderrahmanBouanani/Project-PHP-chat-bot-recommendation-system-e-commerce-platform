@@ -80,7 +80,14 @@ function sendMessage() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.status === 'ok') {
+            if (data.status === 'intent') {
+                addMessage(data.response);
+                if (data.response.includes('Au revoir')) {
+                    setTimeout(() => {
+                        chatbotContainer.style.display = 'none';
+                    }, 2000);
+                }
+            } else if (data.status === 'ok') {
                 if (data.produits && data.produits.length > 0) {
                     addMessage("Voici les produits que j'ai trouvés :");
                     addProductCards(data.produits);
