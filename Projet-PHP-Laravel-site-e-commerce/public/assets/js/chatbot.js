@@ -44,6 +44,26 @@ function addMessage(message, isUser = false) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+// Ajoute des cartes produits dans le chatbot
+function addProductCards(produits) {
+    const cardsContainer = document.createElement('div');
+    cardsContainer.className = 'bot-product-cards';
+    produits.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img src="http://127.0.0.1:8000/storage/${prod.image}" alt="${prod.nom}" class="product-card-img" />
+            <div class="product-card-body">
+                <div class="product-card-title">${prod.nom}</div>
+                <div class="product-card-price">${prod.prix} DH</div>
+            </div>
+        `;
+        cardsContainer.appendChild(card);
+    });
+    messagesContainer.appendChild(cardsContainer);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
 function sendMessage() {
     const message = inputField.value.trim();
     if (message) {
@@ -62,11 +82,8 @@ function sendMessage() {
         .then(data => {
             if (data.status === 'ok') {
                 if (data.produits && data.produits.length > 0) {
-                    let response = 'Voici les produits que j\'ai trouvés :\n';
-                    data.produits.forEach(prod => {
-                        response += `- ${prod.nom} (${prod.prix}€)\n`;
-                    });
-                    addMessage(response);
+                    addMessage("Voici les produits que j'ai trouvés :");
+                    addProductCards(data.produits);
                 } else {
                     addMessage('Je n\'ai pas trouvé de produits correspondant à votre recherche.');
                 }

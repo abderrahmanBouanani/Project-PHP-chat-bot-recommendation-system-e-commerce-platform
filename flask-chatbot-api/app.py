@@ -33,7 +33,7 @@ def extract_keywords(text):
 def search_products(keywords):
     results = []
     for word in keywords:
-        cursor.execute("SELECT id, nom, prix_unitaire as prix, categorie, quantite, vendeur_id FROM produits WHERE categorie LIKE %s AND quantite > 0", (f"%{word}%",))
+        cursor.execute("SELECT id, nom, prix_unitaire as prix, categorie, quantite, vendeur_id, image FROM produits WHERE categorie LIKE %s AND quantite > 0", (f"%{word}%",))
         results.extend(cursor.fetchall())
     return results
 
