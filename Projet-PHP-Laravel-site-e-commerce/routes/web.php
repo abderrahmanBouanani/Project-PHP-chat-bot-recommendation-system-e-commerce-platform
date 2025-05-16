@@ -79,6 +79,8 @@ Route::post('/api/cart/update-totals', [App\Http\Controllers\CartController::cla
 Route::get('/api/cart/get-totals', [App\Http\Controllers\CartController::class, 'getTotals']);
 // Route pour créer une commande
 Route::post('/api/orders/create', [App\Http\Controllers\OrderController::class, 'createOrder']);
+// Route pour télécharger la facture PDF d'une commande
+Route::get('/commande/{id}/facture', [App\Http\Controllers\OrderController::class, 'downloadInvoice'])->name('commande.facture');
 
 
 //Routes pour le client
