@@ -50,6 +50,13 @@
             name="image"
           />
           <input type="hidden" name="vendeur_id" value="{{ Auth::id() }}" />
+          <input
+            type="text"
+            id="product-description"
+            class="form-control mb-2"
+            placeholder="Description du produit"
+            name="description"
+          />
           <button
             id="add-product"
             class="btn btn-primary"
@@ -78,6 +85,7 @@
               <thead>
               <tr>
               <th class="product-thumbnail">Id</th>
+              <th class="product-thumbnail">Description</th>
                 <th class="product-thumbnail">Image</th>
                 <th class="product-name">Produit</th>
                 <th class="product-price">Prix</th>
@@ -90,6 +98,7 @@
               @foreach($produits as $produit)
               <tr>
               <td>{{ $produit->id }}</td>
+              <td>{{ $produit->description }}</td>
                 <td>
                 @if($produit->image)
                 <img src="{{ asset('storage/'.$produit->image) }}" alt="{{ $produit->nom }}" style="width: 100px; height: auto; mix-blend-mode: multiply;">

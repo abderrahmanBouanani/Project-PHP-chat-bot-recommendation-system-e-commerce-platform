@@ -37,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
            href="#"
            data-id="${product.id}"
            data-name="${product.nom}"
+           data-description="${product.description}"
            data-price="${product.prix_unitaire}"
            data-image="http://127.0.0.1:8000/storage/${product.image}">
           <img src="http://127.0.0.1:8000/storage/${product.image}" class="img-fluid product-thumbnail" style="mix-blend-mode: multiply;">
@@ -66,15 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const productName = this.getAttribute("data-name")
         const productPrice = this.getAttribute("data-price")
         const productImage = this.getAttribute("data-image")
+        const productDescription = this.getAttribute("data-description")
 
         // Afficher le popup
-        showProductPopup(productId, productName, productPrice, productImage)
+        showProductPopup(productId, productName, productPrice, productImage, productDescription)
       })
     })
   }
 
   // Fonction pour afficher le popup
-  function showProductPopup(id, name, price, image) {
+  function showProductPopup(id, name, price, image, description) {
     // Créer le popup s'il n'existe pas déjà
     let popup = document.getElementById("product-popup")
     if (!popup) {
@@ -97,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="product-popup-info">
             <p class="product-popup-price">${price} DH</p>
+            <p class="product-popup-description">${description}</p>
           </div>
         </div>
         <div class="product-popup-footer">

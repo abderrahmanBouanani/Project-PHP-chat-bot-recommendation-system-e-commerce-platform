@@ -38,6 +38,7 @@ class ProduitController extends Controller
              'nom' => 'required|string|max:255',
              'prix_unitaire' => 'required|numeric',
              'categorie' => 'required|string|max:255',
+             'description' => 'required|string',
              'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp,bmp|max:2048'
          ]);
      
@@ -46,6 +47,7 @@ class ProduitController extends Controller
          $produit->nom = $request->input('nom');
          $produit->prix_unitaire = $request->input('prix_unitaire');
          $produit->categorie = $request->input('categorie');
+         $produit->description = $request->input('description');
          $produit->quantite = $request->input('quantite');
      
          // Gestion de l'image (si présente)
