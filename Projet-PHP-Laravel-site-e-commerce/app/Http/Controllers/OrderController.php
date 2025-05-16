@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class OrderController extends Controller
 {
     /**
@@ -140,5 +142,29 @@ class OrderController extends Controller
                 'message' => 'Erreur lors de la création de la commande: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Télécharger la facture PDF pour une commande donnée
+     */
+    public function downloadInvoice($orderId)
+    {
+        $commande = \App\Models\Commande::with(['facturation'])->findOrFail($orderId);
+        $facturation = $commande->facturation;
+        // Récupérer les produits de la commande via jointure
+        $produits = \DB::table('commande_produit')
+            ->join('produits', 'commande_produit.produit_id', '=', 'produits.id')
+            ->where('commande_produit.commande_id', $orderId)
+            ->select('produits.*', 'commande_produit.quantite')
+            ->get();
+        if (!$facturation) {
+            abort(404, 'Facturation non trouvée pour cette commande.');
+        }
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('invoices.invoice', [
+            'commande' => $commande,
+            'facturation' => $facturation,
+            'produits' => $produits
+        ]);
+        return $pdf->download('facture_'.$commande->id.'.pdf');
     }
 }
