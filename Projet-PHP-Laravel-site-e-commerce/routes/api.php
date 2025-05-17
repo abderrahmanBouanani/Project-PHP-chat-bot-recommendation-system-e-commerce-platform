@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CompteurController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,10 @@ Route::post('/cart/add', [CartController::class, 'addToCart']);
 
 // Coupon Routes
 Route::post('/coupon/apply', [CouponController::class, 'applyCoupon']);
+
+
+// Compteur Routes
+Route::post('/compteurs/track', [CompteurController::class, 'trackClick']);
+
+
+

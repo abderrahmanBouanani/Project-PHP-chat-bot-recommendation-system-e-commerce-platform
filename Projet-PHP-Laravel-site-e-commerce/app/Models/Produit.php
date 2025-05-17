@@ -15,6 +15,7 @@ class Produit extends Model
         'categorie',
         'quantite',
         'image',// image binaire
+        'description',
         'vendeur_id'
     ];
     public function vendeur()

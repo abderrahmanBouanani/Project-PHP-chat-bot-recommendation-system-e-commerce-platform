@@ -17,6 +17,7 @@ return new class extends Migration
             $table->float('prix_unitaire');
             $table->string('categorie');
             $table->integer('quantite');
+            $table->string('description');
             $table->string('image');
             $table->foreignId('vendeur_id')->constrained('users');
             $table->timestamps();

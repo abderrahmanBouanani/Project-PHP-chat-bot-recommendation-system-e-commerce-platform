@@ -1,3 +1,7 @@
+/**
+ * Boutique.js - Script principal pour la boutique en ligne
+ * Gère l'affichage des produits, le suivi des clics et les interactions utilisateur
+ */
 document.addEventListener("DOMContentLoaded", () => {
   // Fonction pour récupérer les produits depuis l'API
   function getProducts() {
@@ -5,13 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success && Array.isArray(data.data)) {
-          return data.data;
+          return data.data
         } else {
-          console.error("Format de données invalide:", data);
-          return [];
+          console.error("Format de données invalide:", data)
+          return []
         }
       })
-      .catch((error) => console.error("Erreur lors de la récupération des produits:", error))
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des produits:", error)
+        return []
+      })
   }
 
   // Fonction pour afficher les produits
@@ -21,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("L'élément product-list n'a pas été trouvé dans le DOM")
       return
     }
-    
+
     productList.innerHTML = "" // Vide le conteneur avant d'afficher les produits
 
     if (!Array.isArray(productsToDisplay)) {
@@ -37,7 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
            href="#"
            data-id="${product.id}"
            data-name="${product.nom}"
+           data-description="${product.description}"
            data-price="${product.prix_unitaire}"
+           data-category="${product.categorie}"
            data-image="http://127.0.0.1:8000/storage/${product.image}">
           <img src="http://127.0.0.1:8000/storage/${product.image}" class="img-fluid product-thumbnail" style="mix-blend-mode: multiply;">
           <h3 class="product-title">${product.nom}</h3>
@@ -66,15 +75,80 @@ document.addEventListener("DOMContentLoaded", () => {
         const productName = this.getAttribute("data-name")
         const productPrice = this.getAttribute("data-price")
         const productImage = this.getAttribute("data-image")
+        const productDescription = this.getAttribute("data-description")
+        const productCategory = this.getAttribute("data-category")
+
+        // Enregistrer le clic dans la base de données
+        trackProductClick(productCategory)
 
         // Afficher le popup
-        showProductPopup(productId, productName, productPrice, productImage)
+        showProductPopup(productId, productName, productPrice, productImage, productDescription)
       })
     })
   }
 
+  // Fonction pour enregistrer le clic sur un produit
+  function trackProductClick(category) {
+    // Récupérer le token CSRF
+    const csrfToken = getCSRFToken()
+
+    // Préparer les données à envoyer
+    const clickData = {
+      categorie: category,
+      client_id: window.sessionId || 0, // Ajout de l'id de session réel
+    }
+
+    console.log("Enregistrement du clic:", clickData)
+
+    // Envoyer les données au serveur
+    fetch("http://127.0.0.1:8000/api/compteurs/track", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-CSRF-TOKEN": csrfToken,
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      credentials: "include", // Important pour inclure les cookies de session
+      body: JSON.stringify(clickData),
+    })
+      .then((response) => {
+        console.log("Statut de la réponse:", response.status)
+        if (!response.ok) {
+          return response.text().then((text) => {
+            console.error("Erreur détaillée:", text)
+            throw new Error("Erreur lors de l'enregistrement du clic (Statut: " + response.status + ")")
+          })
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log("Clic enregistré avec succès:", data)
+      })
+      .catch((error) => {
+        console.error("Erreur lors de l'enregistrement du clic:", error)
+      })
+  }
+
+  // Fonction pour récupérer le token CSRF
+  function getCSRFToken() {
+    // Essayer de récupérer le token depuis le meta tag
+    const metaToken = document.querySelector('meta[name="csrf-token"]')
+    if (metaToken) {
+      return metaToken.getAttribute("content")
+    }
+
+    // Fallback: essayer de récupérer depuis un input hidden
+    const tokenInput = document.querySelector('input[name="_token"]')
+    if (tokenInput) {
+      return tokenInput.value
+    }
+
+    return ""
+  }
+
   // Fonction pour afficher le popup
-  function showProductPopup(id, name, price, image) {
+  function showProductPopup(id, name, price, image, description) {
     // Créer le popup s'il n'existe pas déjà
     let popup = document.getElementById("product-popup")
     if (!popup) {
@@ -97,6 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
           <div class="product-popup-info">
             <p class="product-popup-price">${price} DH</p>
+            <p class="product-popup-description">${description}</p>
           </div>
         </div>
         <div class="product-popup-footer">
@@ -139,100 +214,79 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Fonction pour ajouter au panier
-function addToCart(productId, productName, productPrice, productImage) {
-  // Récupérer le token CSRF
-  let csrfToken
+  function addToCart(productId, productName, productPrice, productImage) {
+    // Récupérer le token CSRF
+    const csrfToken = getCSRFToken()
 
-  // Essayer de récupérer le token depuis le meta tag
-  const metaToken = document.querySelector('meta[name="csrf-token"]')
-  if (metaToken) {
-    csrfToken = metaToken.getAttribute("content")
-  } else {
-    // Fallback: essayer de récupérer depuis un input hidden
-    const tokenInput = document.querySelector('input[name="_token"]')
-    if (tokenInput) {
-      csrfToken = tokenInput.value
+    // Extraire juste le nom du fichier de l'URL complète
+    let imageFileName = productImage
+    if (productImage.includes("/")) {
+      imageFileName = productImage.split("/").pop()
     }
+
+    // Préparer les données à envoyer
+    const cartData = {
+      produit_id: productId,
+      nom_produit: productName,
+      image: imageFileName,
+      prix: productPrice,
+    }
+
+    console.log("Envoi de la requête à:", "http://127.0.0.1:8000/api/cart/add")
+    console.log("Méthode:", "POST")
+    console.log("Données envoyées:", cartData)
+
+    // Envoyer les données au serveur
+    fetch("http://127.0.0.1:8000/api/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-CSRF-TOKEN": csrfToken,
+      },
+      credentials: "include", // Important pour les cookies et l'authentification
+      body: JSON.stringify(cartData),
+    })
+      .then((response) => {
+        console.log("Statut de la réponse:", response.status)
+        if (!response.ok) {
+          return response.text().then((text) => {
+            console.error("Erreur détaillée:", text)
+            throw new Error("Erreur lors de l'ajout au panier (Statut: " + response.status + ")")
+          })
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log("Réponse du serveur:", data)
+        // Afficher un message de succès
+        showNotification("Produit ajouté au panier avec succès!", "success")
+
+        // Fermer le popup
+        closePopup()
+      })
+      .catch((error) => {
+        console.error("Erreur:", error)
+        showNotification("Erreur lors de l'ajout au panier", "error")
+      })
   }
 
-  // Extraire juste le nom du fichier de l'URL complète
-  let imageFileName = productImage
-  if (productImage.includes("/")) {
-    imageFileName = productImage.split("/").pop()
-  }
+  // Fonction pour afficher une notification
+  function showNotification(message, type) {
+    const notification = document.createElement("div")
+    notification.className = `notification ${type}`
+    notification.textContent = message
 
-  // Préparer les données à envoyer
-  const cartData = {
-    produit_id: productId,
-    nom_produit: productName,
-    image: imageFileName,
-    prix: productPrice,
-  }
+    document.body.appendChild(notification)
 
-  console.log("Envoi de la requête à:", "http://127.0.0.1:8000/api/cart/add")
-  console.log("Méthode:", "POST")
-  console.log("Données envoyées:", cartData)
-
-  // Envoyer les données au serveur
-  fetch("http://127.0.0.1:8000/api/cart/add", {
-    method: "POST", // Assurez-vous que c'est bien POST
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "X-CSRF-TOKEN": csrfToken || "", // Inclure le token CSRF
-    },
-    credentials: "same-origin", // Important pour les cookies et l'authentification
-    body: JSON.stringify(cartData),
-  })
-    .then((response) => {
-      console.log("Statut de la réponse:", response.status)
-      if (!response.ok) {
-        return response.text().then((text) => {
-          console.error("Erreur détaillée:", text)
-          throw new Error("Erreur lors de l'ajout au panier (Statut: " + response.status + ")")
-        })
-      }
-      return response.json()
-    })
-    .then((data) => {
-      console.log("Réponse du serveur:", data)
-      // Afficher un message de succès
-      showNotification("Produit ajouté au panier avec succès!", "success")
-
-      // Fermer le popup
-      closePopup()
-    })
-    .catch((error) => {
-      console.error("Erreur:", error)
-      showNotification("Erreur lors de l'ajout au panier", "error")
-    })
-}
-
-// Fonction pour afficher une notification
-function showNotification(message, type) {
-  const notification = document.createElement("div")
-  notification.className = `notification ${type}`
-  notification.textContent = message
-
-  document.body.appendChild(notification)
-
-  // Faire disparaître la notification après 3 secondes
-  setTimeout(() => {
-    notification.classList.add("fade-out")
+    // Faire disparaître la notification après 3 secondes
     setTimeout(() => {
-      document.body.removeChild(notification)
-    }, 500)
-  }, 3000)
-}
-
-// Fonction pour fermer le popup
-function closePopup() {
-  const popup = document.getElementById("product-popup")
-  if (popup) {
-    popup.style.display = "none"
+      notification.classList.add("fade-out")
+      setTimeout(() => {
+        document.body.removeChild(notification)
+      }, 500)
+    }, 3000)
   }
-}
-
 
   // Initialisation : récupérer et afficher tous les produits
   getProducts().then((products) => {
@@ -240,49 +294,57 @@ function closePopup() {
 
     // Gestion de la recherche
     const searchInput = document.getElementById("search")
-    searchInput.addEventListener("input", () => {
-      const searchTerm = searchInput.value.toLowerCase()
-      const filteredProducts = products.filter((product) => product.nom.toLowerCase().includes(searchTerm))
-      displayProducts(filteredProducts)
-    })
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value.toLowerCase()
+        const filteredProducts = products.filter((product) => product.nom.toLowerCase().includes(searchTerm))
+        displayProducts(filteredProducts)
+      })
+    }
 
     // Gestion du filtrage
     const filterSelect = document.getElementById("filtrer")
-    filterSelect.addEventListener("change", () => {
-      const filterValue = filterSelect.value
-      let filteredProducts
+    if (filterSelect) {
+      filterSelect.addEventListener("change", () => {
+        const filterValue = filterSelect.value
+        let filteredProducts
 
-      if (filterValue === "prix") {
-        filteredProducts = [...products].sort((a, b) => a.prix_unitaire - b.prix_unitaire)
-      } else if (filterValue === "categorie") {
-        const selectedCategory = document.getElementById("categorie").value
-        filteredProducts = selectedCategory
-          ? products.filter((product) => product.categorie === selectedCategory)
-          : products
-      } else {
-        filteredProducts = products
-      }
-      displayProducts(filteredProducts)
-    })
+        if (filterValue === "prix") {
+          filteredProducts = [...products].sort((a, b) => a.prix_unitaire - b.prix_unitaire)
+        } else if (filterValue === "categorie") {
+          const selectedCategory = document.getElementById("categorie").value
+          filteredProducts = selectedCategory
+            ? products.filter((product) => product.categorie === selectedCategory)
+            : products
+        } else {
+          filteredProducts = products
+        }
+        displayProducts(filteredProducts)
+      })
+    }
 
     // Gestion de la sélection de catégorie
     const categorySelect = document.getElementById("categorie")
-    filterSelect.addEventListener("change", () => {
-      if (filterSelect.value === "categorie") {
-        categorySelect.style.display = "block"
-        document.querySelector('label[for="categorie"]').style.display = "block"
-      } else {
-        categorySelect.style.display = "none"
-        document.querySelector('label[for="categorie"]').style.display = "none"
-      }
-    })
+    if (filterSelect && categorySelect) {
+      filterSelect.addEventListener("change", () => {
+        if (filterSelect.value === "categorie") {
+          categorySelect.style.display = "block"
+          const categoryLabel = document.querySelector('label[for="categorie"]')
+          if (categoryLabel) categoryLabel.style.display = "block"
+        } else {
+          categorySelect.style.display = "none"
+          const categoryLabel = document.querySelector('label[for="categorie"]')
+          if (categoryLabel) categoryLabel.style.display = "none"
+        }
+      })
 
-    categorySelect.addEventListener("change", () => {
-      const selectedCategory = categorySelect.value
-      const filteredProducts = selectedCategory
-        ? products.filter((product) => product.categorie === selectedCategory)
-        : products
-      displayProducts(filteredProducts)
-    })
+      categorySelect.addEventListener("change", () => {
+        const selectedCategory = categorySelect.value
+        const filteredProducts = selectedCategory
+          ? products.filter((product) => product.categorie === selectedCategory)
+          : products
+        displayProducts(filteredProducts)
+      })
+    }
   })
 })
