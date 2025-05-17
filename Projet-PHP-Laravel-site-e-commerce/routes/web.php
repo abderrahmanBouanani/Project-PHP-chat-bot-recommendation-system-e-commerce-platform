@@ -40,6 +40,9 @@ Route::post('/signup', [SignupController::class, 'create']);
 
 
 
+
+
+
 //---vendeur---
 // Gérer l'envoi du formulaire d'ajout du produit
 Route::post('/produit', [ProduitController::class, 'store'])->name('vendeur.addProduct');

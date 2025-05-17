@@ -93,6 +93,7 @@
       </div>
     </nav>
     <!-- End Header/Navigation -->
+
     @yield('content')
 
     <!-- Start Footer Section -->
@@ -235,6 +236,10 @@
     </footer>
     <!-- End Footer Section -->
 
+    <!-- Injection de l'id de session utilisateur -->
+    <script>
+        window.sessionId = {{ session('user.id', 0) }};
+    </script>
     <!-- Scripts -->
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
@@ -243,6 +248,10 @@
     <!-- Page-specific scripts -->
     @if(request()->is('client_shop'))
     <script src="{{ asset('assets/js/boutique.js') }}"></script>
+    <script>
+        // Affichage pour debug, à retirer en prod :
+        console.log('Session ID:', window.sessionId);
+    </script>
     @endif
     
     @if(request()->is('client_cart'))

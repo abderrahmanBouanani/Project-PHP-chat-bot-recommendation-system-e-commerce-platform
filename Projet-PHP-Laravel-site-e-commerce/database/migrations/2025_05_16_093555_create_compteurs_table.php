@@ -8,22 +8,32 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('compteurs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained('users');
-            $table->foreignId('produit_id')->constrained('produits');
-            $table->integer('nombre_clique');
+            $table->integer('client_id');
+            $table->string('categorie');
+            $table->integer('nombre_clique')->default(1);
             $table->timestamps();
+            
+            // Ajouter un index pour améliorer les performances des requêtes
+            $table->index(['client_id', 'categorie']);
+            
+            // Ajouter une contrainte unique pour éviter les doublons
+            $table->unique(['client_id', 'categorie']);
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('compteurs');
     }
