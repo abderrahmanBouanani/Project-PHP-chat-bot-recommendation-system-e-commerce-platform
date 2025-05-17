@@ -1,13 +1,13 @@
 // Chatbot functionality
-const chatbotToggle = document.createElement('div');
-chatbotToggle.className = 'chatbot-toggle';
-chatbotToggle.innerHTML = '<i class="fas fa-comment-dots"></i>';
+const chatbotToggle = document.createElement("div")
+chatbotToggle.className = "chatbot-toggle"
+chatbotToggle.innerHTML = '<i class="fas fa-comment-dots"></i>'
 
-document.body.appendChild(chatbotToggle);
+document.body.appendChild(chatbotToggle)
 
 // Create chatbot container
-const chatbotContainer = document.createElement('div');
-chatbotContainer.className = 'chatbot-container';
+const chatbotContainer = document.createElement("div")
+chatbotContainer.className = "chatbot-container"
 chatbotContainer.innerHTML = `
     <div class="chatbot-header">
         <h3>Assistant Virtuel</h3>
@@ -16,105 +16,163 @@ chatbotContainer.innerHTML = `
     <div class="chatbot-messages"></div>
     <div class="chatbot-input">
         <input type="text" placeholder="Posez votre question...">
-        <button>Envoyer</button>
+        <button><i class="fas fa-paper-plane"></i></button>
     </div>
-`;
+`
 
-document.body.appendChild(chatbotContainer);
+document.body.appendChild(chatbotContainer)
 
 // Toggle chatbot visibility
-chatbotToggle.addEventListener('click', () => {
-    chatbotContainer.style.display = chatbotContainer.style.display === 'block' ? 'none' : 'block';
-});
+chatbotToggle.addEventListener("click", () => {
+  chatbotContainer.style.display = chatbotContainer.style.display === "block" ? "none" : "block"
+})
 
-document.querySelector('.chatbot-close').addEventListener('click', () => {
-    chatbotContainer.style.display = 'none';
-});
+document.querySelector(".chatbot-close").addEventListener("click", () => {
+  chatbotContainer.style.display = "none"
+})
 
 // Handle sending messages
-const inputField = document.querySelector('.chatbot-input input');
-const sendButton = document.querySelector('.chatbot-input button');
-const messagesContainer = document.querySelector('.chatbot-messages');
+const inputField = document.querySelector(".chatbot-input input")
+const sendButton = document.querySelector(".chatbot-input button")
+const messagesContainer = document.querySelector(".chatbot-messages")
 
 function addMessage(message, isUser = false) {
-    const messageElement = document.createElement('div');
-    messageElement.className = isUser ? 'user-message' : 'bot-message';
-    messageElement.textContent = message;
-    messagesContainer.appendChild(messageElement);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  const messageElement = document.createElement("div")
+  messageElement.className = isUser ? "user-message" : "bot-message"
+  messageElement.textContent = message
+  messagesContainer.appendChild(messageElement)
+  messagesContainer.scrollTop = messagesContainer.scrollHeight
 }
 
 // Ajoute des cartes produits dans le chatbot
 function addProductCards(produits) {
-    const cardsContainer = document.createElement('div');
-    cardsContainer.className = 'bot-product-cards';
-    produits.forEach(prod => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
+  const cardsContainer = document.createElement("div")
+  cardsContainer.className = "bot-product-cards"
+  produits.forEach((prod) => {
+    const card = document.createElement("div")
+    card.className = "product-card"
+    card.innerHTML = `
             <img src="http://127.0.0.1:8000/storage/${prod.image}" alt="${prod.nom}" class="product-card-img" />
             <div class="product-card-body">
                 <div class="product-card-title">${prod.nom}</div>
                 <div class="product-card-price">${prod.prix} DH</div>
             </div>
-        `;
-        cardsContainer.appendChild(card);
-    });
-    messagesContainer.appendChild(cardsContainer);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        `
+    cardsContainer.appendChild(card)
+  })
+  messagesContainer.appendChild(cardsContainer)
+  messagesContainer.scrollTop = messagesContainer.scrollHeight
 }
 
 function sendMessage() {
-    const message = inputField.value.trim();
-    if (message) {
-        addMessage(message, true);
-        inputField.value = '';
-        
-        // Send to Flask API
-        fetch('http://localhost:5000/ask', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message: message })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'intent') {
-                addMessage(data.response);
-                if (data.response.includes('Au revoir')) {
-                    setTimeout(() => {
-                        chatbotContainer.style.display = 'none';
-                    }, 2000);
-                }
-            } else if (data.status === 'ok') {
-                if (data.produits && data.produits.length > 0) {
-                    addMessage("Voici les produits que j'ai trouvés :");
-                    addProductCards(data.produits);
-                } else {
-                    addMessage('Je n\'ai pas trouvé de produits correspondant à votre recherche.');
-                }
-            } else {
-                addMessage(data.message || 'Désolé, je n\'ai pas pu traiter votre demande.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            addMessage('Une erreur est survenue lors de la communication avec le chatbot.');
-        });
-    }
+  const message = inputField.value.trim()
+  if (message) {
+    addMessage(message, true)
+    inputField.value = ""
+
+    // Add loading indicator
+    const loadingElement = document.createElement("div")
+    loadingElement.className = "bot-message"
+    loadingElement.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>'
+    messagesContainer.appendChild(loadingElement)
+    messagesContainer.scrollTop = messagesContainer.scrollHeight
+
+    // Send to Flask API
+    fetch("http://localhost:5000/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message: message }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Remove loading indicator
+        messagesContainer.removeChild(loadingElement)
+
+        if (data.status === "intent") {
+          addMessage(data.response)
+          if (data.response.includes("Au revoir")) {
+            setTimeout(() => {
+              chatbotContainer.style.display = "none"
+            }, 2000)
+          }
+        } else if (data.status === "ok") {
+          if (data.produits && data.produits.length > 0) {
+            addMessage("Voici les produits que j'ai trouvés :")
+            addProductCards(data.produits)
+          } else {
+            addMessage("Je n'ai pas trouvé de produits correspondant à votre recherche.")
+          }
+        } else {
+          addMessage(data.message || "Désolé, je n'ai pas pu traiter votre demande.")
+        }
+      })
+      .catch((error) => {
+        // Remove loading indicator
+        messagesContainer.removeChild(loadingElement)
+
+        console.error("Error:", error)
+        addMessage("Une erreur est survenue lors de la communication avec le chatbot.")
+      })
+  }
 }
 
-sendButton.addEventListener('click', sendMessage);
-inputField.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
-    }
-});
+sendButton.addEventListener("click", sendMessage)
+inputField.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    sendMessage()
+  }
+})
 
 // Add welcome message when chatbot is opened
-chatbotToggle.addEventListener('click', () => {
-    if (messagesContainer.children.length === 0) {
-        addMessage('Bonjour ! Comment puis-je vous aider aujourd\'hui ?');
+chatbotToggle.addEventListener("click", () => {
+  if (messagesContainer.children.length === 0) {
+    addMessage("Bonjour ! Comment puis-je vous aider aujourd'hui ?")
+  }
+})
+
+// Add CSS for typing indicator
+const style = document.createElement("style")
+style.textContent = `
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    margin: 0 2px;
+    background-color: #2f4f4f;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.4;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation: pulse 1s infinite 0.1s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation: pulse 1s infinite 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation: pulse 1s infinite 0.5s;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.4;
     }
-}); 
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+        background-color: #ffd700;
+    }
+}
+`
+document.head.appendChild(style)

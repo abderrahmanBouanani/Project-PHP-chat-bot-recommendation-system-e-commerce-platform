@@ -216,8 +216,7 @@
                 </script>
                 . Tous droits réservés. &mdash; Conçu avec
                 <span class="text-danger">❤</span> par
-                <a href="https://untree.co">Untree.co</a>
-                <!-- License information: https://untree.co/license/ -->
+                ENS Marrakech
               </p>
             </div>
 
