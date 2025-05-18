@@ -145,6 +145,15 @@
         ]
       },
       {
+        "tag": "profil",
+        "patterns": ["profil", "mon compte", "mes informations", "modifier mon profil", "informations personnelles", "coordonnées"],
+        "responses": [
+          "Vous pouvez gérer votre profil en vous connectant à votre compte. Cliquez sur 'Mon compte' en haut à droite de la page.",
+          "Pour modifier vos informations personnelles, connectez-vous à votre compte et accédez à la section 'Mon profil'.",
+          "La gestion de votre profil est disponible dans votre espace personnel. Connectez-vous pour accéder à vos informations et préférences."
+        ]
+      },
+      {
         "tag": "default",
         "patterns": [],
         "responses": [
