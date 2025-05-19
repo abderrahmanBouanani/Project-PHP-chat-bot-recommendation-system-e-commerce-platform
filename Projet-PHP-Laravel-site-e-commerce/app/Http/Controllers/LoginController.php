@@ -53,9 +53,9 @@ class LoginController extends Controller
                 'user' => [
                     'id' => 0,
                     'nom' => 'Admin',
-                    'prenom' => 'Super',
+                    'prenom' => 'Oumaima',
                     'email' => $credentials['email'],
-                    'telephone' => 'N/A',
+                    'telephone' => '0555555555',
                     'type' => 'admin'
                 ]
             ]);

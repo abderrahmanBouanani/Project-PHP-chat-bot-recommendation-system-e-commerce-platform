@@ -28,7 +28,7 @@
                 <label for="c_country" class="text-black"
                   >Ville <span class="text-danger">*</span></label
                 >
-                <select id="c_country" class="form-control">
+                <select id="c_country" class="form-control" name="c_country">
                   <option value="1">Sélectionnez un pays</option>
                   <option value="1">Casablanca</option>
                   <option value="2">Marrakech</option>
@@ -62,6 +62,7 @@
                     class="form-control"
                     id="c_fname"
                     name="c_fname"
+                    value="{{ old('c_fname') }}"
                   />
                 </div>
                 <div class="col-md-6">
@@ -73,6 +74,7 @@
                     class="form-control"
                     id="c_lname"
                     name="c_lname"
+                    value="{{ old('c_lname') }}"
                   />
                 </div>
               </div>
@@ -88,6 +90,7 @@
                     id="c_address"
                     name="c_address"
                     placeholder="Adresse"
+                    value="{{ old('c_address') }}"
                   />
                 </div>
               </div>

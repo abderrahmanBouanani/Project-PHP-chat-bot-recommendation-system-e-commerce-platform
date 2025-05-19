@@ -67,11 +67,11 @@ class ProduitController extends Controller
 
     //Suppression
     public function destroy($id){
-    $produit = Produit::findOrFail($id);
-    $produit->delete();
+        $produit = Produit::findOrFail($id);
+        $produit->delete();
 
-    return redirect()->back()->with('success', 'Produit supprimé avec succès.');
-}
+        return redirect()->back()->with('success', 'Produit supprimé avec succès.');
+    }
     //Récuperation
     public function getProduits(){
         try {

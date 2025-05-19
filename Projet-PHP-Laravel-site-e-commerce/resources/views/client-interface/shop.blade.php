@@ -1,5 +1,4 @@
 @extends('client_base') <!-- Cette ligne indique d'utiliser le layout de base -->
-
 @section('content') <!-- Ici commence le contenu spécifique à cette page -->
   <!-- Start Hero Section -->
   <div class="hero">

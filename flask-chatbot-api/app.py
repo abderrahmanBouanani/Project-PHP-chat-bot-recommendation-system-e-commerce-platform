@@ -2,13 +2,18 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import mysql.connector
 import nltk
-from nltk.tokenize import word_tokenize
+import string
 from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from unidecode import unidecode
 import json
 import re
 import logging
+from random import choice
+import random  # Added missing import
 from functools import lru_cache
-from unidecode import unidecode  # Pour la normalisation des caractères accentués
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(
@@ -21,16 +26,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Initialize NLTK resources
+lemmatizer = WordNetLemmatizer()
+stop_words = set(stopwords.words('french'))
+
 # Initialisation de NLTK
 try:
     nltk.download('punkt')
     nltk.download('stopwords')
+    nltk.download('wordnet')
+    nltk.download('omw-1.4')
 except Exception as e:
     logger.error(f"Erreur lors du téléchargement des ressources NLTK: {e}")
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
 CORS(app, resources={r"/ask": {"origins": "http://127.0.0.1:8000"}})
+
+# Initialize lemmatizer (was missing)
+lemmatizer = WordNetLemmatizer()
 
 # Fonction pour établir une connexion à la base de données
 def get_db_connection():
@@ -57,128 +71,220 @@ except Exception as e:
 stop_words = set(stopwords.words('french'))
 
 def extract_keywords(text):
-    tokens = word_tokenize(text.lower())
-    return [t for t in tokens if t not in stop_words and len(t) > 2]
-
-def detect_intent(message):
-    message_lower = message.lower()
-    for intent in intents_data['intents']:
-        for pattern in intent['patterns']:
-            if pattern.lower() in message_lower:
-                return intent
-    return None
-
-# Fonction pour extraire la catégorie de la demande
-def extract_category(message):
-    message_lower = unidecode(message.lower())  # Normalise les caractères accentués
+    text = unidecode(text.lower())  # Normaliser les accents et mettre en minuscule
+    tokens = word_tokenize(text)
     
-    # Dictionnaire des catégories et leurs variantes/alias
+    filtered = []
+    for token in tokens:
+        if token not in string.punctuation and token.isalpha():
+            if token not in stop_words and len(token) > 2:
+                lemma = lemmatizer.lemmatize(token)
+                filtered.append(lemma.lower())
+    
+    return filtered
+
+def generate_FAQ_response(message):
+    for intent in intents_data["intents"]:
+        for pattern in intent["patterns"]:
+            # Vérifie si au moins un mot du pattern est dans le message
+            if any(token in message for token in pattern.split()):  # Fixed: split pattern into tokens
+                return random.choice(intent["responses"])
+    
+    return None  # Aucun intent reconnu
+    
+
+# Fonction pour détecter si c'est une demande de produit ou de catégorie
+def is_product_request(message):
+    db = get_db_connection()  # Added missing database connection
+    if db is None:
+        return []
+        
+    cursor = db.cursor()  # Added missing cursor initialization
+    
+    # Requête SQL pour récupérer noms et catégories depuis la BDD
+    query = """
+    SELECT nom as nom FROM produits
+    UNION
+    SELECT DISTINCT categorie as nom FROM produits
+    ORDER BY nom;
+    """
+    cursor.execute(query)
+    results = cursor.fetchall()
+    product_keywords = [row[0].lower() for row in results]  # On s'assure que tout est en minuscule
+    
+    # Convert message to string if it's a list
+    if isinstance(message, list):
+        message_text = " ".join(message)
+    else:
+        message_text = message
+        
+    # Étape 1 : Vérifie si un mot-clé est dans le message directement
+    for keyword in product_keywords:
+        if keyword in message_text:
+            return search_products(keyword)  # Changed to pass the keyword instead of product_keywords
+
+    # Étape 2 : Vérifie si le message suit un pattern connu
+    patterns = [
+        r"je cherche (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"montre[z]?-moi (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"je veux (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"avez[- ]vous (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"où (?:puis-je trouver|sont|est) (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"combien coûte[nt]? (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"(?:recommand|suggèr|propos|indiqu|présent)(?:e|es|ez)?[- ]?moi (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)",
+        r"donne(?:s)?[- ]?moi (?:des|du|de la|un|une|les) ([a-zéèêëàâäôöùûüç\s]+)"
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, message_text)
+        if match:
+            # On récupère le groupe capturé, on nettoie et enlève les accents
+            potential_category = unidecode(match.group(1).strip())
+            for keyword in product_keywords:
+                if keyword in potential_category:
+                    return search_products(keyword)  # Changed to pass the keyword instead of product_keywords
+
+    # Étape 3 : Vérifie les catégories manuellement définies
     categories = {
         "telephone": ["telephone", "smartphone", "portable", "mobile", "iphone", "samsung", "huawei"],
-        "electronique": ["electronique", "electroniques", "appareil electronique", "appareils electroniques"],
-        "vetements": ["vetement", "vetements", "habit", "habits", "fringue", "fringues"],
-        "chaussures": ["chaussure", "chaussures", "basket", "baskets", "bottes", "sandales"],
-        "accessoires": ["accessoire", "accessoires", "sac", "sacs", "ceinture", "ceintures", "bijou", "bijoux"],
-        "maison": ["maison", "decoration", "décoration", "mobilier", "meuble", "meubles"],
-        "cuisine": ["cuisine", "ustensile", "ustensiles", "vaisselle", "electromenager", "électroménager"],
-        "jardin": ["jardin", "jardinage", "outil de jardin", "outils de jardin"],
-        "beaute": ["beaute", "beauté", "cosmetique", "cosmétique", "maquillage", "parfum", "soin", "soins"],
-        "sante": ["sante", "santé", "bien-etre", "bien être", "hygiene", "hygiène"],
-        "sport": ["sport", "sportif", "sportive", "football", "basketball", "tennis", "course", "jogging"],
-        "jouets": ["jouet", "jouets", "jeu", "jeux", "poupee", "poupée", "figurine", "peluche"],
-        "livres": ["livre", "livres", "roman", "bd", "manga", "magazine", "revue"],
-        "musique": ["musique", "cd", "vinyle", "vinyles", "instrument", "instruments", "guitare", "piano"],
-        "films": ["film", "films", "dvd", "bluray", "blu-ray", "serie", "séries", "blu ray"],
-        "informatique": ["informatique", "ordinateur", "pc", "portable", "clavier", "souris", "ecran", "écran"]
+        "electronique": ["electronique", "appareil", "appareils"],
+        "vetements": ["vetement", "habit", "fringue"],
+        "chaussures": ["chaussure", "basket", "bottes", "sandales"],
+        "accessoires": ["accessoire", "sac", "ceinture", "bijou"],
+        "maison": ["maison", "decoration", "mobilier", "meuble"],
+        "cuisine": ["cuisine", "ustensile", "vaisselle", "electromenager"],
+        "jardin": ["jardin", "jardinage", "outil"],
+        "beaute": ["beaute", "cosmetique", "maquillage", "parfum", "soin"],
+        "sante": ["sante", "bien-etre", "hygiene"],
+        "sport": ["sport", "football", "basketball", "tennis", "jogging"],
+        "jouets": ["jouet", "jeu", "poupee", "figurine", "peluche"],
+        "livres": ["livre", "roman", "bd", "manga", "magazine"],
+        "musique": ["musique", "cd", "vinyle", "instrument", "guitare", "piano"],
+        "films": ["film", "dvd", "blu-ray", "serie"],
+        "informatique": ["informatique", "ordinateur", "pc", "clavier", "souris", "ecran"],
     }
-    
-    # Vérifier si une catégorie est mentionnée explicitement
+
     for category, keywords in categories.items():
         for keyword in keywords:
-            if keyword in message_lower:
-                return category
-    
-    # Utiliser des patterns pour extraire des catégories
-    patterns = [
-        r"(?:je cherche|montre[z]?-moi|je veux|avez[- ]vous|où puis-je trouver|combien coûte[nt]?)\s*(?:des?|les?|du|de la|aux?|au(x)?)?\s*([a-zéèêëàâäôöùûüç\s]+)",
-        r"(?:recherche|trouver|voir|afficher|recommander|conseiller|suggérer)\s*(?:des?|les?|du|de la|aux?|au(x)?)?\s*([a-zéèêëàâäôöùûüç\s]+)"
-    ]
-    
-    for pattern in patterns:
-        match = re.search(pattern, message_lower)
-        if match:
-            # Prend le premier groupe capturé (sans les mots de liaison)
-            potential_category = unidecode(match.group(1).strip())
-            # Vérifie si ce mot correspond à une catégorie connue
-            for category, keywords in categories.items():
-                for keyword in keywords:
-                    if keyword in potential_category:
-                        return category
-    
-    return None
+            if keyword in message_text:
+                return search_products(keyword)  # Changed to pass the keyword instead of keywords list
+
+    cursor.close()
+    db.close()
+    return []
 
 # Fonction de recherche des produits par mots-clés
 def search_products(keywords):
     db = get_db_connection()
-    if not db:
+    if db is None:
         return []
-        
+
     cursor = db.cursor(dictionary=True)
     results = []
-    
+
     try:
+        # S'assurer que keywords est une liste
+        if isinstance(keywords, str):
+            keywords = [keywords]
+
         for word in keywords:
-            if len(word) < 3:  # Ignorer les mots trop courts
-                continue
-            cursor.execute("SELECT id, nom, prix_unitaire as prix, categorie, quantite, vendeur_id, image FROM produits WHERE (nom LIKE %s OR categorie LIKE %s) AND quantite > 0", (f"%{word}%", f"%{word}%"))
+            cursor.execute("""
+                SELECT id, nom, prix_unitaire AS prix, categorie, quantite, vendeur_id, image
+                FROM produits
+                WHERE (nom LIKE %s OR categorie LIKE %s)
+                AND quantite > 0
+            """, (f"%{word}%", f"%{word}%"))
             results.extend(cursor.fetchall())
-        
-        # Éliminer les doublons (par ID)
+
+        # Éliminer les doublons par ID
         unique_results = []
         seen_ids = set()
         for prod in results:
             if prod['id'] not in seen_ids:
                 unique_results.append(prod)
                 seen_ids.add(prod['id'])
-        
+
         return unique_results
+
     except Exception as e:
-        logger.error(f"Erreur lors de la recherche de produits: {e}")
+        logger.error(f"Erreur lors de la recherche avec les mots-clés {keywords}: {e}")
         return []
+
     finally:
         cursor.close()
         db.close()
 
+# Added missing function for logging interactions
+def log_interaction(client_id, question, interaction_type, result_count):
+    try:
+        db = get_db_connection()
+        if db:
+            cursor = db.cursor()
+            cursor.execute("""
+                INSERT INTO interaction_logs (client_id, question, interaction_type, result_count, timestamp)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (client_id, question, interaction_type, result_count, datetime.now()))
+            db.commit()
+            cursor.close()
+            db.close()
+    except Exception as e:
+        logger.error(f"Erreur lors de l'enregistrement de l'interaction: {e}")
+
+# Fonction pour vérifier si le message est une demande de recommandation
+def is_recommendation(messages):
+    keywords = ["recommande", "suggère", "propos", "indique", "présente"]
+
+    for message in messages:
+        for keyword in keywords:
+            pattern = rf"\b{keyword}\b"
+            if re.search(pattern, message):
+                return True
+    return False
+    
+
 # Fonction pour obtenir des recommandations personnalisées
-@lru_cache(maxsize=32)  # Cache les résultats pour améliorer les performances
-def get_personalized_recommendations(client_id):
+@lru_cache(maxsize=32)
+def get_personalized_recommendations(client_id, is_recommendation):
+    if not is_recommendation:
+        return []
+
     if not client_id or client_id == "null":
         return []
-        
+
     db = get_db_connection()
     if not db:
         return []
-        
+
     cursor = db.cursor(dictionary=True)
     
     try:
-        # Utiliser la requête SQL fournie pour obtenir les produits de la catégorie la plus cliquée
+        # Obtenir les produits les plus cliqués par le client
         cursor.execute("""
-            SELECT p.id, p.nom, p.prix_unitaire as prix, p.categorie, p.quantite, p.vendeur_id, p.image, c.nombre_clique
+            SELECT p.id, p.nom, p.prix_unitaire as prix, p.categorie, p.quantite, p.vendeur_id, p.image
             FROM produits p
-            JOIN compteurs c ON p.categorie = c.categorie
-            WHERE c.client_id = %s
-            AND c.nombre_clique = (
-                SELECT MAX(nombre_clique)
+            JOIN (
+                SELECT categorie
                 FROM compteurs
                 WHERE client_id = %s
-            )
-            AND p.quantite > 0
-            ORDER BY p.prix_unitaire ASC
+                ORDER BY nombre_clique DESC
+                LIMIT 3
+            ) c ON p.categorie = c.categorie
+            WHERE p.quantite > 0
+            ORDER BY RAND()
             LIMIT 5
-        """, (client_id, client_id))
+        """, (client_id,))
         
-        return cursor.fetchall()
+        # Convertir les résultats en format dictionnaire
+        produits = cursor.fetchall()
+        return [{
+            'id': produit['id'],
+            'nom': produit['nom'],
+            'prix': produit['prix'],
+            'categorie': produit['categorie'],
+            'quantite': produit['quantite'],
+            'vendeur_id': produit['vendeur_id'],
+            'image': produit['image']
+        } for produit in produits] or []
     except Exception as e:
         logger.error(f"Erreur lors de la récupération des recommandations personnalisées: {e}")
         return []
@@ -220,69 +326,6 @@ def get_popular_recommendations():
         cursor.close()
         db.close()
 
-# Fonction pour mettre à jour le compteur de clics d'une catégorie
-def update_category_click(client_id, category):
-    if not client_id or client_id == "null" or not category:
-        return False
-        
-    db = get_db_connection()
-    if not db:
-        return False
-        
-    cursor = db.cursor()
-    
-    try:
-        # Vérifier si un compteur existe déjà pour ce client et cette catégorie
-        cursor.execute(
-            "SELECT id FROM compteurs WHERE client_id = %s AND categorie = %s",
-            (client_id, category)
-        )
-        result = cursor.fetchone()
-        
-        if result:
-            # Mettre à jour le compteur existant
-            cursor.execute(
-                "UPDATE compteurs SET nombre_clique = nombre_clique + 1, date_derniere_modification = %s WHERE client_id = %s AND categorie = %s",
-                (datetime.now(), client_id, category)
-            )
-        else:
-            # Créer un nouveau compteur
-            cursor.execute(
-                "INSERT INTO compteurs (client_id, categorie, nombre_clique, date_creation, date_derniere_modification) VALUES (%s, %s, 1, %s, %s)",
-                (client_id, category, datetime.now(), datetime.now())
-            )
-        
-        db.commit()
-        return True
-    except Exception as e:
-        logger.error(f"Erreur lors de la mise à jour du compteur de clics: {e}")
-        db.rollback()
-        return False
-    finally:
-        cursor.close()
-        db.close()
-
-# Fonction pour enregistrer l'interaction avec le chatbot
-def log_interaction(client_id, message, response_type, products_count=0):
-    db = get_db_connection()
-    if not db:
-        return
-        
-    cursor = db.cursor()
-    
-    try:
-        cursor.execute(
-            "INSERT INTO chatbot_logs (client_id, message, response_type, products_count, timestamp) VALUES (%s, %s, %s, %s, %s)",
-            (client_id or "anonymous", message, response_type, products_count, datetime.now())
-        )
-        db.commit()
-    except Exception as e:
-        logger.error(f"Erreur lors de l'enregistrement de l'interaction: {e}")
-        db.rollback()
-    finally:
-        cursor.close()
-        db.close()
-
 # Route API pour le chatbot
 @app.route('/ask', methods=['POST'])
 def chatbot():
@@ -292,115 +335,38 @@ def chatbot():
     client_id = data.get('client_id')
     
     logger.info(f"Nouvelle requête: client_id={client_id}, message='{question}'")
-    
-    # 1. Vérifier d'abord les intentions FAQ (sauf si c'est une demande de recommandation)
-    if not any(word in question.lower() for word in ["recommande", "suggère", "propose", "conseille", "recommandation"]):
-        intent = detect_intent(question)
-        if intent and intent['tag'] not in ['produits', 'default']:
-            log_interaction(client_id, question, "intent")
+
+    keywords = extract_keywords(question)
+
+    produits = is_product_request(keywords)
+    if not produits:
+        produits = get_personalized_recommendations(client_id, is_recommendation(keywords))
+        if not produits:
+            message = generate_FAQ_response(keywords)
+            if not message:
+                message = "Je ne suis pas sûr de comprendre. Pouvez-vous reformuler votre question ?"
+            log_interaction(client_id, question, "category_search", len(message))
             return jsonify({
-                "status": "intent", 
-                "response": random.choice(intent['responses'])
+                "status": "intent",
+                "response": message
             })
-    
-    # 2. Vérifier si c'est une demande de catégorie spécifique
-    category = extract_category(question)
-    if category:
-        if client_id and client_id != "null":
-            update_category_click(client_id, category)
-        
-        # Rechercher des produits dans cette catégorie
-        produits = search_products([category])
-        if produits:
+        else:
             log_interaction(client_id, question, "category_search", len(produits))
             return jsonify({
                 "status": "ok",
                 "produits": produits,
-                "message": f"Voici des produits de la catégorie {category} :"
-            })
-    
-    # 3. Vérifier si c'est une demande de recommandation
-    if any(word in question.lower() for word in ["recommande", "suggère", "propose", "conseille", "recommandation"]):
-        # Si une catégorie est mentionnée, chercher des produits de cette catégorie
-        if category:
-            produits = search_products([category])
-            if produits:
-                log_interaction(client_id, question, "category_recommendations", len(produits))
-                return jsonify({
-                    "status": "ok",
-                    "produits": produits,
-                    "message": f"Voici des recommandations de {category} :"
-                })
-        
-        # Sinon, faire des recommandations personnalisées ou populaires
-        if client_id and client_id != "null":
-            recommendations = get_personalized_recommendations(client_id)
-            if recommendations:
-                log_interaction(client_id, question, "personalized_recommendations", len(recommendations))
-                return jsonify({
-                    "status": "ok",
-                    "produits": recommendations,
-                    "message": "Voici des recommandations personnalisées pour vous :"
-                })
-        
-        # Si pas de recommandations personnalisées ou utilisateur non connecté
-        popular_products = get_popular_recommendations()
-        if popular_products:
-            log_interaction(client_id, question, "popular_recommendations", len(popular_products))
-            return jsonify({
-                "status": "ok",
-                "produits": popular_products,
-                "message": "Voici quelques produits populaires qui pourraient vous intéresser :"
-            })
-    
-    # Si on arrive ici et qu'il y avait une catégorie mais pas de produits
-    if category:
-        return jsonify({
-            "status": "vide",
-            "message": f"Aucun produit trouvé dans la catégorie {category}."
-        })
-    
-    # 4. Si c'est une recherche de produit générique
-    keywords = extract_keywords(question)
-    
-    # Recherche des produits correspondants
-    produits = search_products(keywords)
-    
-    if produits:
-        log_interaction(client_id, question, "product_search", len(produits))
+                "message": "Voici des produits recommandés pour vous :"
+            })    
+    else:
+        # Get the category from the first product if available
+        category = produits[0]['categorie'] if produits and 'categorie' in produits[0] else "recherchée"
+        log_interaction(client_id, question, "category_search", len(produits))
         return jsonify({
             "status": "ok",
             "produits": produits,
-            "message": "Voici les produits qui correspondent à votre recherche :"
+            "message": f"Voici des produits de la catégorie {category} :"
         })
-    else:
-        # Si aucun produit trouvé mais client connecté, proposer des recommandations
-        if client_id and client_id != "null":
-            recommendations = get_personalized_recommendations(client_id)
-            if recommendations:
-                log_interaction(client_id, question, "personalized_recommendations", len(recommendations))
-                return jsonify({
-                    "status": "ok",
-                    "produits": recommendations,
-                    "message": "Je n'ai pas trouvé de produits correspondant à votre recherche, mais voici quelques recommandations basées sur vos préférences."
-                })
-        
-        # Si client non connecté ou pas de recommandations personnalisées, proposer des produits populaires
-        popular_products = get_popular_recommendations()
-        if popular_products:
-            log_interaction(client_id, question, "popular_recommendations", len(popular_products))
-            return jsonify({
-                "status": "ok",
-                "produits": popular_products,
-                "message": "Voici quelques produits populaires qui pourraient vous intéresser :"
-            })
-        
-        log_interaction(client_id, question, "no_products")
-        return jsonify({
-            "status": "vide",
-            "message": "Désolé, je n'ai pas trouvé de produits correspondant à votre recherche."
-        })
-
+    
 # Lancer l'application Flask
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

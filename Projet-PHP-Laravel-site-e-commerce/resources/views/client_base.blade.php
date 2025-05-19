@@ -234,6 +234,10 @@
     <!-- End Footer Section -->
 
     <!-- Scripts -->
+     <script>
+      window.sessionId = {{ session('user.id', 0) }};
+      console.log(window.sessionId);
+     </script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>

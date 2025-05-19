@@ -2,9 +2,11 @@
 if (!document.querySelector('meta[name="client-id"]')) {
   const meta = document.createElement('meta');
   meta.name = 'client-id';
-  meta.content = '{{ Auth::check() ? Auth::id() : null }}';
+  meta.content = window.sessionId;
   document.head.appendChild(meta);
 }
+
+
 
 // Chatbot functionality
 const chatbotToggle = document.createElement("div")
@@ -113,7 +115,7 @@ function sendMessage() {
 
     // Récupérer l'ID du client connecté depuis la balise meta
     const clientId = document.querySelector('meta[name="client-id"]')?.content || null;
-    
+    console.log();
     // Send to Flask API
     fetch("http://localhost:5000/ask", {
       method: "POST",
