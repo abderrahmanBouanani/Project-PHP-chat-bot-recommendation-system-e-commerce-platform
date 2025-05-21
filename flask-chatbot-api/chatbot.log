@@ -836,3 +836,23 @@
 2025-05-20 00:15:23,774 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
 2025-05-20 00:15:23,776 - werkzeug - INFO - 127.0.0.1 - - [20/May/2025 00:15:23] "POST /ask HTTP/1.1" 200 -
 2025-05-20 00:15:50,639 - werkzeug - INFO -  * Detected change in 'C:\\Users\\admin\\OneDrive\\Bureau\\pfe\\flask-chatbot-api\\app.py', reloading
+2025-05-20 10:46:28,768 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.181:5000
+2025-05-20 10:46:28,771 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-20 10:46:28,784 - werkzeug - INFO -  * Restarting with stat
+2025-05-20 10:46:30,651 - werkzeug - WARNING -  * Debugger is active!
+2025-05-20 10:46:30,661 - werkzeug - INFO -  * Debugger PIN: 111-443-184
+2025-05-20 10:46:57,091 - werkzeug - INFO - 127.0.0.1 - - [20/May/2025 10:46:57] "OPTIONS /ask HTTP/1.1" 200 -
+2025-05-20 10:46:57,350 - __main__ - INFO - Nouvelle requête: client_id=2, message='hey'
+2025-05-20 10:46:59,715 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-05-20 10:46:59,717 - werkzeug - INFO - 127.0.0.1 - - [20/May/2025 10:46:59] "POST /ask HTTP/1.1" 200 -
+2025-05-20 12:23:08,443 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.110.181:5000
+2025-05-20 12:23:08,445 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-20 12:23:08,449 - werkzeug - INFO -  * Restarting with stat
+2025-05-20 12:23:10,163 - werkzeug - WARNING -  * Debugger is active!
+2025-05-20 12:23:10,172 - werkzeug - INFO -  * Debugger PIN: 111-443-184

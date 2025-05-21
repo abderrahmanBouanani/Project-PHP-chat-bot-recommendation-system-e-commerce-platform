@@ -89,5 +89,5 @@ class ProduitController extends Controller
             ], 500);
         }
     }
- 
+
 }

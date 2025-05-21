@@ -109,7 +109,19 @@ Route::get('/client_contact', function () {
 
 Route::get('/client_profile', function () {
     return view('client-interface.profilClient', ['user' => session('user')],['page' => 'ShopAll - Profile']);
-});
+})->name('client.profile');
+
+// Afficher le formulaire d'édition du profil
+Route::get('/client/profile/edit', function () {
+    $user = session('user');
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+    }
+    return view('client-interface.editProfilClient', ['user' => $user, 'page' => 'ShopAll - Modifier mon profil']);
+})->name('client.profile.edit');
+
+// Mettre à jour le profil
+Route::put('/client/profile/update', [App\Http\Controllers\UserController::class, 'update'])->name('client.profile.update');
 
 Route::get('/client_cart', function () {
     return view('client-interface.cart',['page' => 'ShopAll - Panier']);
@@ -182,6 +194,23 @@ Route::get('/vendeur_service',function(){
 });
 
 
+
+Route::get('/vendeur_profile', function () {
+    return view('vendeur-interface.vendeurProfile', ['user' => session('user')],['page' => 'ShopAll - Profile']);
+})->name('vendeur.profile');
+
+// Afficher le formulaire d'édition du profil
+Route::get('/vendeur/profile/edit', function () {
+    $user = session('user');
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+    }
+    return view('vendeur-interface.editProfilVendeur', ['user' => $user, 'page' => 'ShopAll - Modifier mon profil']);
+})->name('vendeur.profile.edit');
+
+// Mettre à jour le profil
+Route::put('/vendeur/profile/update', [App\Http\Controllers\UserController::class, 'update'])->name('vendeur.profile.update');
+
 //Routes pour le livreur
 
 Route::get('/livreur_livraison', [LivreurController::class, 'index']);
@@ -207,3 +236,22 @@ Route::get('/api/admin/users/search', [AdminUserController::class, 'search']);
 
 // Chatbot Route
 Route::post('/chatbot/ask', [\App\Http\Controllers\ChatController::class, 'ask']);
+
+
+// Route pour obtenir le nombre d'articles dans le panier
+Route::get('/api/cart/count', [CartController::class, 'getCartCount']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

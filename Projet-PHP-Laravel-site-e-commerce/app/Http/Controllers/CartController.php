@@ -258,4 +258,34 @@ public function getTotals()
         'coupon_code' => session('cart_coupon_code')
     ]);
 }
+
+
+
+
+
+// Méthode pour obtenir le nombre d'articles dans le panier
+public function getCartCount()
+{
+    try {
+        // Récupérer l'ID du client
+        $clientId = session('user')['id'];
+        
+        // Récupérer les éléments du panier
+        $cartItems = Cart::where('client_id', $clientId)->get();
+        
+        // Calculer le nombre total d'articles (en tenant compte des quantités)
+        $itemCount = $cartItems->sum('quantite');
+        
+        return response()->json([
+            'success' => true,
+            'count' => $itemCount
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur lors du comptage des articles',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 }
