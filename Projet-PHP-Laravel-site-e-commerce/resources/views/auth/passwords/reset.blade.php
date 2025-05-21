@@ -14,7 +14,7 @@
     />
     <link href="{{ asset('assets/css/tiny-slider.css') }}" rel="stylesheet">
     <link href="{{ asset ('assets/css/style.css')}}" rel="stylesheet" />
-    <title>ShopAll - Connexion</title>
+    <title>ShopAll - Réinitialisation du mot de passe</title>
     <style>
       :root {
         --primary-color: #3b5d50;
@@ -101,9 +101,9 @@
         width: calc(100% - 16px);
       }
 
-      /* Style du formulaire de connexion */
-      .login-container {
-        max-width: 400px;
+      /* Style du formulaire */
+      .reset-container {
+        max-width: 500px;
         margin: 50px auto;
         padding: 40px;
         background-color: var(--background-color);
@@ -111,7 +111,7 @@
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
       }
 
-      .login-container h2 {
+      .reset-container h2 {
         color: var(--primary-color);
         margin-bottom: 30px;
         text-align: center;
@@ -139,7 +139,7 @@
         box-shadow: 0 0 0 0.2rem rgba(59, 93, 80, 0.25);
       }
 
-      .btn-login {
+      .btn-reset {
         background-color: var(--primary-color);
         color: white;
         padding: 12px;
@@ -150,22 +150,22 @@
         transition: all 0.3s ease;
       }
 
-      .btn-login:hover {
+      .btn-reset:hover {
         background-color: #2c4a3e;
         transform: translateY(-1px);
       }
 
-      .login-footer {
+      .reset-footer {
         text-align: center;
         margin-top: 20px;
       }
 
-      .login-footer a {
+      .reset-footer a {
         color: var(--primary-color);
         text-decoration: none;
       }
 
-      .login-footer a:hover {
+      .reset-footer a:hover {
         text-decoration: underline;
       }
     </style>
@@ -177,7 +177,7 @@
       arial-label="ShopAll navigation bar"
     >
       <div class="container">
-        <a class="navbar-brand" href="index.html">ShopAll<span>.</span></a>
+        <a class="navbar-brand" href="/">ShopAll<span>.</span></a>
 
         <button
           class="navbar-toggler"
@@ -204,55 +204,79 @@
     <!-- End Header/Navigation -->
 
     <div class="container">
-      <div class="login-container">
-        <h2>Connexion</h2>
-        <form id="loginForm" method="POST" action="{{ url('/login') }}">
+      <div class="reset-container">
+        <h2>Réinitialisation du mot de passe</h2>
+        
+        @if($errors->any())
+          <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <ul class="mb-0">
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+        
+        <form method="POST" action="{{ route('password.update') }}">
           @csrf
+          
+          <input type="hidden" name="token" value="{{ $token }}">
+          
           <div class="form-group">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">Adresse e-mail</label>
             <input
               type="email"
-              class="form-control"
+              class="form-control @error('email') is-invalid @enderror"
               id="email"
               name="email"
-              placeholder="Entrez votre email"
+              value="{{ $email ?? old('email') }}"
+              placeholder="Entrez votre adresse e-mail"
               required
+              readonly
             />
+            @error('email')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
           </div>
+          
           <div class="form-group">
-            <label for="motdepasse" class="form-label">Mot de passe</label>
+            <label for="password" class="form-label">Nouveau mot de passe</label>
+            <input
+              type="password"
+              class="form-control @error('password') is-invalid @enderror"
+              id="password"
+              name="password"
+              placeholder="Entrez votre nouveau mot de passe"
+              required
+              autofocus
+            />
+            @error('password')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+          
+          <div class="form-group">
+            <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
             <input
               type="password"
               class="form-control"
-              id="motdepasse"
-              name="motdepasse"
-              placeholder="Entrez votre mot de passe"
+              id="password_confirmation"
+              name="password_confirmation"
+              placeholder="Confirmez votre nouveau mot de passe"
               required
             />
           </div>
-          <div class="d-flex justify-content-end mb-3">
-            <a href="{{ route('password.request') }}" class="text-decoration-none">Mot de passe oublié?</a>
-          </div>
-          <button type="submit" class="btn-login">Se connecter</button>
+          
+          <button type="submit" class="btn-reset">Réinitialiser le mot de passe</button>
         </form>
-
-        @if(session('error'))
-          <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-            {{ session('error') }}
-          </div>
-        @endif
-
-        @if(session('status'))
-          <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            {{ session('status') }}
-          </div>
-        @endif
-
-
-        <div class="login-footer">
+        
+        <div class="reset-footer">
           <p>
-            Vous n'avez pas de compte ?
-            <a href="{{ url('/signup') }}">Créer un compte</a>
+            <a href="{{ route('login') }}">Retour à la connexion</a>
           </p>
         </div>
       </div>

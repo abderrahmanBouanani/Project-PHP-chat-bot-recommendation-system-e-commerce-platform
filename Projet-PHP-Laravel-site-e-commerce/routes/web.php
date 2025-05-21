@@ -9,6 +9,8 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProduitController; // Ensure this controller exists in the specified namespace
 use App\Models\Cart;
@@ -18,7 +20,7 @@ use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request as HttpRequest;
 use App\Http\Controllers\LivreurController;
 
-// ---connexion & signup--- 
+// ---connexion & signup---
 
 // Afficher le formulaire de connexion
 Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
@@ -38,6 +40,11 @@ Route::get('/signup', [SignupController::class, 'showSignupForm'])->name('signup
 Route::post('/signup', [SignupController::class, 'create']);
 
 
+// Routes pour la réinitialisation du mot de passe
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 
 
@@ -150,14 +157,14 @@ Route::prefix('admin')->group(function () {
     Route::post('/commande/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.commande.status');
     Route::get('/api/products/{commandeId}', [AdminOrderController::class, 'getProducts'])->name('admin.api.products');
     Route::get('/commande/search', [AdminOrderController::class, 'search'])->name('admin.commande.search');
-    
+
     Route::get('/about', [AdminController::class, 'profile'])->name('admin.profile');
     Route::post('/about', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
-    
+
     Route::get('/produit', [AdminProductController::class, 'index'])->name('admin.produits');
     Route::get('/produit/search', [AdminProductController::class, 'search'])->name('admin.produit.search');
     Route::get('/produit/categories', [AdminProductController::class, 'getCategories'])->name('admin.produit.categories');
-    
+
     Route::get('/utilisateur', [AdminUserController::class, 'index'])->name('admin.utilisateurs');
     Route::get('/utilisateur/{id}', [AdminUserController::class, 'show'])->name('admin.utilisateur.show');
     Route::delete('/utilisateur/{id}', [AdminUserController::class, 'destroy'])->name('admin.utilisateur.destroy');
@@ -240,18 +247,3 @@ Route::post('/chatbot/ask', [\App\Http\Controllers\ChatController::class, 'ask']
 
 // Route pour obtenir le nombre d'articles dans le panier
 Route::get('/api/cart/count', [CartController::class, 'getCartCount']);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
