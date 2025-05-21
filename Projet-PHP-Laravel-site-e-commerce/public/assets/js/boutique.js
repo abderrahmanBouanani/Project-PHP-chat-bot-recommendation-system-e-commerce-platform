@@ -3,26 +3,35 @@
  * Gère l'affichage des produits, le suivi des clics et les interactions utilisateur
  */
 document.addEventListener("DOMContentLoaded", () => {
-  // Fonction pour récupérer les produits depuis l'API
-  function getProducts() {
-    return fetch("http://127.0.0.1:8000/api/produits")
+  // Fonction pour récupérer les produits depuis l'API avec pagination
+  function getProducts(page = 1, limit = 8) {
+    return fetch(`http://127.0.0.1:8000/api/produits?page=${page}&limit=${limit}`)
       .then((response) => response.json())
       .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          return data.data
+        if (data.success) {
+          // Retourner à la fois les données et les informations de pagination
+          return {
+            products: data.data || [],
+            pagination: {
+              total: data.total || 0,
+              currentPage: data.current_page || 1,
+              lastPage: data.last_page || 1,
+              perPage: data.per_page || 8
+            }
+          }
         } else {
           console.error("Format de données invalide:", data)
-          return []
+          return { products: [], pagination: { total: 0, currentPage: 1, lastPage: 1, perPage: 8 } }
         }
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération des produits:", error)
-        return []
+        return { products: [], pagination: { total: 0, currentPage: 1, lastPage: 1, perPage: 8 } }
       })
   }
 
   // Fonction pour afficher les produits
-  function displayProducts(productsToDisplay) {
+  function displayProducts(productsToDisplay, pagination = null) {
     const productList = document.getElementById("product-list")
     if (!productList) {
       console.error("L'élément product-list n'a pas été trouvé dans le DOM")
@@ -35,6 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("productsToDisplay n'est pas un tableau:", productsToDisplay)
       return
     }
+
+    // Créer un conteneur pour les produits
+    const productsContainer = document.createElement("div")
+    productsContainer.className = "row w-100"
 
     productsToDisplay.forEach((product) => {
       const productElement = document.createElement("div")
@@ -56,8 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
           </span>
         </a>
       `
-      productList.appendChild(productElement)
+      productsContainer.appendChild(productElement)
     })
+
+    // Ajouter le conteneur de produits à la liste
+    productList.appendChild(productsContainer)
+
+    // Ajouter la pagination si elle est fournie
+    if (pagination) {
+      const paginationContainer = createPaginationControls(pagination)
+      productList.appendChild(paginationContainer)
+    }
 
     // Ajouter les écouteurs d'événements pour les produits
     addProductClickListeners()
@@ -213,6 +235,89 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Fonction pour créer les contrôles de pagination
+  function createPaginationControls(pagination) {
+    const { currentPage, lastPage, total } = pagination
+
+    const paginationContainer = document.createElement("div")
+    paginationContainer.className = "d-flex justify-content-center mt-4 w-100 product-section"
+
+    const paginationNav = document.createElement("nav")
+    paginationNav.setAttribute("aria-label", "Navigation des pages")
+
+    const paginationList = document.createElement("ul")
+    paginationList.className = "pagination"
+
+    // Bouton "Précédent"
+    const prevItem = document.createElement("li")
+    prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`
+
+    const prevLink = document.createElement("a")
+    prevLink.className = "page-link"
+    prevLink.href = "#"
+    prevLink.setAttribute("aria-label", "Précédent")
+    prevLink.innerHTML = '<span aria-hidden="true">&laquo;</span>'
+
+    if (currentPage > 1) {
+      prevLink.addEventListener("click", (e) => {
+        e.preventDefault()
+        loadPage(currentPage - 1)
+      })
+    }
+
+    prevItem.appendChild(prevLink)
+    paginationList.appendChild(prevItem)
+
+    // Pages numérotées
+    const startPage = Math.max(1, currentPage - 2)
+    const endPage = Math.min(lastPage, currentPage + 2)
+
+    for (let i = startPage; i <= endPage; i++) {
+      const pageItem = document.createElement("li")
+      pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`
+
+      const pageLink = document.createElement("a")
+      pageLink.className = "page-link"
+      pageLink.href = "#"
+      pageLink.textContent = i
+
+      if (i !== currentPage) {
+        pageLink.addEventListener("click", (e) => {
+          e.preventDefault()
+          loadPage(i)
+        })
+      }
+
+      pageItem.appendChild(pageLink)
+      paginationList.appendChild(pageItem)
+    }
+
+    // Bouton "Suivant"
+    const nextItem = document.createElement("li")
+    nextItem.className = `page-item ${currentPage === lastPage ? 'disabled' : ''}`
+
+    const nextLink = document.createElement("a")
+    nextLink.className = "page-link"
+    nextLink.href = "#"
+    nextLink.setAttribute("aria-label", "Suivant")
+    nextLink.innerHTML = '<span aria-hidden="true">&raquo;</span>'
+
+    if (currentPage < lastPage) {
+      nextLink.addEventListener("click", (e) => {
+        e.preventDefault()
+        loadPage(currentPage + 1)
+      })
+    }
+
+    nextItem.appendChild(nextLink)
+    paginationList.appendChild(nextItem)
+
+    paginationNav.appendChild(paginationList)
+    paginationContainer.appendChild(paginationNav)
+
+    return paginationContainer
+  }
+
   // Fonction pour ajouter au panier
   function addToCart(productId, productName, productPrice, productImage) {
     // Récupérer le token CSRF
@@ -288,16 +393,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000)
   }
 
+  // Fonction pour charger une page spécifique
+  function loadPage(page) {
+    getProducts(page).then(({ products, pagination }) => {
+      displayProducts(products, pagination)
+
+      // Faire défiler vers le haut de la page
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    })
+  }
+
   // Initialisation : récupérer et afficher tous les produits
-  getProducts().then((products) => {
-    displayProducts(products)
+  getProducts().then(({ products, pagination }) => {
+    displayProducts(products, pagination)
+
+    // Variable pour stocker tous les produits (pour la recherche et le filtrage)
+    let allProducts = products
 
     // Gestion de la recherche
     const searchInput = document.getElementById("search")
     if (searchInput) {
       searchInput.addEventListener("input", () => {
         const searchTerm = searchInput.value.toLowerCase()
-        const filteredProducts = products.filter((product) => product.nom.toLowerCase().includes(searchTerm))
+        const filteredProducts = allProducts.filter((product) => product.nom.toLowerCase().includes(searchTerm))
         displayProducts(filteredProducts)
       })
     }
@@ -310,14 +428,14 @@ document.addEventListener("DOMContentLoaded", () => {
         let filteredProducts
 
         if (filterValue === "prix") {
-          filteredProducts = [...products].sort((a, b) => a.prix_unitaire - b.prix_unitaire)
+          filteredProducts = [...allProducts].sort((a, b) => a.prix_unitaire - b.prix_unitaire)
         } else if (filterValue === "categorie") {
           const selectedCategory = document.getElementById("categorie").value
           filteredProducts = selectedCategory
-            ? products.filter((product) => product.categorie === selectedCategory)
-            : products
+            ? allProducts.filter((product) => product.categorie === selectedCategory)
+            : allProducts
         } else {
-          filteredProducts = products
+          filteredProducts = allProducts
         }
         displayProducts(filteredProducts)
       })
@@ -341,10 +459,15 @@ document.addEventListener("DOMContentLoaded", () => {
       categorySelect.addEventListener("change", () => {
         const selectedCategory = categorySelect.value
         const filteredProducts = selectedCategory
-          ? products.filter((product) => product.categorie === selectedCategory)
-          : products
+          ? allProducts.filter((product) => product.categorie === selectedCategory)
+          : allProducts
         displayProducts(filteredProducts)
       })
     }
+
+    // Charger tous les produits pour la recherche et le filtrage
+    getProducts(1, 1000).then(({ products }) => {
+      allProducts = products
+    })
   })
 })

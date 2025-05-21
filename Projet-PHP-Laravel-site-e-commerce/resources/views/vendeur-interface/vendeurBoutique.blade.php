@@ -73,7 +73,7 @@
       </div>
        </div>
     </form>
-    
+
     <!-- End Hero Section -->
 
     <!-- Start Product Table Section -->
@@ -117,6 +117,11 @@
               @endforeach
               </tbody>
             </table>
+
+            <!-- Pagination Links -->
+            <div class="d-flex justify-content-center mt-4">
+              {{ $produits->links() }}
+            </div>
           </div>
         </form>
       </div>

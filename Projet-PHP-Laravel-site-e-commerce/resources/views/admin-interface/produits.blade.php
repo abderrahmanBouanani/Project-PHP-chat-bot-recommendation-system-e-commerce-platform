@@ -66,41 +66,55 @@
           @endif
         </tbody>
       </table>
+
+      <!-- Pagination Links (pour l'affichage initial) -->
+      <div class="d-flex justify-content-center mt-4">
+        {{ $produits->links() }}
+      </div>
+
+      <!-- Conteneur pour la pagination dynamique (pour les résultats de recherche) -->
+      <div class="pagination-container d-flex justify-content-center mt-4"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         // Fonctions de filtrage et tri
-        function searchProducts() {
+        let currentPage = 1;
+
+        function searchProducts(page = 1) {
+          currentPage = page;
           const searchTerm = document.getElementById("searchInput").value.toLowerCase();
           const categoryFilter = document.getElementById("categoryFilter").value;
-          
-          // Appel à l'API de recherche
-          fetch(`/api/admin/produit/search?search=${searchTerm}&category=${categoryFilter}&sort=${document.getElementById("sortSelect").value}`)
+
+          // Appel à l'API de recherche avec pagination
+          fetch(`/api/admin/produit/search?search=${searchTerm}&category=${categoryFilter}&sort=${document.getElementById("sortSelect").value}&page=${page}`)
             .then(response => response.json())
             .then(data => {
               displayProducts(data);
+              updatePagination(data);
             })
             .catch(error => {
               console.error('Error searching products:', error);
             });
         }
 
-        function displayProducts(products) {
+        function displayProducts(data) {
           const productsList = document.getElementById("productsList");
           productsList.innerHTML = "";
-          
+
+          const products = data.data || [];
+
           if (products.length === 0) {
             productsList.innerHTML = `<tr><td colspan="5" class="text-center">Aucun produit trouvé</td></tr>`;
             return;
           }
-          
+
           products.forEach(product => {
-            const imageUrl = product.image 
-              ? `{{ asset('storage') }}/${product.image}` 
+            const imageUrl = product.image
+              ? `{{ asset('storage') }}/${product.image}`
               : `{{ asset('images/product-placeholder.png') }}`;
-              
+
             const row = `
               <tr>
                 <td><img src="${imageUrl}" alt="${product.nom}" class="product-image" style="width: 50px; height: auto;"></td>
@@ -111,6 +125,65 @@
               </tr>
             `;
             productsList.insertAdjacentHTML("beforeend", row);
+          });
+        }
+
+        function updatePagination(data) {
+          const paginationContainer = document.querySelector('.pagination-container');
+          if (!paginationContainer) return;
+
+          const { current_page, last_page, total } = data;
+
+          if (last_page <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+          }
+
+          let paginationHtml = '<nav aria-label="Pagination"><ul class="pagination">';
+
+          // Bouton précédent
+          paginationHtml += `
+            <li class="page-item ${current_page === 1 ? 'disabled' : ''}">
+              <a class="page-link" href="#" data-page="${current_page - 1}" aria-label="Précédent">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+          `;
+
+          // Pages numérotées
+          const startPage = Math.max(1, current_page - 2);
+          const endPage = Math.min(last_page, current_page + 2);
+
+          for (let i = startPage; i <= endPage; i++) {
+            paginationHtml += `
+              <li class="page-item ${i === current_page ? 'active' : ''}">
+                <a class="page-link" href="#" data-page="${i}">${i}</a>
+              </li>
+            `;
+          }
+
+          // Bouton suivant
+          paginationHtml += `
+            <li class="page-item ${current_page === last_page ? 'disabled' : ''}">
+              <a class="page-link" href="#" data-page="${current_page + 1}" aria-label="Suivant">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          `;
+
+          paginationHtml += '</ul></nav>';
+
+          paginationContainer.innerHTML = paginationHtml;
+
+          // Ajouter les écouteurs d'événements pour les liens de pagination
+          document.querySelectorAll('.pagination .page-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+              e.preventDefault();
+              const page = parseInt(this.getAttribute('data-page'));
+              if (page && page !== current_page && page > 0 && page <= last_page) {
+                searchProducts(page);
+              }
+            });
           });
         }
 

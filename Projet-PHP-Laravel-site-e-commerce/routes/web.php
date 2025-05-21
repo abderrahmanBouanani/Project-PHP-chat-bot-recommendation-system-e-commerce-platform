@@ -146,6 +146,10 @@ Route::get('/client/checkout', function () {
     return view('client-interface.checkout',['page' => 'ShopAll - Checkout']);
 });
 
+// Routes pour les commandes client
+Route::get('/client/commandes', [App\Http\Controllers\ClientOrderController::class, 'index'])->name('client.commandes');
+Route::get('/client/commandes/{id}', [App\Http\Controllers\ClientOrderController::class, 'show'])->name('client.commande.show');
+
 
 //Routes pour l'admin
 Route::prefix('admin')->group(function () {

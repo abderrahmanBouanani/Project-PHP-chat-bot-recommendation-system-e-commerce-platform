@@ -20,6 +20,7 @@
     <link href="{{ asset('assets/css/tiny-slider.css')}}" rel="stylesheet" />
     <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/shop.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
   </head>
 

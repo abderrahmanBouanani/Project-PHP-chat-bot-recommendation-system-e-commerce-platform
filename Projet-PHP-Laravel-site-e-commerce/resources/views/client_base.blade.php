@@ -8,7 +8,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <link rel="shortcut icon" href="{{ asset('images/favicon.png')}}" />
-    
+
 
     <meta name="description" content="" />
     <meta name="keywords" content="bootstrap, bootstrap4" />
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/shopspe.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
     <link href="{{ asset('assets/css/chatbot.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
 
     <style>
@@ -101,6 +102,9 @@
     </li>
     <li class="nav-item {{ request()->is('client_contact') ? 'active' : '' }}">
         <a class="nav-link" href="{{ url('/client_contact') }}">Contact</a>
+    </li>
+    <li class="nav-item {{ request()->is('client/commandes*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('client.commandes') }}">Mes Commandes</a>
     </li>
 </ul>
 
@@ -254,7 +258,7 @@
                   document.write(new Date().getFullYear());
                 </script>
                 . Tous droits réservés. &mdash; Conçu avec
-                <span class="text-danger">❤</span> 
+                <span class="text-danger">❤</span>
               </p>
             </div>
 
@@ -280,20 +284,20 @@
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/tiny-slider.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    
+
     <!-- Page-specific scripts -->
     @if(request()->is('client_shop'))
     <script src="{{ asset('assets/js/boutique.js') }}"></script>
     @endif
-    
+
     @if(request()->is('client_cart'))
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     @endif
-    
+
     @if(request()->is('client/checkout'))
     <script src="{{ asset('assets/js/checkout.js') }}"></script>
     @endif
-    
+
     @if(request()->is('client_contact'))
     <script src="{{ asset('assets/js/contact.js') }}"></script>
     @endif

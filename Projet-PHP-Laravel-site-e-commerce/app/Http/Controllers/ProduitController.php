@@ -13,8 +13,8 @@ class ProduitController extends Controller
      * @return \Illuminate\View\View
      */
     public function index()
-    {        
-        $produits = Produit::where('vendeur_id', session('user')['id'])->get();
+    {
+        $produits = Produit::where('vendeur_id', session('user')['id'])->paginate(8);
         return view('vendeur-interface.vendeurBoutique', compact('produits'),['page' => 'ShopAll - Ma Boutique']);
     }
 
@@ -24,7 +24,7 @@ class ProduitController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-   
+
     //Création
      public function store(Request $request)
      {
@@ -32,7 +32,7 @@ class ProduitController extends Controller
          if (!session('user') || session('user')['type'] !== 'vendeur') {
              return redirect()->back()->with('error', 'Accès non autorisé.');
          }
-     
+
          // Validation des données du formulaire
          $request->validate([
              'nom' => 'required|string|max:255',
@@ -41,7 +41,7 @@ class ProduitController extends Controller
              'description' => 'required|string',
              'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp,bmp|max:2048'
          ]);
-     
+
          // Création d'un nouveau produit
          $produit = new Produit();
          $produit->nom = $request->input('nom');
@@ -49,21 +49,21 @@ class ProduitController extends Controller
          $produit->categorie = $request->input('categorie');
          $produit->description = $request->input('description');
          $produit->quantite = $request->input('quantite');
-     
+
          // Gestion de l'image (si présente)
          if ($request->hasFile('image')) {
              // Stocke l'image dans le dossier 'storage/app/public/images' et récupère le chemin
              $imagePath = $request->file('image')->store('images', 'public');
              $produit->image = $imagePath;
          }
-     
+
          // Sauvegarde du produit dans la base de données
          $produit->vendeur_id = session('user')['id'];
          $produit->save();
-     
+
          return redirect()->back()->with('success', 'Produit ajouté avec succès !');
      }
-     
+
 
     //Suppression
     public function destroy($id){
@@ -73,12 +73,20 @@ class ProduitController extends Controller
         return redirect()->back()->with('success', 'Produit supprimé avec succès.');
     }
     //Récuperation
-    public function getProduits(){
+    public function getProduits(Request $request){
         try {
-            $produits = Produit::with(['vendeur'])->get();
+            $perPage = $request->input('limit', 8);
+            $page = $request->input('page', 1);
+
+            $produits = Produit::with(['vendeur'])->paginate($perPage, ['*'], 'page', $page);
+
             return response()->json([
                 'success' => true,
-                'data' => $produits
+                'data' => $produits->items(),
+                'total' => $produits->total(),
+                'current_page' => $produits->currentPage(),
+                'per_page' => $produits->perPage(),
+                'last_page' => $produits->lastPage()
             ]);
         } catch (\Exception $e) {
             \Log::error('Erreur lors du chargement des produits: ' . $e->getMessage());

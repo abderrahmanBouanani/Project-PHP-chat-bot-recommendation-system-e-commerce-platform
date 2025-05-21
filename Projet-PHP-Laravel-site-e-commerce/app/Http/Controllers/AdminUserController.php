@@ -12,8 +12,8 @@ class AdminUserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        
+        $users = User::paginate(8);
+
         return view('admin-interface.Utilisateur', [
             'page' => 'ShopAll - Utilisateurs',
             'users' => $users
@@ -27,9 +27,9 @@ class AdminUserController extends Controller
     {
         $searchTerm = $request->input('search', '');
         $typeFilter = $request->input('type', 'all');
-        
+
         $query = User::query();
-        
+
         // Recherche par nom, email ou téléphone
         if (!empty($searchTerm)) {
             $query->where(function($q) use ($searchTerm) {
@@ -39,15 +39,23 @@ class AdminUserController extends Controller
                   ->orWhere('telephone', 'like', "%{$searchTerm}%");
             });
         }
-        
+
         // Filtrer par type
         if ($typeFilter !== 'all') {
             $query->where('type', $typeFilter);
         }
-        
-        $users = $query->orderBy('nom')->get();
-        
-        return response()->json($users);
+
+        $perPage = 8;
+
+        $users = $query->orderBy('nom')->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+
+        return response()->json([
+            'data' => $users->items(),
+            'total' => $users->total(),
+            'current_page' => $users->currentPage(),
+            'per_page' => $users->perPage(),
+            'last_page' => $users->lastPage()
+        ]);
     }
 
     /**
@@ -56,13 +64,13 @@ class AdminUserController extends Controller
     public function show($id)
     {
         $user = User::findOrFail($id);
-        
+
         return view('admin-interface.user-details', [
             'page' => 'ShopAll - Détails utilisateur',
             'user' => $user
         ]);
     }
-    
+
     /**
      * Supprime un utilisateur
      */
@@ -70,7 +78,7 @@ class AdminUserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-        
+
         return redirect()->back()->with('success', 'Utilisateur supprimé avec succès');
     }
 }

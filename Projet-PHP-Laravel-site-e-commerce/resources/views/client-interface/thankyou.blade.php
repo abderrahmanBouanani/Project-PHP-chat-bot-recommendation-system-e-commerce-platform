@@ -49,8 +49,12 @@
               @endif
             </p>
             <p>
-              <a href="{{url('/client_shop')}}" class="btn btn-sm btn-outline-black"
-                >Back to shop</a>
+              <a href="{{ route('client.commandes') }}" class="btn btn-sm btn-primary me-2">
+                Voir mes commandes
+              </a>
+              <a href="{{url('/client_shop')}}" class="btn btn-sm btn-outline-black">
+                Retour à la boutique
+              </a>
             </p>
           </div>
         </div>

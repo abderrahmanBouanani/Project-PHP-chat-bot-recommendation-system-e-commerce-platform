@@ -15,8 +15,8 @@ class AdminOrderController extends Controller
     */
    public function index()
    {
-       $commandes = Commande::with(['client'])->get();
-       
+       $commandes = Commande::with(['client'])->paginate(8);
+
        return view('admin-interface.commandes', [
            'page' => 'ShopAll - Commandes',
            'commandes' => $commandes
@@ -43,42 +43,42 @@ class AdminOrderController extends Controller
            ], 500);
        }
    }
-   
+
    /**
     * Affiche les détails d'une commande spécifique
     */
    public function show($id)
    {
        $commande = Commande::with(['client', 'facturation', 'paiement'])->findOrFail($id);
-       
+
        // Récupérer les produits de la commande sans utiliser les timestamps
        $produits = DB::table('commande_produit')
            ->join('produits', 'commande_produit.produit_id', '=', 'produits.id')
            ->where('commande_produit.commande_id', $id)
            ->select('produits.*', 'commande_produit.quantite')
            ->get();
-       
+
        return view('admin-interface.commande-details', [
            'page' => 'ShopAll - Détails commande',
            'commande' => $commande,
            'produits' => $produits
        ]);
    }
-   
+
    /**
     * Met à jour le statut d'une commande
     */
    public function updateStatus(Request $request, $id)
    {
        $commande = Commande::findOrFail($id);
-       
+
        // Mettre à jour le statut
        $commande->statut = $request->input('statut');
        $commande->save();
-       
+
        return redirect()->back()->with('success', 'Statut de la commande mis à jour avec succès');
    }
-   
+
    /**
     * Recherche des commandes en fonction des critères
     */
@@ -87,9 +87,9 @@ class AdminOrderController extends Controller
        $searchTerm = $request->input('search', '');
        $sort = $request->input('sort', 'date-desc');
        $status = $request->input('status', 'all');
-       
+
        $query = Commande::with(['client']);
-       
+
        // Recherche par ID ou nom du client
        if (!empty($searchTerm)) {
            if (is_numeric($searchTerm)) {
@@ -101,12 +101,12 @@ class AdminOrderController extends Controller
                });
            }
        }
-       
+
        // Filtrer par statut
        if ($status !== 'all') {
            $query->where('statut', $status);
        }
-       
+
        // Appliquer le tri
        switch ($sort) {
            case 'date-asc':
@@ -122,9 +122,17 @@ class AdminOrderController extends Controller
                $query->orderBy('created_at', 'desc');
                break;
        }
-       
-       $commandes = $query->get();
-       
-       return response()->json($commandes);
+
+       $perPage = 8;
+
+       $commandes = $query->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+
+       return response()->json([
+           'data' => $commandes->items(),
+           'total' => $commandes->total(),
+           'current_page' => $commandes->currentPage(),
+           'per_page' => $commandes->perPage(),
+           'last_page' => $commandes->lastPage()
+       ]);
    }
 }

@@ -1,0 +1,146 @@
+/* Styles personnalisés pour la pagination */
+
+/* Conteneur de pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+/* Éléments de pagination */
+.page-item {
+    margin: 0 3px;
+}
+
+/* Lien de pagination */
+.page-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    color: #2f2f2f !important;
+    background-color: #fff !important;
+    border: 2px solid #dce5e4 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    padding: 0 !important;
+    margin: 0 3px !important;
+    font-size: 14px !important;
+}
+
+/* Survol du lien de pagination */
+.page-link:hover {
+    background-color: #f9bf29 !important;
+    color: #2f2f2f !important;
+    border-color: #f9bf29 !important;
+}
+
+/* Page active */
+.page-item.active .page-link {
+    background-color: #3b5d50 !important;
+    color: #fff !important;
+    border-color: #3b5d50 !important;
+    z-index: 1 !important;
+}
+
+/* Page désactivée */
+.page-item.disabled .page-link {
+    color: #6a6a6a !important;
+    background-color: #f8f9fa !important;
+    border-color: #dce5e4 !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Flèches précédent/suivant */
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    line-height: 1 !important;
+}
+
+/* Pagination pour les résultats de recherche */
+.pagination-container .pagination {
+    margin-top: 1rem;
+}
+
+/* Style spécifique pour la pagination dans la boutique client */
+.product-section .pagination .page-link {
+    background-color: #fff;
+    color: #3b5d50;
+    border: 2px solid #dce5e4;
+}
+
+.product-section .pagination .page-item.active .page-link {
+    background-color: #3b5d50;
+    color: #fff;
+    border-color: #3b5d50;
+}
+
+.product-section .pagination .page-link:hover {
+    background-color: #f9bf29;
+    color: #2f2f2f;
+    border-color: #f9bf29;
+}
+
+/* Style pour la pagination dans l'interface admin */
+.admin-interface .pagination .page-link {
+    background-color: #fff;
+    color: #3b5d50;
+    border: 2px solid #dce5e4;
+}
+
+.admin-interface .pagination .page-item.active .page-link {
+    background-color: #3b5d50;
+    color: #fff;
+    border-color: #3b5d50;
+}
+
+.admin-interface .pagination .page-link:hover {
+    background-color: #f9bf29;
+    color: #2f2f2f;
+    border-color: #f9bf29;
+}
+
+/* Style pour la pagination dans l'interface vendeur */
+.vendeur-interface .pagination .page-link {
+    background-color: #fff;
+    color: #3b5d50;
+    border: 2px solid #dce5e4;
+}
+
+.vendeur-interface .pagination .page-item.active .page-link {
+    background-color: #3b5d50;
+    color: #fff;
+    border-color: #3b5d50;
+}
+
+.vendeur-interface .pagination .page-link:hover {
+    background-color: #f9bf29;
+    color: #2f2f2f;
+    border-color: #f9bf29;
+}
+
+/* Style pour la pagination dans l'interface livreur */
+.livreur-interface .pagination .page-link {
+    background-color: #fff;
+    color: #3b5d50;
+    border: 2px solid #dce5e4;
+}
+
+.livreur-interface .pagination .page-item.active .page-link {
+    background-color: #3b5d50;
+    color: #fff;
+    border-color: #3b5d50;
+}
+
+.livreur-interface .pagination .page-link:hover {
+    background-color: #f9bf29;
+    color: #2f2f2f;
+    border-color: #f9bf29;
+}

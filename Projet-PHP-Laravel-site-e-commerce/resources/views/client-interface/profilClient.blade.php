@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Informations utilisateur</title>
-    
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS Bundle with Popper -->
@@ -95,11 +95,14 @@
         <p><strong>Email :</strong> <span id="user-email">{{ $user['email'] }}</span></p>
         <p><strong>Téléphone :</strong> <span id="user-telephone">{{ $user['telephone'] }}</span></p>
         <p><strong>Type d'utilisateur :</strong> {{ $user['type'] }}</p>
-        
+
         <div class="text-center mt-3">
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
             <i class="fas fa-edit me-2"></i>Modifier mes informations
           </button>
+          <a href="{{ route('client.commandes') }}" class="btn btn-success ms-2">
+            <i class="fas fa-shopping-bag me-2"></i>Voir mes commandes
+          </a>
         </div>
       @else
         <p class="text-center">Aucune information disponible. Veuillez vous connecter d'abord.</p>
@@ -110,7 +113,7 @@
         </div>
       @endif
     </div>
-    
+
     <!-- Modal d'édition du profil -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -125,22 +128,22 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="modal-body">
               <div id="formErrors" class="alert alert-danger d-none"></div>
-              
+
               <div class="mb-3">
                 <label for="edit-nom" class="form-label">Nom</label>
                 <input type="text" class="form-control" id="edit-nom" name="nom" value="{{ $user['nom'] ?? '' }}" required>
               </div>
-              
+
               <div class="mb-3">
                 <label for="edit-prenom" class="form-label">Prénom</label>
                 <input type="text" class="form-control" id="edit-prenom" name="prenom" value="{{ $user['prenom'] ?? '' }}" required>
               </div>
-              
+
               <div class="mb-3">
                 <label for="edit-email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="edit-email" name="email" value="{{ $user['email'] ?? '' }}" required>
               </div>
-              
+
               <div class="mb-3">
                 <label for="edit-telephone" class="form-label">Téléphone</label>
                 <input type="text" class="form-control" id="edit-telephone" name="telephone" value="{{ $user['telephone'] ?? '' }}" required>
@@ -166,19 +169,19 @@ $(document).ready(function() {
   // Gérer la soumission du formulaire
   $('#editProfileForm').on('submit', function(e) {
     e.preventDefault();
-    
+
     // Cacher les erreurs précédentes
     $('#formErrors').addClass('d-none').html('');
-    
+
     // Désactiver le bouton de soumission
     const submitBtn = $(this).find('button[type="submit"]');
     const originalBtnText = submitBtn.html();
     submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...');
-    
+
     // Récupérer les données du formulaire
     const formData = new FormData(document.getElementById('editProfileForm'));
     const formValues = Object.fromEntries(formData.entries());
-    
+
     // Envoyer la requête AJAX
     $.ajax({
       url: $(this).attr('action'),
@@ -194,10 +197,10 @@ $(document).ready(function() {
           $('#user-prenom').text(formValues.prenom);
           $('#user-email').text(formValues.email);
           $('#user-telephone').text(formValues.telephone);
-          
+
           // Fermer la modale
           $('#editProfileModal').modal('hide');
-          
+
           // Afficher une notification de succès avec SweetAlert2
           Swal.fire({
             icon: 'success',
@@ -213,7 +216,7 @@ $(document).ready(function() {
         } else {
           // Afficher les erreurs de validation avec SweetAlert2
           let errorMessage = 'Une erreur est survenue lors de la mise à jour du profil.';
-          
+
           if (response.errors) {
             errorMessage = '';
             $.each(response.errors, function(key, value) {
@@ -222,7 +225,7 @@ $(document).ready(function() {
           } else if (response.message) {
             errorMessage = response.message;
           }
-          
+
           Swal.fire({
             icon: 'error',
             title: 'Erreur',
@@ -233,11 +236,11 @@ $(document).ready(function() {
       },
       error: function(xhr) {
         let errorMessage = 'Une erreur est survenue lors de la communication avec le serveur.';
-        
+
         if (xhr.responseJSON && xhr.responseJSON.message) {
           errorMessage = xhr.responseJSON.message;
         }
-        
+
         Swal.fire({
           icon: 'error',
           title: 'Erreur',
@@ -251,7 +254,7 @@ $(document).ready(function() {
       }
     });
   });
-  
+
   // Réinitialiser le formulaire quand la modale est fermée
   $('#editProfileModal').on('hidden.bs.modal', function () {
     $('#formErrors').addClass('d-none').html('');

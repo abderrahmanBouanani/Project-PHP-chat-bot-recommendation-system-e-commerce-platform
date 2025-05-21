@@ -14,8 +14,8 @@ class LivreurController extends Controller
         // Récupérer toutes les commandes, y compris celles qui sont livrées
         $commandes = Commande::whereIn('statut', ['Confirmée', 'En cours de livraison', 'Livrée'])
             ->orderBy('created_at', 'desc')
-            ->get();
-            
+            ->paginate(8);
+
         return view('livreur-interface.livraisons', [
             'commandes' => $commandes
         ]);
@@ -29,18 +29,18 @@ class LivreurController extends Controller
             if ($commande->statut === 'Confirmée') {
                 $commande->statut = 'En cours de livraison';
                 $commande->save();
-                
+
                 // Log the status change
                 \Log::info("Commande {$id} acceptée par le livreur, nouveau statut: En cours de livraison");
-                
+
                 return response()->json([
-                    'success' => true, 
+                    'success' => true,
                     'message' => 'Commande acceptée.',
                     'newStatus' => 'En cours de livraison'
                 ]);
             }
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Commande non disponible pour acceptation. Statut actuel: ' . $commande->statut
             ], 400);
         } catch (\Exception $e) {
@@ -60,18 +60,18 @@ class LivreurController extends Controller
             if ($commande->statut === 'En cours de livraison') {
                 $commande->statut = 'Livrée';
                 $commande->save();
-                
+
                 // Log the status change
                 \Log::info("Commande {$id} marquée comme livrée, nouveau statut: Livrée");
-                
+
                 return response()->json([
-                    'success' => true, 
+                    'success' => true,
                     'message' => 'Commande livrée.',
                     'newStatus' => 'Livrée'
                 ]);
             }
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Commande non disponible pour livraison. Statut actuel: ' . $commande->statut
             ], 400);
         } catch (\Exception $e) {
@@ -91,7 +91,7 @@ class LivreurController extends Controller
         ]);
 
         $commande = Commande::findOrFail($id);
-        
+
         // Vérifier les transitions de statut valides
         $validTransitions = [
             'Confirmée' => ['En cours de livraison'],
@@ -211,9 +211,9 @@ class LivreurController extends Controller
     {
         $searchTerm = $request->input('search', '');
         $statusFilter = $request->input('status', 'all');
-        
+
         $query = Commande::query();
-        
+
         // Recherche par ID ou adresse
         if (!empty($searchTerm)) {
             if (is_numeric($searchTerm)) {
@@ -222,14 +222,23 @@ class LivreurController extends Controller
                 $query->where('adresse', 'like', "%{$searchTerm}%");
             }
         }
-        
+
         // Filtrer par statut
         if ($statusFilter !== 'all') {
             $query->where('statut', $statusFilter);
         }
-        
-        $commandes = $query->orderBy('created_at', 'desc')->get();
-        
-        return response()->json($commandes);
+
+        $perPage = 8;
+
+        $commandes = $query->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+
+        return response()->json([
+            'data' => $commandes->items(),
+            'total' => $commandes->total(),
+            'current_page' => $commandes->currentPage(),
+            'per_page' => $commandes->perPage(),
+            'last_page' => $commandes->lastPage()
+        ]);
     }
 }

@@ -107,6 +107,11 @@
           @endif
         </tbody>
       </table>
+
+      <!-- Pagination Links -->
+      <div class="d-flex justify-content-center mt-4">
+        {{ $commandes->links() }}
+      </div>
     </div>
 
     <!-- Modal pour afficher les produits d'une commande -->
@@ -149,7 +154,7 @@
         document.getElementById("searchButton").addEventListener("click", filterOrders);
         document.getElementById("sortSelect").addEventListener("change", filterOrders);
         document.getElementById("statusFilter").addEventListener("change", filterOrders);
-        
+
         // Ajouter des écouteurs d'événements pour les boutons "Voir les produits"
         document.querySelectorAll('.show-products').forEach(button => {
           button.addEventListener('click', function() {
@@ -163,7 +168,7 @@
         const searchTerm = document.getElementById("searchInput").value;
         const sortValue = document.getElementById("sortSelect").value;
         const statusFilter = document.getElementById("statusFilter").value;
-        
+
         // Appel à l'API de recherche
         fetch(`/api/admin/commande/search?search=${searchTerm}&sort=${sortValue}&status=${statusFilter}`)
           .then(response => response.json())
@@ -178,12 +183,12 @@
       function displayOrders(orders) {
         const ordersList = document.getElementById("ordersList");
         ordersList.innerHTML = "";
-        
+
         if (orders.length === 0) {
           ordersList.innerHTML = `<tr><td colspan="7" class="text-center">Aucune commande trouvée</td></tr>`;
           return;
         }
-        
+
         orders.forEach(order => {
           const row = `
             <tr>
@@ -263,7 +268,7 @@
           </div>
           <p>Chargement des produits...</p>
         </td></tr>`;
-        
+
         // Show the modal immediately with loading indicator
         const modal = new bootstrap.Modal(document.getElementById("productsModal"));
         modal.show();
@@ -283,9 +288,9 @@
           })
           .then(data => {
             console.log('Products data:', data); // Debug log
-            
+
             modalProductsList.innerHTML = "";
-            
+
             if (!data || data.length === 0) {
               modalProductsList.innerHTML = `<tr><td colspan="4" class="text-center">Aucun produit dans cette commande</td></tr>`;
             } else {
@@ -295,7 +300,7 @@
                 const prix = parseFloat(item.prix_unitaire || 0);
                 const quantite = parseInt(item.quantite || 0);
                 const total = prix * quantite;
-                
+
                 const row = `
                   <tr>
                     <td>${item.nom || 'Produit inconnu'}</td>

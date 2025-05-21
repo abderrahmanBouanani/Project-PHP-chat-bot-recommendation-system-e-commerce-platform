@@ -81,6 +81,11 @@
         @endforeach
         </tbody>
       </table>
+
+      <!-- Pagination Links -->
+      <div class="d-flex justify-content-center mt-4">
+        {{ $commandes->links() }}
+      </div>
     </div>
 
     <!-- Modal pour afficher les produits d'une commande -->
@@ -121,7 +126,7 @@
         document.getElementById("searchButton").addEventListener("click", filterDeliveries);
         document.getElementById("statusFilter").addEventListener("change", filterDeliveries);
         document.getElementById("sortSelect").addEventListener("change", filterDeliveries);
-        
+
         // Ajouter des écouteurs d'événements pour les boutons "Voir les produits"
         document.querySelectorAll('.show-products').forEach(button => {
           button.addEventListener('click', function() {
@@ -150,7 +155,7 @@
         const searchTerm = document.getElementById("searchInput").value;
         const statusFilter = document.getElementById("statusFilter").value;
         const sortValue = document.getElementById("sortSelect").value;
-        
+
         // Appel à l'API de recherche
         fetch(`/api/livreur/livraison/search?search=${searchTerm}&status=${statusFilter}&sort=${sortValue}`)
           .then(response => response.json())
@@ -165,12 +170,12 @@
       function displayDeliveries(deliveries) {
         const deliveriesList = document.getElementById("deliveriesList");
         deliveriesList.innerHTML = "";
-        
+
         if (deliveries.length === 0) {
           deliveriesList.innerHTML = `<tr><td colspan="5" class="text-center">Aucune livraison trouvée</td></tr>`;
           return;
         }
-        
+
         deliveries.forEach(delivery => {
           const row = `
             <tr class="${delivery.statut === 'Livrée' ? 'table-success' : ''}">
@@ -272,7 +277,7 @@
           .then(data => {
             const modalProductsList = document.getElementById("modalProductsList");
             modalProductsList.innerHTML = "";
-            
+
             if (data.length === 0) {
               modalProductsList.innerHTML = `<tr><td colspan="4" class="text-center">Aucun produit dans cette commande</td></tr>`;
             } else {
@@ -288,7 +293,7 @@
                 modalProductsList.insertAdjacentHTML("beforeend", row);
               });
             }
-            
+
             const modal = new bootstrap.Modal(document.getElementById("productsModal"));
             modal.show();
           })

@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/adminproduits.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/adminusers.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/admincommandes.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
 
     @yield('head')
   </head>
@@ -55,6 +56,6 @@
 
     </div>
     @yield('content')
-    
+
   </body>
 </html>

@@ -3,7 +3,7 @@
 @section('content') <!-- Ici commence le contenu spécifique à cette page -->
 <div class="main-content">
       <h1 class="h3 mb-4" id="pageTitle">{{ $cardTitle ?? 'Liste des Utilisateurs' }}</h1>
-      
+
       <!-- Barre de recherche et filtres -->
       <div class="search-filter-container mb-4">
         <div class="row g-3">
@@ -74,6 +74,11 @@
                 @endif
               </tbody>
             </table>
+
+            <!-- Pagination Links -->
+            <div class="d-flex justify-content-center mt-4">
+              {{ $users->links() }}
+            </div>
           </div>
         </div>
       </div>
@@ -88,7 +93,7 @@
       function filterUsers() {
         const searchTerm = document.getElementById("searchInput").value;
         const typeFilter = document.getElementById("typeFilter").value;
-        
+
         // Appel à l'API de recherche
         fetch(`/api/admin/users/search?search=${searchTerm}&type=${typeFilter}`)
           .then(response => response.json())
@@ -103,15 +108,15 @@
       function displayUsers(users) {
         const clientTable = document.getElementById("clientTable");
         const clientCount = document.getElementById("clientCount");
-        
+
         clientTable.innerHTML = "";
         clientCount.textContent = `Total : ${users.length}`;
-        
+
         if (users.length === 0) {
           clientTable.innerHTML = `<tr><td colspan="5" class="text-center">Aucun utilisateur trouvé</td></tr>`;
           return;
         }
-        
+
         users.forEach(user => {
           const row = `
             <tr>
