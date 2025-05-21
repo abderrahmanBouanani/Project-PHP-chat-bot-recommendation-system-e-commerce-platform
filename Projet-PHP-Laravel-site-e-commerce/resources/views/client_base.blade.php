@@ -26,6 +26,42 @@
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
     <link href="{{ asset('assets/css/chatbot.css')}}" rel="stylesheet" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
+
+    <style>
+  .position-relative {
+    position: relative !important;
+  }
+  .position-absolute {
+    position: absolute !important;
+  }
+  .top-0 {
+    top: 0 !important;
+  }
+  .start-100 {
+    left: 100% !important;
+  }
+  .translate-middle {
+    transform: translate(-50%, -50%) !important;
+  }
+  .badge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+  }
+  .badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+  }
+  .rounded-pill {
+    border-radius: 50rem !important;
+  }
+</style>
   </head>
 
   <body>
@@ -77,10 +113,13 @@
               /></a>
             </li>
             <li>
-              <a class="nav-link" href="{{url('/client_cart')}}"
-                ><img src="{{ asset('images/cart.svg') }}"
-              /></a>
-            </li>
+  <a class="nav-link position-relative" href="{{url('/client_cart')}}">
+    <img src="{{ asset('images/cart.svg') }}" />
+    <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; display: none;">
+      0
+    </span>
+  </a>
+</li>
             <li>
               <a class="nav-link" href="{{url('/')}}"
                 ><img
@@ -259,5 +298,6 @@
     <script src="{{ asset('assets/js/contact.js') }}"></script>
     @endif
     <script src="{{ asset('assets/js/chatbot.js') }}"></script>
+    <script src="{{ asset('assets/js/cart-badge.js') }}"></script>
   </body>
 </html>
