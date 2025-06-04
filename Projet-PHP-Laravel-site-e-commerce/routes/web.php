@@ -28,6 +28,9 @@ Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 // Gérer l'envoi du formulaire de connexion
 Route::post('/login', [LoginController::class, 'authenticate']);
 
+// Gérer la déconnexion
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 // Redirections post-login
 Route::get('/client_home', function () {
     return view('client-interface.index');

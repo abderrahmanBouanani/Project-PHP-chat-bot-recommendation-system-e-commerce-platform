@@ -10,6 +10,19 @@ class AdminUserController extends Controller
     /**
      * Affiche la liste des utilisateurs
      */
+
+     protected function isReadOnly()
+     {
+         return !session()->has('user');
+     }
+
+     protected function checkEditRights()
+     {
+         if ($this->isReadOnly()) {
+             return redirect()->back()->with('error', 'Action non autorisée en mode lecture seule. Veuillez vous connecter.');
+         }
+         return null;
+     } 
     public function index()
     {
         $users = User::paginate(8);
@@ -76,6 +89,11 @@ class AdminUserController extends Controller
      */
     public function destroy($id)
     {
+        // Vérifier les droits d'édition
+       $check = $this->checkEditRights();
+       if ($check) {
+           return $check;
+       }
         $user = User::findOrFail($id);
         $user->delete();
 

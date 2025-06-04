@@ -7,7 +7,19 @@ use App\Models\Commande;
 use Illuminate\Support\Facades\DB;
 
 class LivreurController extends Controller
-{
+{   
+    protected function isReadOnly()
+     {
+         return !session()->has('user');
+     }
+
+     protected function checkEditRights()
+     {
+         if ($this->isReadOnly()) {
+             return redirect()->back()->with('error', 'Action non autorisée en mode lecture seule. Veuillez vous connecter.');
+         }
+         return null;
+     } 
     // Affiche la liste des commandes à livrer pour le livreur
     public function index()
     {
@@ -25,6 +37,11 @@ class LivreurController extends Controller
     public function accepter($id)
     {
         try {
+             // Vérifier les droits d'édition
+       $check = $this->checkEditRights();
+       if ($check) {
+           return $check;
+       }
             $commande = Commande::findOrFail($id);
             if ($commande->statut === 'Confirmée') {
                 $commande->statut = 'En cours de livraison';
@@ -56,6 +73,11 @@ class LivreurController extends Controller
     public function livree($id)
     {
         try {
+             // Vérifier les droits d'édition
+       $check = $this->checkEditRights();
+       if ($check) {
+           return $check;
+       }
             $commande = Commande::findOrFail($id);
             if ($commande->statut === 'En cours de livraison') {
                 $commande->statut = 'Livrée';

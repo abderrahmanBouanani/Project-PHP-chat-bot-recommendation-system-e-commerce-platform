@@ -21,8 +21,7 @@ class Commande extends Model
    public function produits()
    {
        return $this->belongsToMany(Produit::class, 'commande_produit')
-                   ->withPivot('quantite')
-                   ->withTimestamps(false);
+                   ->withPivot('quantite', 'created_at', 'updated_at');
    }
 
    public function paiement()

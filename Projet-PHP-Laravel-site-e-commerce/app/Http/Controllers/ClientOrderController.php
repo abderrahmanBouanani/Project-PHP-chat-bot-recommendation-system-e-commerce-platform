@@ -13,12 +13,18 @@ class ClientOrderController extends Controller
      */
     public function index()
     {
+        // Vérifier si l'utilisateur est connecté
+        if (!session('user') || !isset(session('user')['id'])) {
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à votre historique de commandes.');
+        }
+        
+        // Vérifier si l'utilisateur est un client
+        if (session('user')['type'] !== 'client') {
+            return redirect('/')->with('error', 'Accès réservé aux clients.');
+        }
+        
         // Récupérer l'ID du client connecté
         $clientId = session('user')['id'];
-        
-        if (!$clientId) {
-            return redirect('/login')->with('error', 'Veuillez vous connecter pour accéder à votre historique de commandes.');
-        }
         
         // Récupérer les commandes du client avec pagination (8 par page)
         $commandes = Commande::where('client_id', $clientId)
@@ -36,12 +42,18 @@ class ClientOrderController extends Controller
      */
     public function show($id)
     {
+        // Vérifier si l'utilisateur est connecté
+        if (!session('user') || !isset(session('user')['id'])) {
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à vos commandes.');
+        }
+        
+        // Vérifier si l'utilisateur est un client
+        if (session('user')['type'] !== 'client') {
+            return redirect('/')->with('error', 'Accès réservé aux clients.');
+        }
+        
         // Récupérer l'ID du client connecté
         $clientId = session('user')['id'];
-        
-        if (!$clientId) {
-            return redirect('/login')->with('error', 'Veuillez vous connecter pour accéder à vos commandes.');
-        }
         
         // Récupérer la commande avec vérification qu'elle appartient bien au client
         $commande = Commande::where('id', $id)

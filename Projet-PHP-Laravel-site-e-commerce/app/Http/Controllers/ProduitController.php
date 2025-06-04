@@ -14,8 +14,18 @@ class ProduitController extends Controller
      */
     public function index()
     {
+        // Vérifier si l'utilisateur est connecté
+        if (!session('user') || !isset(session('user')['id'])) {
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+        
+        // Vérifier si l'utilisateur est un vendeur
+        if (session('user')['type'] !== 'vendeur') {
+            return redirect('/')->with('error', 'Accès réservé aux vendeurs.');
+        }
+        
         $produits = Produit::where('vendeur_id', session('user')['id'])->paginate(8);
-        return view('vendeur-interface.vendeurBoutique', compact('produits'),['page' => 'ShopAll - Ma Boutique']);
+        return view('vendeur-interface.vendeurBoutique', compact('produits'), ['page' => 'ShopAll - Ma Boutique']);
     }
 
     /**

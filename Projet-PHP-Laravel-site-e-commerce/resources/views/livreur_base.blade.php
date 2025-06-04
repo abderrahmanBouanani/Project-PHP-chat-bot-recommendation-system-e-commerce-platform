@@ -19,6 +19,11 @@
 
   </head>
   <body>
+    @if(!session('user'))
+    <div class="alert alert-warning mb-0 rounded-0 text-center" role="alert">
+        <i class="bi bi-eye-fill me-2"></i> Vous êtes en mode consultation seule. <a href="{{ route('login') }}" class="alert-link">Connectez-vous</a> pour accéder à toutes les fonctionnalités.
+    </div>
+    @endif
     <div class="sidebar">
     <nav class="custom-navbar">
     <a class="navbar-brand" href="{{ url('/livreur_livraison') }}">ShopAll<span>.</span></a>
@@ -33,10 +38,13 @@
         <i class="bi bi-person me-2"></i>
         Profile
     </a>
-    <a class="nav-link logout-link" href="{{ url('/') }}">
-        <img src="../images/logout2.png" alt="Déconnexion" style="height: 30px; width: 30px; margin-left: 15px"/>
-        <span class="sr-only">Déconnexion</span>
-    </a>
+    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+        @csrf
+        <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
+            <img src="../images/logout2.png" alt="Déconnexion" style="height: 30px; width: 30px; margin-left: 15px"/>
+            <span class="sr-only">Déconnexion</span>
+        </button>
+    </form>
 </nav>
 
     </div>

@@ -62,7 +62,20 @@ class LoginController extends Controller
             return redirect('/admin_home');
         }
 
-        return back()->with('error', 'Email ou mot de passe incorrect.');
+            return back()->with('error', 'Email ou mot de passe incorrect.');
     }
     
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect('/')->with('status', 'Vous avez été déconnecté avec succès.');
+    }
 }

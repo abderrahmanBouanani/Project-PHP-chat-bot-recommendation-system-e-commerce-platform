@@ -69,11 +69,16 @@
               /></a>
             </li>
             <li>
-              <a class="nav-link" href="{{url('/')}}"
-                ><img
-                  src="../images/logout2.png"
-                  style="height: 30px; width: 30px; margin-left: 15px"
-              /></a>
+              <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                @csrf
+                <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
+                  <img
+                    src="../images/logout2.png"
+                    style="height: 30px; width: 30px; margin-left: 15px"
+                    alt="Déconnexion"
+                  />
+                </button>
+              </form>
             </li>
           </ul>
         </div>

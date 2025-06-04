@@ -1,6 +1,14 @@
 @extends('vendeur_base') <!-- Cette ligne indique d'utiliser le layout de base -->
 
 @section('content') <!-- Ici commence le contenu spécifique à cette page -->
+@if(!session('user'))
+    <div class="container mt-5">
+        <div class="alert alert-warning text-center">
+            <h4>Veuillez vous connecter pour accéder à cette page</h4>
+            <a href="{{ url('/') }}" class="btn btn-primary mt-3">Se connecter</a>
+        </div>
+    </div>
+@else
  <!-- Début de la section Héros -->
  <div class="hero">
       <div class="container">
@@ -314,6 +322,7 @@
       </div>
     </div>
     <!-- Fin du Slider de Témoignages --> 
+@endif
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
 
 

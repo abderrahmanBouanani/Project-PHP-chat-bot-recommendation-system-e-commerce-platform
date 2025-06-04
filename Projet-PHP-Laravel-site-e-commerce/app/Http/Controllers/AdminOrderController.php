@@ -7,9 +7,32 @@ use App\Models\Commande;
 use App\Models\User;
 use App\Models\Produit;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class AdminOrderController extends Controller
 {
+    /**
+     * Vérifie si l'utilisateur est en mode lecture seule
+     *
+     * @return bool
+     */
+    protected function isReadOnly()
+    {
+        return !session()->has('user');
+    }
+    
+    /**
+     * Vérifie si l'utilisateur a les droits d'édition
+     *
+     * @return \Illuminate\Http\Response|null
+     */
+    protected function checkEditRights()
+    {
+        if ($this->isReadOnly()) {
+            return redirect()->back()->with('error', 'Action non autorisée en mode lecture seule. Veuillez vous connecter.');
+        }
+        return null;
+    }
    /**
     * Affiche la liste des commandes
     */
@@ -70,10 +93,58 @@ class AdminOrderController extends Controller
     */
    public function updateStatus(Request $request, $id)
    {
-       $commande = Commande::findOrFail($id);
+       // Vérifier les droits d'édition
+       $check = $this->checkEditRights();
+       if ($check) {
+           return $check;
+       }
 
-       // Mettre à jour le statut
-       $commande->statut = $request->input('statut');
+       $commande = Commande::with('produits')->findOrFail($id);
+       $nouveauStatut = $request->input('statut');
+
+       \Log::info('Statut actuel et nouveau statut', [
+           'ancien_statut' => $commande->statut, 
+           'nouveau_statut' => $nouveauStatut
+       ]);
+
+       // Si la commande est confirmée, on diminue les quantités des produits
+       if (strtolower($nouveauStatut) === 'confirmée' && strtolower($commande->statut) !== 'confirmée') {
+           \Log::info('Mise à jour des quantités des produits pour la commande', ['commande_id' => $id]);
+           
+           foreach ($commande->produits as $produit) {
+               // Récupérer la quantité commandée depuis la table pivot
+               $quantiteCommandee = $produit->pivot->quantite;
+               $ancienneQuantite = $produit->quantite;
+               
+               \Log::info('Avant mise à jour du produit', [
+                   'produit_id' => $produit->id,
+                   'ancienne_quantite' => $ancienneQuantite,
+                   'quantite_commandee' => $quantiteCommandee
+               ]);
+               
+               // Mettre à jour la quantité en stock
+               $produit->decrement('quantite', $quantiteCommandee);
+               
+               // Recharger le produit pour obtenir la nouvelle quantité
+               $produit->refresh();
+               
+               \Log::info('Après mise à jour du produit', [
+                   'produit_id' => $produit->id,
+                   'nouvelle_quantite' => $produit->quantite
+               ]);
+               
+               // Vérifier si le stock est épuisé
+               if ($produit->quantite < 0) {
+                   $produit->quantite = 0;
+                   $produit->save();
+                   $produit->refresh();
+                   \Log::info('Stock épuisé pour le produit', ['produit_id' => $produit->id]);
+               }
+           }
+       }
+
+       // Mettre à jour le statut de la commande
+       $commande->statut = $nouveauStatut;
        $commande->save();
 
        return redirect()->back()->with('success', 'Statut de la commande mis à jour avec succès');
@@ -134,5 +205,32 @@ class AdminOrderController extends Controller
            'per_page' => $commandes->perPage(),
            'last_page' => $commandes->lastPage()
        ]);
+   }
+   
+   /**
+    * Supprime une commande
+    *
+    * @param int $id
+    * @return \Illuminate\Http\Response
+    */
+   public function destroy($id)
+   {
+       // Vérifier les droits d'édition
+       $check = $this->checkEditRights();
+       if ($check) {
+           return $check;
+       }
+       
+       try {
+           $commande = Commande::findOrFail($id);
+           $commande->delete();
+           
+           return redirect()->route('admin.commandes.index')
+               ->with('success', 'Commande supprimée avec succès');
+               
+       } catch (\Exception $e) {
+           return redirect()->back()
+               ->with('error', 'Erreur lors de la suppression de la commande: ' . $e->getMessage());
+       }
    }
 }
