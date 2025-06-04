@@ -1,6 +1,6 @@
 /**
  * Boutique.js - Script principal pour la boutique en ligne
- * Gère l'affichage des produits, le suivi des clics et les interactions utilisateur
+ * VERSION CORRIGÉE - Affiche tous les produits avec gestion de stock
  */
 document.addEventListener("DOMContentLoaded", () => {
   // Fonction pour récupérer les produits depuis l'API avec pagination
@@ -9,15 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          // Retourner à la fois les données et les informations de pagination
           return {
             products: data.data || [],
             pagination: {
               total: data.total || 0,
               currentPage: data.current_page || 1,
               lastPage: data.last_page || 1,
-              perPage: data.per_page || 8
-            }
+              perPage: data.per_page || 8,
+            },
           }
         } else {
           console.error("Format de données invalide:", data)
@@ -30,7 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
       })
   }
 
-  // Fonction pour afficher les produits
+  // Fonction pour obtenir la quantité d'un produit (gestion des différents noms de champs)
+  function getProductQuantity(product) {
+    // Essayer différents noms de champs possibles
+    return product.quantite || product.quantity || product.stock || product.qte || 0
+  }
+
+  // Fonction pour afficher les produits AVEC GESTION DE STOCK CORRIGÉE
   function displayProducts(productsToDisplay, pagination = null) {
     const productList = document.getElementById("product-list")
     if (!productList) {
@@ -52,19 +57,55 @@ document.addEventListener("DOMContentLoaded", () => {
     productsToDisplay.forEach((product) => {
       const productElement = document.createElement("div")
       productElement.className = "col-12 col-md-4 col-lg-3 mb-5"
+
+      // LOGIQUE CORRIGÉE : Vérifier le stock avec gestion robuste
+      const quantity = getProductQuantity(product)
+      const isOutOfStock = quantity === 0
+      const isLowStock = quantity > 0 && quantity <= 5
+
+      console.log(`Produit: ${product.nom}, Quantité: ${quantity}, En rupture: ${isOutOfStock}`) // Debug
+
+      // Générer le badge de stock
+      let stockBadge = ""
+      let productClass = "product-item product"
+
+      if (isOutOfStock) {
+        stockBadge = `
+          <div class="stock-badge out-of-stock">
+            <span>⚠️ Rupture du stock</span>
+          </div>
+        `
+        productClass += " out-of-stock-item"
+      } else if (isLowStock) {
+        stockBadge = `
+          <div class="stock-badge low-stock">
+            <span>⚠️ Stock faible (${quantity})</span>
+          </div>
+        `
+        productClass += " low-stock-item"
+      } 
+
       productElement.innerHTML = `
-        <a class="product-item product"
+        <a class="${productClass}"
            href="#"
            data-id="${product.id}"
            data-name="${product.nom}"
-           data-description="${product.description}"
+           data-description="${product.description || "Aucune description disponible"}"
            data-price="${product.prix_unitaire}"
-           data-category="${product.categorie}"
-           data-image="http://127.0.0.1:8000/storage/${product.image}">
-          <img src="http://127.0.0.1:8000/storage/${product.image}" class="img-fluid product-thumbnail" style="mix-blend-mode: multiply;">
-          <h3 class="product-title">${product.nom}</h3>
-          <strong class="product-price">${product.prix_unitaire} DH</strong>
-          <span class="icon-cross">
+           data-category="${product.categorie || "Non catégorisé"}"
+           data-quantity="${quantity}"
+           data-image="http://127.0.0.1:8000/storage/${product.image}"
+           ${isOutOfStock ? 'data-out-of-stock="true"' : ""}>
+          <div class="product-image-container">
+            <img src="http://127.0.0.1:8000/storage/${product.image}" 
+                 class="img-fluid product-thumbnail ${isOutOfStock ? "grayscale" : ""}" 
+                 style="mix-blend-mode: multiply;">
+            ${stockBadge}
+            ${isOutOfStock ? '<div class="overlay-disabled">INDISPONIBLE</div>' : ""}
+          </div>
+          <h3 class="product-title ${isOutOfStock ? "text-muted" : ""}">${product.nom}</h3>
+          <strong class="product-price ${isOutOfStock ? "text-muted" : ""}">${product.prix_unitaire} DH</strong>
+          <span class="icon-cross ${isOutOfStock ? "disabled" : ""}">
             <img src="../images/cross.svg" class="img-fluid">
           </span>
         </a>
@@ -99,30 +140,202 @@ document.addEventListener("DOMContentLoaded", () => {
         const productImage = this.getAttribute("data-image")
         const productDescription = this.getAttribute("data-description")
         const productCategory = this.getAttribute("data-category")
+        const productQuantity = Number.parseInt(this.getAttribute("data-quantity"))
+        const isOutOfStock = this.getAttribute("data-out-of-stock") === "true"
 
-        // Enregistrer le clic dans la base de données
+        // Enregistrer le clic dans la base de données (même pour les produits en rupture)
         trackProductClick(productCategory)
 
-        // Afficher le popup
-        showProductPopup(productId, productName, productPrice, productImage, productDescription)
+        // Afficher le popup avec les informations de stock
+        showProductPopup(
+          productId,
+          productName,
+          productPrice,
+          productImage,
+          productDescription,
+          productQuantity,
+          isOutOfStock,
+        )
       })
     })
   }
 
-  // Fonction pour enregistrer le clic sur un produit
-  function trackProductClick(category) {
+  // Fonction pour afficher le popup avec gestion de stock
+  function showProductPopup(id, name, price, image, description, quantity = 0, isOutOfStock = false) {
+    // Créer le popup s'il n'existe pas déjà
+    let popup = document.getElementById("product-popup")
+    if (!popup) {
+      popup = document.createElement("div")
+      popup.id = "product-popup"
+      popup.className = "product-popup-overlay"
+      document.body.appendChild(popup)
+    }
+
+    // Déterminer le statut du stock
+    const isLowStock = quantity > 0 && quantity <= 5
+
+    let stockInfo = ""
+    let addToCartButton = ""
+
+    if (isOutOfStock) {
+      stockInfo = `
+        <div class="stock-info out-of-stock">
+          <span class="stock-icon">⚠️</span>
+          <span class="stock-text">Rupture du stock - Produit temporairement indisponible</span>
+        </div>
+      `
+      addToCartButton = `
+        <button class="btn btn-secondary" disabled>
+          <i class="fas fa-ban"></i> Produit indisponible
+        </button>
+      `
+    } else if (isLowStock) {
+      stockInfo = `
+        <div class="stock-info low-stock">
+          <span class="stock-icon">⚠️</span>
+          <span class="stock-text">Stock faible - Plus que ${quantity} disponible(s)</span>
+        </div>
+      `
+      addToCartButton = `
+        <button class="btn btn-warning add-to-cart-btn" data-id="${id}" data-name="${name}" data-price="${price}" data-image="${image}">
+          <i class="fas fa-shopping-cart"></i> Ajouter au panier (Dépêchez-vous!)
+        </button>
+      `
+    } else {
+      stockInfo = `
+        <div class="stock-info in-stock">
+          <span class="stock-icon">✅</span>
+          <span class="stock-text">En stock - ${quantity} disponible(s)</span>
+        </div>
+      `
+      addToCartButton = `
+        <button class="btn btn-primary add-to-cart-btn" data-id="${id}" data-name="${name}" data-price="${price}" data-image="${image}">
+          <i class="fas fa-shopping-cart"></i> Ajouter au panier
+        </button>
+      `
+    }
+
+    // Remplir le popup avec les informations du produit
+    popup.innerHTML = `
+      <div class="product-popup-content">
+        <div class="product-popup-header">
+          <h3>${name}</h3>
+          <button class="close-popup">&times;</button>
+        </div>
+        <div class="product-popup-body">
+          <div class="product-popup-image">
+            <img src="${image}" alt="${name}" class="img-fluid ${isOutOfStock ? "grayscale" : ""}" style="mix-blend-mode: multiply;">
+          </div>
+          <div class="product-popup-info">
+            <p class="product-popup-price">${price} DH</p>
+            <p class="product-popup-description">${description}</p>
+            ${stockInfo}
+          </div>
+        </div>
+        <div class="product-popup-footer">
+          ${addToCartButton}
+          <button class="btn btn-secondary return-btn">
+            <i class="fas fa-arrow-left"></i> Retour
+          </button>
+        </div>
+      </div>
+    `
+
+    // Afficher le popup
+    popup.style.display = "flex"
+
+    // Ajouter les écouteurs d'événements pour les boutons du popup
+    const closeButton = popup.querySelector(".close-popup")
+    const returnButton = popup.querySelector(".return-btn")
+    const addToCartBtn = popup.querySelector(".add-to-cart-btn")
+
+    closeButton.addEventListener("click", closePopup)
+    returnButton.addEventListener("click", closePopup)
+
+    if (addToCartBtn && !isOutOfStock) {
+      addToCartBtn.addEventListener("click", () => {
+        addToCart(id, name, price, image, quantity)
+      })
+    }
+
+    // Fermer le popup si on clique en dehors
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) {
+        closePopup()
+      }
+    })
+  }
+
+  // Fonction pour ajouter au panier avec vérification de stock
+  function addToCart(productId, productName, productPrice, productImage, productQuantity = 0) {
+    // Vérifier le stock avant d'ajouter au panier
+    if (productQuantity === 0) {
+      showNotification("Ce produit n'est plus en stock", "error")
+      return
+    }
+
     // Récupérer le token CSRF
     const csrfToken = getCSRFToken()
 
+    // Extraire juste le nom du fichier de l'URL complète
+    let imageFileName = productImage
+    if (productImage.includes("/")) {
+      imageFileName = productImage.split("/").pop()
+    }
+
     // Préparer les données à envoyer
+    const cartData = {
+      produit_id: productId,
+      nom_produit: productName,
+      image: imageFileName,
+      prix: productPrice,
+    }
+
+    console.log("Envoi de la requête à:", "http://127.0.0.1:8000/api/cart/add")
+    console.log("Données envoyées:", cartData)
+
+    // Envoyer les données au serveur
+    fetch("http://127.0.0.1:8000/api/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-CSRF-TOKEN": csrfToken,
+      },
+      credentials: "include",
+      body: JSON.stringify(cartData),
+    })
+      .then((response) => {
+        console.log("Statut de la réponse:", response.status)
+        if (!response.ok) {
+          return response.text().then((text) => {
+            console.error("Erreur détaillée:", text)
+            throw new Error("Erreur lors de l'ajout au panier (Statut: " + response.status + ")")
+          })
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log("Réponse du serveur:", data)
+        showNotification("Produit ajouté au panier avec succès!", "success")
+        closePopup()
+      })
+      .catch((error) => {
+        console.error("Erreur:", error)
+        showNotification("Erreur lors de l'ajout au panier", "error")
+      })
+  }
+
+  // Fonction pour enregistrer le clic sur un produit
+  function trackProductClick(category) {
+    const csrfToken = getCSRFToken()
     const clickData = {
       categorie: category,
-      client_id: window.sessionId || 0, // Ajout de l'id de session réel
+      client_id: window.sessionId || 0,
     }
 
     console.log("Enregistrement du clic:", clickData)
 
-    // Envoyer les données au serveur
     fetch("http://127.0.0.1:8000/api/compteurs/track", {
       method: "POST",
       headers: {
@@ -131,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "X-CSRF-TOKEN": csrfToken,
         "X-Requested-With": "XMLHttpRequest",
       },
-      credentials: "include", // Important pour inclure les cookies de session
+      credentials: "include",
       body: JSON.stringify(clickData),
     })
       .then((response) => {
@@ -154,77 +367,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fonction pour récupérer le token CSRF
   function getCSRFToken() {
-    // Essayer de récupérer le token depuis le meta tag
     const metaToken = document.querySelector('meta[name="csrf-token"]')
     if (metaToken) {
       return metaToken.getAttribute("content")
     }
 
-    // Fallback: essayer de récupérer depuis un input hidden
     const tokenInput = document.querySelector('input[name="_token"]')
     if (tokenInput) {
       return tokenInput.value
     }
 
     return ""
-  }
-
-  // Fonction pour afficher le popup
-  function showProductPopup(id, name, price, image, description) {
-    // Créer le popup s'il n'existe pas déjà
-    let popup = document.getElementById("product-popup")
-    if (!popup) {
-      popup = document.createElement("div")
-      popup.id = "product-popup"
-      popup.className = "product-popup-overlay"
-      document.body.appendChild(popup)
-    }
-
-    // Remplir le popup avec les informations du produit
-    popup.innerHTML = `
-      <div class="product-popup-content">
-        <div class="product-popup-header">
-          <h3>${name}</h3>
-          <button class="close-popup">&times;</button>
-        </div>
-        <div class="product-popup-body">
-          <div class="product-popup-image">
-            <img src="${image}" alt="${name}" class="img-fluid" style="mix-blend-mode: multiply;">
-          </div>
-          <div class="product-popup-info">
-            <p class="product-popup-price">${price} DH</p>
-            <p class="product-popup-description">${description}</p>
-          </div>
-        </div>
-        <div class="product-popup-footer">
-          <button class="btn btn-primary add-to-cart-btn" data-id="${id}" data-name="${name}" data-price="${price}" data-image="${image}">
-            Ajouter au panier
-          </button>
-          <button class="btn btn-secondary return-btn">Retour</button>
-        </div>
-      </div>
-    `
-
-    // Afficher le popup
-    popup.style.display = "flex"
-
-    // Ajouter les écouteurs d'événements pour les boutons du popup
-    const closeButton = popup.querySelector(".close-popup")
-    const returnButton = popup.querySelector(".return-btn")
-    const addToCartButton = popup.querySelector(".add-to-cart-btn")
-
-    closeButton.addEventListener("click", closePopup)
-    returnButton.addEventListener("click", closePopup)
-    addToCartButton.addEventListener("click", () => {
-      addToCart(id, name, price, image)
-    })
-
-    // Fermer le popup si on clique en dehors
-    popup.addEventListener("click", (e) => {
-      if (e.target === popup) {
-        closePopup()
-      }
-    })
   }
 
   // Fonction pour fermer le popup
@@ -250,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Bouton "Précédent"
     const prevItem = document.createElement("li")
-    prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`
+    prevItem.className = `page-item ${currentPage === 1 ? "disabled" : ""}`
 
     const prevLink = document.createElement("a")
     prevLink.className = "page-link"
@@ -274,7 +427,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = startPage; i <= endPage; i++) {
       const pageItem = document.createElement("li")
-      pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`
+      pageItem.className = `page-item ${i === currentPage ? "active" : ""}`
 
       const pageLink = document.createElement("a")
       pageLink.className = "page-link"
@@ -294,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Bouton "Suivant"
     const nextItem = document.createElement("li")
-    nextItem.className = `page-item ${currentPage === lastPage ? 'disabled' : ''}`
+    nextItem.className = `page-item ${currentPage === lastPage ? "disabled" : ""}`
 
     const nextLink = document.createElement("a")
     nextLink.className = "page-link"
@@ -318,64 +471,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return paginationContainer
   }
 
-  // Fonction pour ajouter au panier
-  function addToCart(productId, productName, productPrice, productImage) {
-    // Récupérer le token CSRF
-    const csrfToken = getCSRFToken()
-
-    // Extraire juste le nom du fichier de l'URL complète
-    let imageFileName = productImage
-    if (productImage.includes("/")) {
-      imageFileName = productImage.split("/").pop()
-    }
-
-    // Préparer les données à envoyer
-    const cartData = {
-      produit_id: productId,
-      nom_produit: productName,
-      image: imageFileName,
-      prix: productPrice,
-    }
-
-    console.log("Envoi de la requête à:", "http://127.0.0.1:8000/api/cart/add")
-    console.log("Méthode:", "POST")
-    console.log("Données envoyées:", cartData)
-
-    // Envoyer les données au serveur
-    fetch("http://127.0.0.1:8000/api/cart/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "X-CSRF-TOKEN": csrfToken,
-      },
-      credentials: "include", // Important pour les cookies et l'authentification
-      body: JSON.stringify(cartData),
-    })
-      .then((response) => {
-        console.log("Statut de la réponse:", response.status)
-        if (!response.ok) {
-          return response.text().then((text) => {
-            console.error("Erreur détaillée:", text)
-            throw new Error("Erreur lors de l'ajout au panier (Statut: " + response.status + ")")
-          })
-        }
-        return response.json()
-      })
-      .then((data) => {
-        console.log("Réponse du serveur:", data)
-        // Afficher un message de succès
-        showNotification("Produit ajouté au panier avec succès!", "success")
-
-        // Fermer le popup
-        closePopup()
-      })
-      .catch((error) => {
-        console.error("Erreur:", error)
-        showNotification("Erreur lors de l'ajout au panier", "error")
-      })
-  }
-
   // Fonction pour afficher une notification
   function showNotification(message, type) {
     const notification = document.createElement("div")
@@ -384,7 +479,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.appendChild(notification)
 
-    // Faire disparaître la notification après 3 secondes
     setTimeout(() => {
       notification.classList.add("fade-out")
       setTimeout(() => {
@@ -397,51 +491,62 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadPage(page) {
     getProducts(page).then(({ products, pagination }) => {
       displayProducts(products, pagination)
-
-      // Faire défiler vers le haut de la page
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: "smooth" })
     })
   }
 
-  // Initialisation : récupérer et afficher tous les produits
+  // INITIALISATION CORRIGÉE
   getProducts().then(({ products, pagination }) => {
     displayProducts(products, pagination)
 
     // Variable pour stocker tous les produits (pour la recherche et le filtrage)
     let allProducts = products
 
-    // Gestion de la recherche
+    // Gestion de la recherche CORRIGÉE
     const searchInput = document.getElementById("search")
     if (searchInput) {
       searchInput.addEventListener("input", () => {
         const searchTerm = searchInput.value.toLowerCase()
         const filteredProducts = allProducts.filter((product) => product.nom.toLowerCase().includes(searchTerm))
-        displayProducts(filteredProducts)
+        displayProducts(filteredProducts) // Pas de pagination pour la recherche
       })
     }
 
-    // Gestion du filtrage
+    // Gestion du filtrage CORRIGÉE
     const filterSelect = document.getElementById("filtrer")
     if (filterSelect) {
       filterSelect.addEventListener("change", () => {
         const filterValue = filterSelect.value
-        let filteredProducts
+        let filteredProducts = [...allProducts] // Copie du tableau
 
         if (filterValue === "prix") {
-          filteredProducts = [...allProducts].sort((a, b) => a.prix_unitaire - b.prix_unitaire)
+          // Tri par prix croissant
+          filteredProducts.sort((a, b) => Number.parseFloat(a.prix_unitaire) - Number.parseFloat(b.prix_unitaire))
         } else if (filterValue === "categorie") {
-          const selectedCategory = document.getElementById("categorie").value
-          filteredProducts = selectedCategory
-            ? allProducts.filter((product) => product.categorie === selectedCategory)
-            : allProducts
-        } else {
-          filteredProducts = allProducts
+          // Filtrage par catégorie
+          const categorySelect = document.getElementById("categorie")
+          const selectedCategory = categorySelect ? categorySelect.value : ""
+          if (selectedCategory) {
+            filteredProducts = allProducts.filter(
+              (product) => (product.categorie || "").toLowerCase() === selectedCategory.toLowerCase(),
+            )
+          }
+        } else if (filterValue === "stock") {
+          // Tri par stock (en stock d'abord, puis rupture)
+          filteredProducts.sort((a, b) => {
+            const qtyA = getProductQuantity(a)
+            const qtyB = getProductQuantity(b)
+            if (qtyA === 0 && qtyB > 0) return 1
+            if (qtyA > 0 && qtyB === 0) return -1
+            return qtyB - qtyA // Stock décroissant
+          })
         }
-        displayProducts(filteredProducts)
+
+        displayProducts(filteredProducts) // Pas de pagination pour le filtrage
       })
     }
 
-    // Gestion de la sélection de catégorie
+    // Gestion de la sélection de catégorie CORRIGÉE
     const categorySelect = document.getElementById("categorie")
     if (filterSelect && categorySelect) {
       filterSelect.addEventListener("change", () => {
@@ -459,15 +564,16 @@ document.addEventListener("DOMContentLoaded", () => {
       categorySelect.addEventListener("change", () => {
         const selectedCategory = categorySelect.value
         const filteredProducts = selectedCategory
-          ? allProducts.filter((product) => product.categorie === selectedCategory)
+          ? allProducts.filter((product) => (product.categorie || "").toLowerCase() === selectedCategory.toLowerCase())
           : allProducts
         displayProducts(filteredProducts)
       })
     }
 
     // Charger tous les produits pour la recherche et le filtrage
-    getProducts(1, 1000).then(({ products }) => {
-      allProducts = products
+    getProducts(1, 1000).then(({ products: allProductsData }) => {
+      allProducts = allProductsData
+      console.log("Tous les produits chargés:", allProducts.length) // Debug
     })
   })
 })

@@ -856,3 +856,27 @@
 2025-05-20 12:23:08,449 - werkzeug - INFO -  * Restarting with stat
 2025-05-20 12:23:10,163 - werkzeug - WARNING -  * Debugger is active!
 2025-05-20 12:23:10,172 - werkzeug - INFO -  * Debugger PIN: 111-443-184
+2025-06-04 15:54:48,864 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.11.109:5000
+2025-06-04 15:54:48,867 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-04 15:54:48,872 - werkzeug - INFO -  * Restarting with stat
+2025-06-04 15:54:51,574 - werkzeug - WARNING -  * Debugger is active!
+2025-06-04 15:54:51,589 - werkzeug - INFO -  * Debugger PIN: 111-443-184
+2025-06-04 15:56:06,574 - werkzeug - INFO - 127.0.0.1 - - [04/Jun/2025 15:56:06] "OPTIONS /ask HTTP/1.1" 200 -
+2025-06-04 15:56:06,815 - __main__ - INFO - Nouvelle requête: client_id=2, message='bonjour'
+2025-06-04 15:56:09,260 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-06-04 15:56:09,262 - werkzeug - INFO - 127.0.0.1 - - [04/Jun/2025 15:56:09] "POST /ask HTTP/1.1" 200 -
+2025-06-04 15:56:18,280 - werkzeug - INFO - 127.0.0.1 - - [04/Jun/2025 15:56:18] "OPTIONS /ask HTTP/1.1" 200 -
+2025-06-04 15:56:18,594 - __main__ - INFO - Nouvelle requête: client_id=2, message='je cherche des ordinateurs'
+2025-06-04 15:56:18,626 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-06-04 15:56:18,628 - werkzeug - INFO - 127.0.0.1 - - [04/Jun/2025 15:56:18] "POST /ask HTTP/1.1" 200 -
+2025-06-04 16:06:42,330 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.11.109:5000
+2025-06-04 16:06:42,332 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-04 16:06:42,338 - werkzeug - INFO -  * Restarting with stat
+2025-06-04 16:06:44,365 - werkzeug - WARNING -  * Debugger is active!
+2025-06-04 16:06:44,377 - werkzeug - INFO -  * Debugger PIN: 111-443-184

@@ -251,3 +251,10 @@ Route::post('/chatbot/ask', [\App\Http\Controllers\ChatController::class, 'ask']
 
 // Route pour obtenir le nombre d'articles dans le panier
 Route::get('/api/cart/count', [CartController::class, 'getCartCount']);
+
+
+
+
+
+
+
