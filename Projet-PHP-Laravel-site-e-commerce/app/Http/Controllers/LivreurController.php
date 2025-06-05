@@ -263,4 +263,96 @@ class LivreurController extends Controller
             'last_page' => $commandes->lastPage()
         ]);
     }
+    
+    /**
+     * Afficher les détails d'une commande
+     *
+     * @param int $id ID de la commande
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showDetails($id)
+    {
+        try {
+            // Charger la commande avec les relations nécessaires
+            $commande = Commande::with([
+                'client', 
+                'produits' => function($query) {
+                    $query->withPivot('quantite');
+                }
+            ])->findOrFail($id);
+            
+            // Log pour déboguer les données brutes
+            \Log::info('Commande chargée:', [
+                'commande_id' => $commande->id,
+                'produits_count' => $commande->produits->count(),
+                'produits' => $commande->produits->map(function($p) {
+                    return [
+                        'produit_id' => $p->id,
+                        'pivot' => $p->pivot ? [
+                            'quantite' => $p->pivot->quantite,
+                            'commande_id' => $p->pivot->commande_id,
+                            'produit_id' => $p->pivot->produit_id
+                        ] : null
+                    ];
+                })
+            ]);
+            
+            // Calculer le sous-total si nécessaire
+            if (!isset($commande->sous_total)) {
+                $commande->sous_total = $commande->produits->sum(function($produit) {
+                    return $produit->prix_unitaire * $produit->pivot->quantite;
+                });
+            }
+            
+            // Préparer les données pour la réponse JSON
+            $response = [
+                'id' => $commande->id,
+                'client' => [
+                    'id' => $commande->client->id,
+                    'nom' => $commande->client->nom,
+                    'prenom' => $commande->client->prenom,
+                    'email' => $commande->client->email,
+                    'telephone' => $commande->client->telephone ?? ''
+                ],
+                'adresse' => $commande->adresse,
+                'adresse_livraison' => $commande->adresse, // Utiliser le même champ que l'adresse
+                'ville_livraison' => '',
+                'code_postal_livraison' => '',
+                'pays_livraison' => 'Maroc',
+                'statut' => $commande->statut,
+                'total' => $commande->total,
+                'sous_total' => $commande->sous_total ?? $commande->total,
+                'frais_livraison' => 0,
+                'remise' => $commande->reduction ?? 0,
+                'created_at' => $commande->created_at,
+                'produits' => $commande->produits->map(function($produit) {
+                    return [
+                        'id' => $produit->id,
+                        'nom' => $produit->nom,
+                        'reference' => $produit->reference ?? 'N/A',
+                        'prix_unitaire' => $produit->prix_unitaire ?? 0,
+                        'quantite' => $produit->pivot->quantite,
+                        'image' => $produit->image ?? ''
+                    ];
+                })
+            ];
+            
+            $jsonResponse = [
+                'success' => true,
+                'commande' => (object)$response
+            ];
+            
+            // Log de la réponse complète
+            \Log::info('Réponse JSON complète:', $jsonResponse);
+            
+            return response()->json($jsonResponse);
+            
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la récupération des détails de la commande: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des détails de la commande: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

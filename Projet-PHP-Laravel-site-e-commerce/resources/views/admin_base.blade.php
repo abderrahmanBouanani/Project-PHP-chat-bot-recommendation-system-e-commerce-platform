@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/adminproduits.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/adminusers.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/admincommandes.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/admin-tables.css')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
 
     @yield('head')
@@ -29,39 +30,44 @@
     </div>
     @endif
     <div class="sidebar">
-      <nav class="custom-navbar">
-        <a class="navbar-brand" href="{{url('/admin_home')}}">ShopAll<span>.</span></a>
-      </nav>
+      <div class="sidebar-header px-3 py-4">
+        <div class="admin-interface-badge mb-2">ADMIN INTERFACE</div>
+        <a class="navbar-brand" href="{{url('/admin_home')}}">
+          <span class="shopall-text">ShopAll</span><span class="dot">.</span>
+        </a>
+      </div>
 
       <nav class="side-bar-content">
-    <a href="{{ url('/admin_home') }}" class="nav-link {{ request()->is('admin_home') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-grid me-2"></i>
-        Tableau de Bord
-    </a>
-    <a href="{{ url('/admin_utilisateur') }}" class="nav-link {{ request()->is('admin_utilisateur') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-person-lines-fill me-2"></i>
-        Utilisateur
-    </a>
-    <a href="{{ url('/admin_produit') }}" class="nav-link {{ request()->is('admin_produit') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-box-seam me-2"></i>
-        Produits
-    </a>
-    <a href="{{ url('/admin_commande') }}" class="nav-link {{ request()->is('admin_commande') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-cart me-2"></i>
-        Commandes
-    </a>
-    <a href="{{ url('/admin_about') }}" class="nav-link {{ request()->is('admin_about') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-person me-2"></i>
-        Profile
-    </a>
-    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-        @csrf
-        <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
-            <img src="../images/logout2.png" style="height: 30px; width: 30px; margin-left: 15px" alt="Déconnexion"/>
-        </button>
-    </form>
-</nav>
-
+        <a href="{{ url('/admin_home') }}" class="nav-link {{ request()->is('admin_home') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-grid me-3"></i>
+          <span>Tableau de Bord</span>
+        </a>
+        <a href="{{ url('/admin_utilisateur') }}" class="nav-link {{ request()->is('admin_utilisateur') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-people me-3"></i>
+          <span>Utilisateurs</span>
+        </a>
+        <a href="{{ url('/admin_produit') }}" class="nav-link {{ request()->is('admin_produit') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-box-seam me-3"></i>
+          <span>Produits</span>
+        </a>
+        <a href="{{ url('/admin_commande') }}" class="nav-link {{ request()->is('admin_commande') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-cart me-3"></i>
+          <span>Commandes</span>
+        </a>
+        <a href="{{ url('/admin_about') }}" class="nav-link {{ request()->is('admin_about') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-person me-3"></i>
+          <span>Profil</span>
+        </a>
+        <div class="logout-container mt-auto">
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="logout-btn d-flex align-items-center w-100">
+              <i class="bi bi-box-arrow-right me-3"></i>
+              <span>Déconnexion</span>
+            </button>
+          </form>
+        </div>
+      </nav>
     </div>
     @yield('content')
 

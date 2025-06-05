@@ -96,7 +96,24 @@ Route::post('/api/orders/create', [App\Http\Controllers\OrderController::class, 
 Route::get('/commande/{id}/facture', [App\Http\Controllers\OrderController::class, 'downloadInvoice'])->name('commande.facture');
 
 
-//Routes pour le client
+// Routes pour l'administration des produits
+Route::prefix('admin')->middleware(['web'])->group(function () {
+    // Route principale pour afficher la liste des produits
+    Route::get('/produits', [AdminProductController::class, 'index'])->name('admin.produits');
+    
+    // Routes pour la gestion des produits (CRUD)
+    Route::get('/produits/create', [AdminProductController::class, 'create'])->name('admin.produits.create');
+    Route::post('/produits', [AdminProductController::class, 'store'])->name('admin.produits.store');
+    Route::get('/produits/{id}', [AdminProductController::class, 'show'])->name('admin.produits.show');
+    Route::get('/produits/{id}/edit', [AdminProductController::class, 'edit'])->name('admin.produits.edit');
+    Route::put('/produits/{id}', [AdminProductController::class, 'update'])->name('admin.produits.update');
+    Route::delete('/produits/{id}', [AdminProductController::class, 'destroy'])->name('admin.produits.destroy');
+    
+    // Route pour la recherche AJAX
+    Route::get('/produits/search', [AdminProductController::class, 'search'])->name('admin.produits.search');
+});
+
+// Routes pour le client
 Route::get('/client_home', function () {
     return view('client-interface.index', ['page' => 'ShopAll - Home']);
 });
@@ -232,6 +249,7 @@ Route::post('/livreur/commande/{id}/accepter', [LivreurController::class, 'accep
 Route::post('/livreur/commande/{id}/livree', [LivreurController::class, 'livree']);
 Route::post('/livreur/commande/{id}/update-status', [LivreurController::class, 'updateStatus']);
 Route::get('/livreur/commande/{id}/produits', [LivreurController::class, 'getProducts']);
+Route::get('/livreur/commande/{id}/details', [LivreurController::class, 'showDetails'])->name('livreur.commande.details');
 
 Route::get('/livreur_profile',function(){
     return view('livreur-interface.profil-livreur',['user' => session('user')]);

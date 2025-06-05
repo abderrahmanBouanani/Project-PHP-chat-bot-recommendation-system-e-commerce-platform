@@ -25,28 +25,32 @@
     </div>
     @endif
     <div class="sidebar">
-    <nav class="custom-navbar">
-    <a class="navbar-brand" href="{{ url('/livreur_livraison') }}">ShopAll<span>.</span></a>
-</nav>
+      <div class="sidebar-header px-3 py-4">
+        <div class="livreur-interface-badge mb-2">LIVREUR INTERFACE</div>
+        <a class="navbar-brand" href="{{ url('/livreur_livraison') }}">
+          <span class="shopall-text">ShopAll</span><span class="dot">.</span>
+        </a>
+      </div>
 
-<nav class="side-bar-content">
-    <a href="{{ url('/livreur_livraison') }}" class="nav-link {{ request()->is('livreur_livraison') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-truck me-2"></i>
-        Livraisons
-    </a>
-    <a href="{{ url('/livreur_profile') }}" class="nav-link {{ request()->is('livreur_profile') ? 'active' : '' }} d-flex align-items-center">
-        <i class="bi bi-person me-2"></i>
-        Profile
-    </a>
-    <form method="POST" action="{{ route('logout') }}" class="d-inline">
-        @csrf
-        <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
-            <img src="../images/logout2.png" alt="Déconnexion" style="height: 30px; width: 30px; margin-left: 15px"/>
-            <span class="sr-only">Déconnexion</span>
-        </button>
-    </form>
-</nav>
-
+      <nav class="side-bar-content">
+        <a href="{{ url('/livreur_livraison') }}" class="nav-link {{ request()->is('livreur_livraison') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-truck me-3"></i>
+          <span>Livraisons</span>
+        </a>
+        <a href="{{ url('/livreur_profile') }}" class="nav-link {{ request()->is('livreur_profile') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-person me-3"></i>
+          <span>Profil</span>
+        </a>
+        <div class="logout-container">
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="logout-btn d-flex align-items-center w-100">
+              <i class="bi bi-box-arrow-right me-3"></i>
+              <span>Déconnexion</span>
+            </button>
+          </form>
+        </div>
+      </nav>
     </div>
     @yield('content')
 

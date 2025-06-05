@@ -43,11 +43,11 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>Nom</th>
-                  <th>Email</th>
-                  <th>Téléphone</th>
-                  <th>Type</th>
-                  <th>Actions</th>
+                  <th><i class="bi bi-person-vcard me-1"></i>Nom</th>
+                  <th><i class="bi bi-envelope me-1"></i>Email</th>
+                  <th><i class="bi bi-telephone me-1"></i>Téléphone</th>
+                  <th><i class="bi bi-person-badge me-1"></i>Type</th>
+                  <th><i class="bi bi-gear me-1"></i>Actions</th>
                 </tr>
               </thead>
               <tbody id="clientTable">

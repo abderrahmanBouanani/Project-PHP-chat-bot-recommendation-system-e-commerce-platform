@@ -1,7 +1,7 @@
 @extends('vendeur_base') <!-- Cette ligne indique d'utiliser le layout de base -->
 
 @section('content') <!-- Ici commence le contenu spécifique à cette page -->
-@if(!session('user') || session('user')['type'] !== 'vendeur' || session('user') == null)
+@if(!session('user'))
     <div class="container mt-5">
         <div class="alert alert-warning text-center">
             <h4>Veuillez vous connecter pour accéder à cette page</h4>
@@ -135,8 +135,7 @@
       </div>
     </div>
     <!-- End Product Table Section -->
-    
-    @endif
+
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
 
 

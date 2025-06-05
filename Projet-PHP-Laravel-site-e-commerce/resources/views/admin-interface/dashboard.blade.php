@@ -4,60 +4,103 @@
 <div class="main-content">
       <h1 class="h3 mb-4">Tableau de Bord</h1>
 
-      <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
-          <div class="stats-card">
-            <h6 class="text-muted mb-3">Total Clients</h6>
-            <div class="d-flex justify-content-between align-items-center">
-              <h3 id="totalClients">{{ $stats['clients'] }}</h3>
-              <i class="bi bi-people fs-3 stats-icon"></i>
-            </div>
-            <div class="mt-3">
-              <a href="{{ url('/admin_utilisateur')}}?type=client" class="see-more"
-                >Voir plus <i class="bi bi-arrow-right"></i
-              ></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="stats-card">
-            <h6 class="text-muted mb-3">Total Vendeurs</h6>
-            <div class="d-flex justify-content-between align-items-center">
-              <h3 id="totalVendors">{{ $stats['vendeurs'] }}</h3>
-              <i class="bi bi-person-workspace fs-3 stats-icon"></i>
-            </div>
-            <div class="mt-3">
-              <a href="{{ url('/admin_utilisateur')}}?type=Vendeur" class="see-more"
-                >Voir plus <i class="bi bi-arrow-right"></i
-              ></a>
+      <div class="row g-3">
+        <!-- Carte Clients -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="stats-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h6 class="text-muted mb-3">Total Clients</h6>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="totalClients" class="mb-0">{{ $stats['clients'] }}</h3>
+                <div class="stats-icon-container">
+                  <i class="bi bi-people fs-1"></i>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <a href="{{ url('/admin_utilisateur')}}?type=client" class="see-more d-inline-flex align-items-center">
+                  Voir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="stats-card">
-            <h6 class="text-muted mb-3">Total Produits</h6>
-            <div class="d-flex justify-content-between align-items-center">
-              <h3 id="totalProducts">{{ $stats['produits'] }}</h3>
-              <i class="bi bi-box-seam fs-3 stats-icon"></i>
-            </div>
-            <div class="mt-3">
-              <a href="{{ url('/admin_produit')}}" class="see-more"
-                >Voir plus <i class="bi bi-arrow-right"></i
-              ></a>
+
+        <!-- Carte Vendeurs -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="stats-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h6 class="text-muted mb-3">Total Vendeurs</h6>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="totalVendors" class="mb-0">{{ $stats['vendeurs'] }}</h3>
+                <div class="stats-icon-container">
+                  <i class="bi bi-person-workspace fs-1"></i>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <a href="{{ url('/admin_utilisateur')}}?type=Vendeur" class="see-more d-inline-flex align-items-center">
+                  Voir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="stats-card">
-            <h6 class="text-muted mb-3">Total Commandes</h6>
-            <div class="d-flex justify-content-between align-items-center">
-              <h3 id="totalOrders">{{ $stats['commandes'] }}</h3>
-              <i class="bi bi-cart fs-3 stats-icon"></i>
+
+        <!-- Carte Livreurs -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="stats-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h6 class="text-muted mb-3">Total Livreurs</h6>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="totalLivreurs" class="mb-0">{{ $stats['livreurs'] }}</h3>
+                <div class="stats-icon-container">
+                  <i class="bi bi-truck fs-1"></i>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <a href="{{ url('/admin_utilisateur')}}?type=livreur" class="see-more d-inline-flex align-items-center">
+                  Voir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
-            <div class="mt-3">
-              <a href="{{ url('/admin_commande')}}" class="see-more"
-                >Voir plus <i class="bi bi-arrow-right"></i
-              ></a>
+          </div>
+        </div>
+
+        <!-- Carte Produits -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="stats-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h6 class="text-muted mb-3">Total Produits</h6>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="totalProducts" class="mb-0">{{ $stats['produits'] }}</h3>
+                <div class="stats-icon-container">
+                  <i class="bi bi-box-seam fs-1"></i>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <a href="{{ url('/admin_produit') }}" class="see-more d-inline-flex align-items-center">
+                  Voir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte Commandes -->
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="stats-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h6 class="text-muted mb-3">Total Commandes</h6>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 id="totalOrders" class="mb-0">{{ $stats['commandes'] }}</h3>
+                <div class="stats-icon-container">
+                  <i class="bi bi-cart fs-1"></i>
+                </div>
+              </div>
+              <div class="mt-auto">
+                <a href="{{ url('/admin_commande') }}" class="see-more d-inline-flex align-items-center">
+                  Voir plus <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -123,21 +166,28 @@
           >
         </div>
         <div class="card-body">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Client</th>
-                  <th>Produits</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody id="recentOrders">
-                <!-- Les commandes seront ajoutées ici dynamiquement -->
-              </tbody>
-            </table>
-          </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th><i class="bi bi-calendar3 me-2"></i>Date</th>
+                    <th><i class="bi bi-person me-2"></i>Client</th>
+                    <th><i class="bi bi-box-seam me-2"></i>Produits</th>
+                    <th class="text-end"><i class="bi bi-currency-dollar me-2"></i>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="recentOrders">
+                  <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                      <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                      </div>
+                      Chargement des commandes...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
         </div>
       </div>
     </div>
@@ -166,7 +216,8 @@
               renderCategoriesChart(response.data.category_distribution);
               renderUserStatsChart([
                 { name: 'Clients', data: [{{ $stats['clients'] }}] },
-                { name: 'Vendeurs', data: [{{ $stats['vendeurs'] }}] }
+                { name: 'Vendeurs', data: [{{ $stats['vendeurs'] }}] },
+                { name: 'Livreurs', data: [{{ $stats['livreurs'] }}] }
               ]);
             } else {
               throw new Error('Invalid data format');
@@ -199,13 +250,36 @@
             } else {
               recentOrdersContainer.innerHTML = orders
                 .map(order => `
-                  <tr>
-                    <td>${formatDate(new Date(order.created_at))}</td>
-                    <td>${order.client ? order.client.nom + ' ' + order.client.prenom : 'Client inconnu'}</td>
-                    <td>${order.produits ? order.produits.map(p => p.nom).join(', ') : ''}</td>
-                    <td>${order.total ? order.total.toFixed(2) : '0.00'} DH</td>
-                  </tr>
-                `)
+                  <tr class="align-middle">
+                    <td>
+                      <div class="d-flex flex-column">
+                        <span class="fw-medium">${formatDate(new Date(order.created_at))}</span>
+                        <small class="text-muted">${new Date(order.created_at).toLocaleTimeString()}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                          <i class="bi bi-person-fill text-muted"></i>
+                        </div>
+                        <span>${order.client ? order.client.nom + ' ' + order.client.prenom : 'Client inconnu'}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex flex-wrap gap-1">
+                        ${order.produits && order.produits.length > 0 
+                          ? order.produits.map(p => 
+                              `<span class="badge bg-light text-dark border">${p.nom} (x${p.pivot.quantite})</span>`
+                            ).join(' ')
+                          : '<span class="text-muted">Aucun produit</span>'
+                        }
+                      </div>
+                    </td>
+                    <td class="text-end fw-bold">
+                      ${order.total ? parseFloat(order.total).toFixed(2) : '0.00'} DH
+                    </td>
+                  </tr>`
+                ).join('')
                 .join("");
             }
           })
@@ -239,7 +313,8 @@
         };
         const userStats = [
           { name: 'Clients', data: [{{ $stats['clients'] }}] },
-          { name: 'Vendeurs', data: [{{ $stats['vendeurs'] }}] }
+          { name: 'Vendeurs', data: [{{ $stats['vendeurs'] }}] },
+          { name: 'Livreurs', data: [{{ $stats['livreurs'] }}] }
         ];
 
         renderOrdersChart({ labels: days, data: dailyOrders });
@@ -365,14 +440,20 @@
             getComputedStyle(document.documentElement).getPropertyValue(
               "--chart-color-2"
             ) || "#f9bf29",
+            getComputedStyle(document.documentElement).getPropertyValue(
+              "--chart-color-3"
+            ) || "#6c757d",
           ],
           plotOptions: {
             bar: {
               horizontal: true,
               dataLabels: {
-                position: "top",
+                enabled: false // Désactive l'affichage des étiquettes de données
               },
             },
+          },
+          dataLabels: {
+            enabled: false // Désactive les étiquettes de données globalement
           },
           xaxis: {
             categories: ["Utilisateurs"],

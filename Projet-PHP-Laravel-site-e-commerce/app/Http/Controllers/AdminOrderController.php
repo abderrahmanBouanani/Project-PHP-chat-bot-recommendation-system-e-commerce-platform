@@ -36,14 +36,82 @@ class AdminOrderController extends Controller
    /**
     * Affiche la liste des commandes
     */
-   public function index()
+   public function index(Request $request)
    {
-       $commandes = Commande::with(['client'])->paginate(8);
+       try {
+           $searchTerm = $request->input('search', '');
+           $sort = $request->input('sort', 'date-desc');
+           $status = $request->input('status', 'all');
 
-       return view('admin-interface.commandes', [
-           'page' => 'ShopAll - Commandes',
-           'commandes' => $commandes
-       ]);
+           $query = Commande::with(['client']);
+
+           // Recherche par ID ou nom du client
+           if (!empty($searchTerm)) {
+               if (is_numeric($searchTerm)) {
+                   $query->where('id', $searchTerm);
+               } else {
+                   $query->whereHas('client', function($q) use ($searchTerm) {
+                       $q->where('nom', 'like', "%{$searchTerm}%")
+                         ->orWhere('prenom', 'like', "%{$searchTerm}%");
+                   });
+               }
+           }
+
+           // Filtrer par statut
+           if ($status !== 'all') {
+               $query->where('statut', $status);
+           }
+
+           // Appliquer le tri
+           switch ($sort) {
+               case 'date-asc':
+                   $query->orderBy('created_at', 'asc');
+                   break;
+               case 'total-desc':
+                   $query->orderBy('total', 'desc');
+                   break;
+               case 'total-asc':
+                   $query->orderBy('total', 'asc');
+                   break;
+               default: // date-desc
+                   $query->orderBy('created_at', 'desc');
+                   break;
+           }
+
+           $commandes = $query->paginate(8);
+           
+           // Si c'est une requête AJAX, retourner une réponse JSON
+           if ($request->ajax() || $request->wantsJson()) {
+               return response()->json([
+                   'success' => true,
+                   'data' => $commandes->items(),
+                   'total' => $commandes->total(),
+                   'current_page' => $commandes->currentPage(),
+                   'per_page' => $commandes->perPage(),
+                   'last_page' => $commandes->lastPage()
+               ]);
+           }
+
+           return view('admin-interface.commandes', [
+               'page' => 'ShopAll - Commandes',
+               'commandes' => $commandes,
+               'currentSearch' => $searchTerm,
+               'currentStatus' => $status,
+               'currentSort' => $sort
+           ]);
+       } catch (\Exception $e) {
+           // En cas d'erreur, retourner une réponse d'erreur en JSON
+           if ($request->ajax() || $request->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Une erreur est survenue lors du chargement des commandes.',
+                   'error' => $e->getMessage()
+               ], 500);
+           }
+           
+           // Rediriger avec un message d'erreur pour les requêtes normales
+           return back()->with('error', 'Une erreur est survenue lors du chargement des commandes.');
+       }
    }
 
    /**
