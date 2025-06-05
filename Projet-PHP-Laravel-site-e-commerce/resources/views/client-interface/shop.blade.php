@@ -1,5 +1,13 @@
 @extends('client_base') <!-- Cette ligne indique d'utiliser le layout de base -->
 @section('content') <!-- Ici commence le contenu spécifique à cette page -->
+@if(!session('user'))
+    <div class="container mt-5">
+        <div class="alert alert-warning text-center">
+            <h4>Veuillez vous connecter pour accéder à la boutique</h4>
+            <a href="{{ url('/') }}" class="btn btn-primary mt-3">Se connecter</a>
+        </div>
+    </div>
+@else
   <!-- Start Hero Section -->
   <div class="hero">
       <div class="container">
@@ -74,6 +82,7 @@
 
 
 
+@endif
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
 
 
