@@ -58,7 +58,7 @@
 
           <!-- Start Column 2 -->
           <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
+            <a class="product-item" href="{{ url('/client_shop') }">
               <img
                 src="../images/pc1.jpg"
                 class="img-fluid product-thumbnail"
@@ -76,7 +76,7 @@
 
           <!-- Start Column 3 -->
           <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
+            <a class="product-item" href="{{ url('/client_shop') }">
               <img
                 src="../images/product-2.png"
                 class="img-fluid product-thumbnail"
@@ -93,7 +93,7 @@
 
           <!-- Start Column 4 -->
           <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
+            <a class="product-item" href="{{ url('/client_shop') }">
               <img
                 src="../images/montre1.jpg"
                 class="img-fluid product-thumbnail"
