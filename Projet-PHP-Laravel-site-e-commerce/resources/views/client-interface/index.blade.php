@@ -1,6 +1,6 @@
-@extends('client_base') <!-- Cette ligne indique d'utiliser le layout de base -->
+@extends('client_base')
 
-@section('content') <!-- Ici commence le contenu spécifique à cette page -->
+@section('content')
   <!-- Start Hero Section -->
   <div class="hero">
       <div class="container">
@@ -12,8 +12,8 @@
               </h1>
               <p class="mb-4">
                 votre destination en ligne pour découvrir une large gamme de
-                produits de qualité à des prix compétitifs. Profitez d’une
-                expérience d’achat simple, rapide et sécurisée, avec des
+                produits de qualité à des prix compétitifs. Profitez d'une
+                expérience d'achat simple, rapide et sécurisée, avec des
                 promotions exclusives et une livraison à votre porte.
               </p>
               <p>
@@ -26,7 +26,7 @@
           <div class="col-lg-7">
             <div class="hero-img-wrap">
               <img
-                src="../images/1-removebg-preview.png.png"
+                src="../images/article1-Photoroom.png"
                 class="img-fluid"
                 style="width: 1500px; margin-top: 20px"
               />
@@ -194,59 +194,106 @@
     </div>
     <!-- End Why Choose Us Section -->
 
-    <!-- Start We Help Section -->
-    <div class="we-help-section">
+    <!-- Start Simple Product Carousel Section (Remplace We Help Section) -->
+    <div class="simple-carousel-section">
       <div class="container">
-        <div class="row justify-content-between">
-          <div class="col-lg-7 mb-5 mb-lg-0">
-            <div class="imgs-grid">
-              <div class="grid grid-1">
-                <img
-                  src="https://m.media-amazon.com/images/I/71EWAUphg2L._AC_UY327_FMwebp_QL65_.jpg"
-                  alt="laptop"
-                  style="mix-blend-mode: multiply"
-                />
+        <div class="row mb-5">
+          <div class="col-12 text-center">
+            <h2 class="section-title">Nos Produits Vedettes</h2>
+            <p class="section-subtitle">Découvrez notre sélection de produits premium pour votre intérieur</p>
+          </div>
+        </div>
+
+        <div class="simple-carousel-wrapper">
+          <div class="simple-carousel-container">
+            <div class="simple-carousel-track" id="simpleCarouselTrack">
+              <!-- Produit 1 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/banner2.jpg" alt="Chaise Design Moderne">
+                  <div class="simple-product-badge">SmartTV</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Apple TV 4K</h3>
+                  <div class="simple-product-price">1299.00 DH</div>
+                </div>
               </div>
-              <div class="grid grid-2">
-                <img src="../images/img-grid-3.jpg" alt="product" />
+
+              <!-- Produit 2 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/article2.jpg" alt="Canapé Luxe Confort">
+                  <div class="simple-product-badge">Accessoire</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Casque JBL</h3>
+                  <div class="simple-product-price">1200 DH</div>
+                </div>
               </div>
-              <div class="grid grid-3">
-                <img
-                  src="https://m.media-amazon.com/images/I/61l5+LvEhcL._AC_UL480_FMwebp_QL65_.jpg"
-                  alt="product"
-                  style="margin-bottom: 10px; mix-blend-mode: multiply"
-                />
+
+              <!-- Produit 3 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/item2.jpg" alt="Table à Manger Élégante">
+                  <div class="simple-product-badge">Accessoire</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Apple watch</h3>
+                  <div class="simple-product-price">3599.00 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 4 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/samsung S23.webp" alt="Lampe Design Premium" style="mix-blend-mode: multiply">
+                  <div class="simple-product-badge">Smartphone</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Samsung S23</h3>
+                  <div class="simple-product-price">10000 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 5 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/item4.jpg" alt="Bibliothèque Moderne">
+                  <div class="simple-product-badge">Accessoire</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Apple watch Series 9</h3>
+                  <div class="simple-product-price">8000 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 6 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="../images/chaise3.jpg" alt="Fauteuil Confort Plus" style="mix-blend-mode: multiply">
+                  <div class="simple-product-badge">Chaise</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Chaise Gamer</h3>
+                  <div class="simple-product-price">4000 DH</div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-5 ps-lg-5">
-            <h2 class="section-title mb-4">
-              Nous vous aidons de trouver ce que vous voulez
-            </h2>
-            <p>
-              Faites en sorte que la facilité vienne à travers une approche
-              simple à améliorer. Rechercher la correction quotidienne avec
-              effort modéré.
-            </p>
 
-            <ul class="list-unstyled custom-list my-4">
-              <li>
-                Vivez avec une simplification radical de votre organisation
-              </li>
-              <li>
-                Cherchez à équilibrer vos efforts pour maximiser les résultats
-              </li>
-              <li>Adoptez une approche fluide pour surmonter les défis</li>
-              <li>
-                Simplifiez vos méthodes pour favoriser une meilleure exécution
-              </li>
-            </ul>
-            <p><a href="shop.html" class="btn">Explorer</a></p>
+          <div class="simple-carousel-navigation">
+            <button class="simple-nav-btn" id="simplePrevBtn">‹</button>
+            <div class="simple-carousel-dots" id="simpleDots">
+              <div class="simple-dot active" data-slide="0"></div>
+              <div class="simple-dot" data-slide="1"></div>
+              <div class="simple-dot" data-slide="2"></div>
+            </div>
+            <button class="simple-nav-btn" id="simpleNextBtn">›</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- End We Help Section -->
+    <!-- End Simple Product Carousel Section -->
 
     <!-- Start Testimonial Slider -->
     <div class="testimonial-section before-footer-section">
@@ -322,7 +369,7 @@
                           </div>
                           <h3 class="font-weight-bold">Fatima Zahra Benali</h3>
                           <span class="position d-block mb-3"
-                            >Architecte d'intérieur, Design ��légance</span
+                            >Architecte d'intérieur, Design Élégance</span
                           >
                         </div>
                       </div>
@@ -384,7 +431,7 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://m.media-amazon.com/images/I/71A3uOhqVmL._AC_UY327_FMwebp_QL65_.jpg"
+                  src="../images/article4.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="mix-blend-mode: multiply"
@@ -408,14 +455,13 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://m.media-amazon.com/images/I/61VqPRU2-UL._AC_UL480_FMwebp_QL65_.jpg"
+                  src="../images/article3.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="
                     mix-blend-mode: multiply;
                     height: 300px;
-                    margin-left: 60px;
-                  "
+                    width: 600px;"
               /></a>
               <div class="post-content-entry">
                 <h3>
@@ -436,7 +482,7 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://images-na.ssl-images-amazon.com/images/I/61JEYonZa6L._AC_UL330_SR330,330_.jpg"
+                  src="../images/article6.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="mix-blend-mode: multiply"
@@ -459,4 +505,4 @@
       </div>
     </div>
     <!-- End Blog Section -->
-@endsection <!-- Ici finit le contenu spécifique à cette page -->
+@endsection

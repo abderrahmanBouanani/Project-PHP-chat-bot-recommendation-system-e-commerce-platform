@@ -135,14 +135,6 @@
       </div>
     </div>
     <!-- End Product Table Section -->
-
-@endsection <!-- Ici finit le contenu spécifique à cette page -->
-
-
-
-
-
-
-
-
-
+@endif
+@endsection
+ <!-- Ici finit le contenu spécifique à cette page -->

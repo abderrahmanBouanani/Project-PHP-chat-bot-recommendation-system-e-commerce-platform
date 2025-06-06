@@ -1,9 +1,8 @@
-@extends('vendeur_base') <!-- Cette ligne indique d'utiliser le layout de base -->
+@extends('vendeur_base')
 
-@section('content') <!-- Ici commence le contenu spécifique à cette page -->
-  
-    <!-- Start Hero Section -->
-    <div class="hero">
+@section('content')
+  <!-- Start Hero Section -->
+  <div class="hero">
       <div class="container">
         <div class="row justify-content-between">
           <div class="col-lg-5">
@@ -13,12 +12,12 @@
               </h1>
               <p class="mb-4">
                 votre destination en ligne pour découvrir une large gamme de
-                produits de qualité à des prix compétitifs. Profitez d’une
-                expérience d’achat simple, rapide et sécurisée, avec des
+                produits de qualité à des prix compétitifs. Profitez d'une
+                expérience d'achat simple, rapide et sécurisée, avec des
                 promotions exclusives et une livraison à votre porte.
               </p>
               <p>
-                <a href="{{url('/vendeur_shop')}}" class="btn btn-secondary me-2"
+                <a href="shop.html" class="btn btn-secondary me-2"
                   >Vendre maintenant</a
                 ><a href="#" class="btn btn-white-outline">Explorer</a>
               </p>
@@ -195,59 +194,106 @@
     </div>
     <!-- End Why Choose Us Section -->
 
-    <!-- Start We Help Section -->
-    <div class="we-help-section">
+    <!-- Start Simple Product Carousel Section (Remplace We Help Section) -->
+    <div class="simple-carousel-section">
       <div class="container">
-        <div class="row justify-content-between">
-          <div class="col-lg-7 mb-5 mb-lg-0">
-            <div class="imgs-grid">
-              <div class="grid grid-1">
-                <img
-                  src="https://m.media-amazon.com/images/I/71EWAUphg2L._AC_UY327_FMwebp_QL65_.jpg"
-                  alt="Untree.co"
-                  style="mix-blend-mode: multiply"
-                />
+        <div class="row mb-5">
+          <div class="col-12 text-center">
+            <h2 class="section-title">Nos Produits Vedettes</h2>
+            <p class="section-subtitle">Découvrez notre sélection de produits premium pour votre intérieur</p>
+          </div>
+        </div>
+
+        <div class="simple-carousel-wrapper">
+          <div class="simple-carousel-container">
+            <div class="simple-carousel-track" id="simpleCarouselTrack">
+              <!-- Produit 1 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop" alt="Chaise Design Moderne">
+                  <div class="simple-product-badge">Mobilier</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Chaise Design Moderne</h3>
+                  <div class="simple-product-price">1299.00 DH</div>
+                </div>
               </div>
-              <div class="grid grid-2">
-                <img src="../images/img-grid-3.jpg" alt="Untree.co" />
+
+              <!-- Produit 2 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop" alt="Canapé Luxe Confort">
+                  <div class="simple-product-badge">Mobilier</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Canapé Luxe Confort</h3>
+                  <div class="simple-product-price">4999.00 DH</div>
+                </div>
               </div>
-              <div class="grid grid-3">
-                <img
-                  src="https://m.media-amazon.com/images/I/61l5+LvEhcL._AC_UL480_FMwebp_QL65_.jpg"
-                  alt="Untree.co"
-                  style="margin-bottom: 10px; mix-blend-mode: multiply"
-                />
+
+              <!-- Produit 3 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&h=400&fit=crop" alt="Table à Manger Élégante">
+                  <div class="simple-product-badge">Mobilier</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Table à Manger Élégante</h3>
+                  <div class="simple-product-price">3599.00 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 4 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop" alt="Lampe Design Premium">
+                  <div class="simple-product-badge">Éclairage</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Lampe Design Premium</h3>
+                  <div class="simple-product-price">899.00 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 5 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=400&h=400&fit=crop" alt="Bibliothèque Moderne">
+                  <div class="simple-product-badge">Rangement</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Bibliothèque Moderne</h3>
+                  <div class="simple-product-price">2499.00 DH</div>
+                </div>
+              </div>
+
+              <!-- Produit 6 -->
+              <div class="simple-product-card">
+                <div class="simple-product-image">
+                  <img src="https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=400&h=400&fit=crop" alt="Fauteuil Confort Plus">
+                  <div class="simple-product-badge">Mobilier</div>
+                </div>
+                <div class="simple-product-info">
+                  <h3 class="simple-product-name">Fauteuil Confort Plus</h3>
+                  <div class="simple-product-price">2199.00 DH</div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-5 ps-lg-5">
-            <h2 class="section-title mb-4">
-              Nous vous aidons de trouver ce que vous voulez
-            </h2>
-            <p>
-              Faites en sorte que la facilité vienne à travers une approche
-              simple à améliorer. Rechercher la correction quotidienne avec
-              effort modéré.
-            </p>
 
-            <ul class="list-unstyled custom-list my-4">
-              <li>
-                Vivez avec une simplification radical de votre organisation
-              </li>
-              <li>
-                Cherchez à équilibrer vos efforts pour maximiser les résultats
-              </li>
-              <li>Adoptez une approche fluide pour surmonter les défis</li>
-              <li>
-                Simplifiez vos méthodes pour favoriser une meilleure exécution
-              </li>
-            </ul>
-            <p><a href="shop.html" class="btn">Explorer</a></p>
+          <div class="simple-carousel-navigation">
+            <button class="simple-nav-btn" id="simplePrevBtn">‹</button>
+            <div class="simple-carousel-dots" id="simpleDots">
+              <div class="simple-dot active" data-slide="0"></div>
+              <div class="simple-dot" data-slide="1"></div>
+              <div class="simple-dot" data-slide="2"></div>
+            </div>
+            <button class="simple-nav-btn" id="simpleNextBtn">›</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- End We Help Section -->
+    <!-- End Simple Product Carousel Section -->
 
     <!-- Start Testimonial Slider -->
     <div class="testimonial-section before-footer-section">
@@ -385,7 +431,7 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://m.media-amazon.com/images/I/71A3uOhqVmL._AC_UY327_FMwebp_QL65_.jpg"
+                  src="../images/article4.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="mix-blend-mode: multiply"
@@ -409,14 +455,13 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://m.media-amazon.com/images/I/61VqPRU2-UL._AC_UL480_FMwebp_QL65_.jpg"
+                  src="../images/article3.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="
                     mix-blend-mode: multiply;
                     height: 300px;
-                    margin-left: 60px;
-                  "
+                    width: 600px;"
               /></a>
               <div class="post-content-entry">
                 <h3>
@@ -437,7 +482,7 @@
             <div class="post-entry">
               <a href="#" class="post-thumbnail"
                 ><img
-                  src="https://images-na.ssl-images-amazon.com/images/I/61JEYonZa6L._AC_UL330_SR330,330_.jpg"
+                  src="../images/article6.jpg"
                   alt="Image"
                   class="img-fluid"
                   style="mix-blend-mode: multiply"
@@ -460,4 +505,4 @@
       </div>
     </div>
     <!-- End Blog Section -->
-@endsection <!-- Ici finit le contenu spécifique à cette page -->
+@endsection

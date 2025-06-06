@@ -311,6 +311,9 @@
     @if(request()->is('client_contact'))
     <script src="{{ asset('assets/js/contact.js') }}"></script>
     @endif
+    @if(request()->is('client_home'))
+    <script src="{{ asset('assets/js/carousel.js') }}"></script>
+    @endif
     <script src="{{ asset('assets/js/chatbot.js') }}"></script>
     <script src="{{ asset('assets/js/cart-badge.js') }}"></script>
   </body>
