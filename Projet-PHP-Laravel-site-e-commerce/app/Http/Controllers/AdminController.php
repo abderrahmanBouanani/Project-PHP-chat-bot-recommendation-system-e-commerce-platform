@@ -17,6 +17,7 @@ class AdminController extends Controller
         // Récupérer les statistiques pour le tableau de bord
         $totalClients = User::where('type', 'client')->count();
         $totalVendeurs = User::where('type', 'vendeur')->count();
+        $totalLivreurs = User::where('type', 'livreur')->count();
         $totalProduits = Produit::count();
         $totalCommandes = Commande::count();
         
@@ -25,6 +26,7 @@ class AdminController extends Controller
             'stats' => [
                 'clients' => $totalClients,
                 'vendeurs' => $totalVendeurs,
+                'livreurs' => $totalLivreurs,
                 'produits' => $totalProduits,
                 'commandes' => $totalCommandes
             ]

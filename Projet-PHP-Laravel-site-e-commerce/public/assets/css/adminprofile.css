@@ -63,6 +63,7 @@
 
   .main-content {
     padding: 40px;
+    margin: 0;
   }
 
   .user-info-card {
@@ -126,5 +127,6 @@
     .main-content {
       margin-left: 0;
       padding: 20px;
+      margin-right: 500px;
     }
   }

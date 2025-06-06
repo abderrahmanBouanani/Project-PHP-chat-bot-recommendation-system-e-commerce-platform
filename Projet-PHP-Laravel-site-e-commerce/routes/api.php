@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CompteurController;
@@ -38,6 +39,12 @@ Route::post('/coupon/apply', [CouponController::class, 'applyCoupon']);
 
 // Compteur Routes
 Route::post('/compteurs/track', [CompteurController::class, 'trackClick']);
+
+// Admin Products API Routes
+Route::prefix('admin')->group(function () {
+    Route::get('/produit/search', [AdminProductController::class, 'search']);
+    Route::get('/produit/categories', [AdminProductController::class, 'getCategories']);
+});
 
 
 
