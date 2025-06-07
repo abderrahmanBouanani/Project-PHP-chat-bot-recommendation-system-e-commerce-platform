@@ -249,11 +249,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const returnButton = popup.querySelector(".return-btn")
     const addToCartBtn = popup.querySelector(".add-to-cart-btn")
 
-    closeButton.addEventListener("click", closePopup)
-    returnButton.addEventListener("click", closePopup)
+    // Supprimer les anciens écouteurs d'événements
+    closeButton.replaceWith(closeButton.cloneNode(true))
+    returnButton.replaceWith(returnButton.cloneNode(true))
+    
+    // Récupérer les nouveaux éléments après le clonage
+    const newCloseButton = popup.querySelector(".close-popup")
+    const newReturnButton = popup.querySelector(".return-btn")
+    
+    // Ajouter les écouteurs d'événements
+    newCloseButton.addEventListener("click", closePopup)
+    newReturnButton.addEventListener("click", closePopup)
 
     if (addToCartBtn && !isOutOfStock) {
-      addToCartBtn.addEventListener("click", () => {
+      // Cloner le bouton pour supprimer les anciens écouteurs
+      const newAddToCartBtn = addToCartBtn.cloneNode(true)
+      addToCartBtn.replaceWith(newAddToCartBtn)
+      
+      // Ajouter le nouvel écouteur d'événement
+      newAddToCartBtn.addEventListener("click", (e) => {
+        e.stopPropagation() // Empêcher la propagation de l'événement
         addToCart(id, name, price, image, quantity)
       })
     }
@@ -264,6 +279,31 @@ document.addEventListener("DOMContentLoaded", () => {
         closePopup()
       }
     })
+  }
+
+  // Fonction pour mettre à jour le compteur du panier
+  function updateCartCount() {
+    fetch("http://127.0.0.1:8000/api/cart/count", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include"
+    })
+    .then(response => response.json())
+    .then(data => {
+      const cartBadge = document.getElementById('cart-badge');
+      if (cartBadge) {
+        if (data.count > 0) {
+          cartBadge.textContent = data.count;
+          cartBadge.style.display = 'block';
+        } else {
+          cartBadge.style.display = 'none';
+        }
+      }
+    })
+    .catch(error => console.error('Erreur lors de la mise à jour du panier:', error));
   }
 
   // Fonction pour ajouter au panier avec vérification de stock
@@ -318,6 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         console.log("Réponse du serveur:", data)
         showNotification("Produit ajouté au panier avec succès!", "success")
+        updateCartCount() // Mettre à jour le compteur du panier
         closePopup()
       })
       .catch((error) => {
@@ -498,6 +539,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // INITIALISATION CORRIGÉE
   getProducts().then(({ products, pagination }) => {
     displayProducts(products, pagination)
+    
+    // Mettre à jour le compteur du panier au chargement de la page
+    updateCartCount();
 
     // Variable pour stocker tous les produits (pour la recherche et le filtrage)
     let allProducts = products

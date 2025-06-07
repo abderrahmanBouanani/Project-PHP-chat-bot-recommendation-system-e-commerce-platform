@@ -50,15 +50,15 @@
                         @if($commande->statut === 'En attente')
                           <span class="badge bg-warning text-dark">{{ $commande->statut }}</span>
                         @elseif($commande->statut === 'Confirmée')
-                          <span class="badge bg-info">{{ $commande->statut }}</span>
+                          <span class="badge bg-info text-dark">{{ $commande->statut }}</span>
                         @elseif($commande->statut === 'En cours de livraison')
-                          <span class="badge bg-primary">{{ $commande->statut }}</span>
+                          <span class="badge bg-primary text-dark">{{ $commande->statut }}</span>
                         @elseif($commande->statut === 'Livrée')
-                          <span class="badge bg-success">{{ $commande->statut }}</span>
+                          <span class="badge bg-success text-dark">{{ $commande->statut }}</span>
                         @elseif($commande->statut === 'Annulée')
-                          <span class="badge bg-danger">{{ $commande->statut }}</span>
+                          <span class="badge bg-danger text-dark">{{ $commande->statut }}</span>
                         @else
-                          <span class="badge bg-secondary">{{ $commande->statut }}</span>
+                          <span class="badge bg-secondary text-dark">{{ $commande->statut }}</span>
                         @endif
                       </td>
                       <td>

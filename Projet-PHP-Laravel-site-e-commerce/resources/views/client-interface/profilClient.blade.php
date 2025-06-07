@@ -59,6 +59,9 @@
             <li><a class="nav-link" href="{{url('/client_about')}}">À propos</a></li>
             <li><a class="nav-link" href="{{url('/client_service')}}">Services</a></li>
             <li><a class="nav-link" href="{{url('/client_contact')}}">Contact</a></li>
+            <li class="nav-item {{ request()->is('client/commandes*') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('client.commandes') }}">Mes Commandes</a>
+            </li>
           </ul>
 
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
