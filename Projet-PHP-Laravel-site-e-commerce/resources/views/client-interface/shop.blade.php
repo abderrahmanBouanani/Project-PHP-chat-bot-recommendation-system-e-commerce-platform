@@ -237,43 +237,7 @@
           <img src="{{ asset('images/sofa.png') }}" alt="Image" class="img-fluid" />
         </div>
 
-        <div class="row">
-          <div class="col-lg-8">
-            <div class="subscription-form">
-              <h3 class="d-flex align-items-center">
-                <span class="me-1"
-                  ><img
-                    src="{{ asset('images/envelope-outline.svg') }}"
-                    alt="Image"
-                    class="img-fluid"
-                /></span>
-                <span>Abonnez-vous à la Newsletter</span>
-              </h3>
-
-              <form action="#" class="row g-3">
-                <div class="col-auto">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Entrez votre nom"
-                  />
-                </div>
-                <div class="col-auto">
-                  <input
-                    type="email"
-                    class="form-control"
-                    placeholder="Entrez votre email"
-                  />
-                </div>
-                <div class="col-auto">
-                  <button class="btn btn-primary">
-                    <span class="fa fa-paper-plane"></span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        
 
         <div class="row g-5 mb-5">
           <div class="col-lg-4">
@@ -281,9 +245,7 @@
               <a href="#" class="footer-logo">ShopAll<span>.</span></a>
             </div>
             <p class="mb-4">
-              Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis
-              nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate
-              velit imperdiet dolor tempor tristique. Pellentesque habitant
+            ShopAll est une plateforme e-commerce dédiée à la vente de produits électroniques tels que des smartphones, ordinateurs, tablettes et accessoires. Elle offre une expérience d’achat simple, rapide et sécurisée, avec un large choix de produits de qualité à des prix compétitifs.
             </p>
 
             <ul class="list-unstyled custom-social">
@@ -306,35 +268,34 @@
             <div class="row links-wrap">
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">À propos de nous</a></li>
-                  <li><a href="#">Services</a></li>
-                  <li><a href="#">Blog</a></li>
-                  <li><a href="#">Contactez-nous</a></li>
+                  <li><a href="{{ url('/client_about') }}">À propos de nous</a></li>
+                  
+                  
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Support</a></li>
-                  <li><a href="#">Base de connaissances</a></li>
-                  <li><a href="#">Chat en direct</a></li>
+                <li><a href="{{ url('/client_service') }}">Services</a></li>
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Emplois</a></li>
-                  <li><a href="#">Notre équipe</a></li>
-                  <li><a href="#">Leadership</a></li>
-                  <li><a href="#">Politique de confidentialité</a></li>
+                  <li><a href="{{ url('/client_about') }}#equipe">Notre équipe</a></li>
+                  
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Nordic Chair</a></li>
-                  <li><a href="#">Kruzo Aero</a></li>
-                  <li><a href="#">Ergonomic Chair</a></li>
+                <li><a href="{{ url('/client_contact') }}#contact">Contactez-nous</a></li>
+                </ul>
+              </div>
+
+              <div class="col-6 col-sm-6 col-md-3">
+                <ul class="list-unstyled">
+                <li><a href="{{ url('/client_home') }}#blog">Blog</a></li>
                 </ul>
               </div>
             </div>

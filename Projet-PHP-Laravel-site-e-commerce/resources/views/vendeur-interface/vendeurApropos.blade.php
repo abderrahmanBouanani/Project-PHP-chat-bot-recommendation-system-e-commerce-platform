@@ -21,7 +21,7 @@
                 qualité et un service exceptionnel.
               </p>
               <p>
-                <a href="" class="btn btn-secondary me-2">Acheter maintenant</a
+                <a href="{{url('/vendeur_shop')}}" class="btn btn-secondary me-2">Vendre maintenant</a
                 ><a href="#" class="btn btn-white-outline">Explorer</a>
               </p>
             </div>
@@ -125,7 +125,7 @@
     <!-- Fin de la section Pourquoi nous choisir -->
 
     <!-- Début de la section Équipe -->
-    <div class="untree_co-section">
+    <div class="untree_co-section" >
       <div class="container">
         <div class="row mb-5">
           <div class="col-lg-5 mx-auto text-center">
@@ -133,9 +133,9 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row justify-content-center">
           <!-- Début Colonne 1 -->
-          <div class="col-12 col-md-6 col-lg-4 mb-5 mb-md-0">
+          <div class="col-6 col-md-3 col-lg-3 mb-5" id="equipe">
             <img src="../images/user-img.png" class="img-fluid mb-5" />
             <h3 clas>
               <a href="#"><span class="">Abderrahman</span> Bouanani</a>
@@ -156,7 +156,7 @@
           <!-- Fin Colonne 1 -->
 
           <!-- Début Colonne 2 -->
-          <div class="col-12 col-md-6 col-lg-4 mb-5 mb-md-0">
+          <div class="col-6 col-md-3 col-lg-3 mb-5">
             <img src="../images/user-img.png" class="img-fluid mb-5" />
 
             <h3 clas>
@@ -178,7 +178,7 @@
           <!-- Fin Colonne 2 -->
 
           <!-- Début Colonne 3 -->
-          <div class="col-12 col-md-6 col-lg-4 mb-5 mb-md-0">
+          <div class="col-6 col-md-3 col-lg-3 mb-5">
             <img src="../images/user-img.png" class="img-fluid mb-5" />
             <h3 clas>
               <a href="#"><span class="">Prof. Oumaima</span> Stitini</a>
@@ -197,6 +197,27 @@
             </p>
           </div>
           <!-- Fin Colonne 3 -->
+
+
+          <!-- Début Colonne 4 -->
+          <div class="col-6 col-md-3 col-lg-3 mb-5">
+            <img src="../images/user-img.png" class="img-fluid mb-5" />
+            <h3 clas>
+              <a href="#"><span class="">Prof. Noureddine</span> Zahid</a>
+            </h3>
+            <span class="d-block position mb-4"
+              >Professeur encadrant, Spécialiste en Didactique Informatique</span
+            >
+            <p>
+            Le Prof. Zahid guide notre équipe dans l’intégration pédagogique et l’optimisation de l’expérience utilisateur sur le projet.
+            </p>
+            <p class="mb-0">
+              <a href="#" class="more dark"
+                >En savoir plus <span class="icon-arrow_forward"></span
+              ></a>
+            </p>
+          </div>
+          <!-- Fin Colonne 4 -->
         </div>
       </div>
     </div>
@@ -321,10 +342,6 @@
         </div>
       </div>
     </div>
-    <!-- Fin du Slider de Témoignages --> 
-@endif
+    <!-- Fin du Slider de Témoignages -->
+    @endif
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
-
-
-
-

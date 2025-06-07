@@ -33,7 +33,7 @@
     <!-- Fin de la section Héros -->
 
     <!-- Début de la section Pourquoi nous choisir -->
-    <div class="why-choose-section">
+    <div class="why-choose-section" id="service">
       <div class="container">
         <div class="row my-5">
           <div class="col-6 col-md-6 col-lg-3 mb-4">
@@ -90,74 +90,7 @@
     </div>
     <!-- Fin de la section Pourquoi nous choisir -->
 
-    <!-- Début de la section Produits -->
-    <div class="product-section pt-0">
-      <div class="container">
-        <div class="row">
-          <!-- Début Colonne 1 -->
-          <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-            <h2 class="mb-4 section-title">
-              Découvrez notre sélection de produits.
-            </h2>
-            <p class="mb-4">
-              ShopAll vous offre une large gamme de produits de qualité pour
-              tous vos besoins.
-            </p>
-            <p><a href="#" class="btn">Explorer</a></p>
-          </div>
-          <!-- Fin Colonne 1 -->
-
-          <!-- Début Colonne 2 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="#">
-              <img
-                src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                class="img-fluid product-thumbnail"
-              />
-              <h3 class="product-title">Montre Intelligente Pro</h3>
-              <strong class="product-price">199.99 €</strong>
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- Fin Colonne 2 -->
-
-          <!-- Début Colonne 3 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="#">
-              <img
-                src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                class="img-fluid product-thumbnail"
-              />
-              <h3 class="product-title">Sac à dos Aventurier</h3>
-              <strong class="product-price">89.00 €</strong>
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- Fin Colonne 3 -->
-
-          <!-- Début Colonne 4 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="#">
-              <img
-                src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80"
-                class="img-fluid product-thumbnail"
-              />
-              <h3 class="product-title">Écouteurs Sans Fil Pro</h3>
-              <strong class="product-price">129.99 €</strong>
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- Fin Colonne 4 -->
-        </div>
-      </div>
-    </div>
-    <!-- Fin de la section Produits -->
+   
 
     <!-- Début du Slider de Témoignages -->
     <div class="testimonial-section before-footer-section">

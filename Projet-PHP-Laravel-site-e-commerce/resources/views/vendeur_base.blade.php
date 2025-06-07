@@ -82,7 +82,7 @@
                 <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
                   <img
                     src="{{ asset('images/logout2.png') }}"
-                    style="height: 30px; width: 30px; margin-left: 15px"
+                    style="height: 30px; width: 30px; margin-left: 15px ; margin-top: 7px"
                     alt="Déconnexion"
                   />
                 </button>
@@ -96,8 +96,8 @@
     @yield('content')
 
 
-    <!-- Start Footer Section -->
-    <footer class="footer-section">
+   <!-- Start Footer Section -->
+   <footer class="footer-section">
       <div class="container relative">
         <div class="sofa-img">
           <img src="{{ asset('images/sofa.png') }}" alt="Image" class="img-fluid" />
@@ -111,8 +111,9 @@
                   ><img
                     src="{{ asset('images/envelope-outline.svg') }}"
                     alt="Image"
-                    class="img-fluid" /></span
-                ><span>Subscribe to Newsletter</span>
+                    class="img-fluid"
+                /></span>
+                <span>Abonnez-vous à la Newsletter</span>
               </h3>
 
               <form action="#" class="row g-3">
@@ -120,14 +121,14 @@
                   <input
                     type="text"
                     class="form-control"
-                    placeholder="Enter your name"
+                    placeholder="Entrez votre nom"
                   />
                 </div>
                 <div class="col-auto">
                   <input
                     type="email"
                     class="form-control"
-                    placeholder="Enter your email"
+                    placeholder="Entrez votre email"
                   />
                 </div>
                 <div class="col-auto">
@@ -143,13 +144,10 @@
         <div class="row g-5 mb-5">
           <div class="col-lg-4">
             <div class="mb-4 footer-logo-wrap">
-              <a href="#" class="footer-logo">Furni<span>.</span></a>
+              <a href="#" class="footer-logo">ShopAll<span>.</span></a>
             </div>
             <p class="mb-4">
-              La facilitation commence par un pur blocage du travail. Nous vous
-              offrons une alternative à cette situation. Ensemble, nous
-              trouverons une solution pour améliorer ce processus. Le confort
-              d'un Client est essentiel
+            ShopAll est une plateforme e-commerce dédiée à la vente de produits électroniques tels que des smartphones, ordinateurs, tablettes et accessoires. Elle offre une expérience d’achat simple, rapide et sécurisée, avec un large choix de produits de qualité à des prix compétitifs.
             </p>
 
             <ul class="list-unstyled custom-social">
@@ -172,35 +170,35 @@
             <div class="row links-wrap">
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">About us</a></li>
-                  <li><a href="#">Services</a></li>
-                  <li><a href="#">Blog</a></li>
-                  <li><a href="#">Contact us</a></li>
+                  <li><a href="{{ url('/vendeur_about') }}">À propos de nous</a></li>
+                  
+                  
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Support</a></li>
-                  <li><a href="#">Knowledge base</a></li>
-                  <li><a href="#">Live chat</a></li>
+                <li><a href="{{ url('/vendeur_service') }}#service">Services</a></li>
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Jobs</a></li>
-                  <li><a href="#">Our team</a></li>
-                  <li><a href="#">Leadership</a></li>
-                  <li><a href="#">Privacy Policy</a></li>
+                  <li><a href="{{ url('/vendeur_about') }}#equipe">Notre équipe</a></li>
+                  
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="#">Nordic Chair</a></li>
-                  <li><a href="#">Kruzo Aero</a></li>
-                  <li><a href="#">Ergonomic Chair</a></li>
+                <li><a href="{{ url('/vendeur_contact') }}#contact">Contactez-nous</a></li>
+                </ul>
+              </div>
+
+
+              <div class="col-6 col-sm-6 col-md-3">
+                <ul class="list-unstyled">
+                <li><a href="{{ url('/vendeur_home') }}#blog">Blog</a></li>
                 </ul>
               </div>
             </div>
@@ -215,14 +213,17 @@
                 <script>
                   document.write(new Date().getFullYear());
                 </script>
-                . Tous droits réservés.
+                . Tous droits réservés. &mdash; Conçu avec
+                <span class="text-danger">❤</span>
               </p>
             </div>
 
             <div class="col-lg-6 text-center text-lg-end">
               <ul class="list-unstyled d-inline-flex ms-auto">
-                <li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-                <li><a href="#">Privacy Policy</a></li>
+                <li class="me-4">
+                  <a href="#">Termes &amp; Conditions</a>
+                </li>
+                <li><a href="#">Politique de confidentialité</a></li>
               </ul>
             </div>
           </div>
@@ -235,5 +236,8 @@
     <script src="{{ asset('assets/js/tiny-slider.js')}}"></script>
     <script src="{{ asset('assets/js/custom.js')}}"></script>
     <script src="{{ asset('assets/js/contact.js')}}"></script>
+    @if(request()->is('vendeur_home'))
+    <script src="{{ asset('assets/js/carousel.js') }}"></script>
+    @endif
   </body>
 </html>

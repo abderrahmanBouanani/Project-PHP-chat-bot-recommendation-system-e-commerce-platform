@@ -417,7 +417,7 @@
     <!-- Fin du Slider de Témoignages -->
 
     <!-- Start Blog Section -->
-    <div class="blog-section">
+    <div class="blog-section" id="blog">
       <div class="container">
         <div class="row mb-5">
           <div class="col-md-6">
