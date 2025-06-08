@@ -26,7 +26,7 @@
           <div class="col-lg-7">
             <div class="hero-img-wrap">
               <img
-                src="../images/1-removebg-preview.png.png"
+                src="../images/article1-Photoroom.png"
                 class="img-fluid"
                 style="width: 1500px; margin-top: 20px"
               />
@@ -37,384 +37,296 @@
     </div>
     <!-- End Hero Section -->
 
-    <!-- Start Product Section -->
-    <div class="product-section">
-      <div class="container">
-        <div class="row">
-          <!-- Start Column 1 -->
-          <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-            <h2 class="mb-4 section-title">
-              Conçu avec des matériaux d'excellence.
-            </h2>
-            <p class="mb-4">
-              Nos produits sont soigneusement fabriqués à partir de matériaux de
-              qualité supérieure, sélectionnés pour leur durabilité, leur
-              performance et leur élégance. Chaque détail est pensé pour offrir
-              une expérience exceptionnelle, alliant esthétique et fiabilité.
-            </p>
-            <p><a href="shop.html" class="btn">Explorer</a></p>
-          </div>
-          <!-- End Column 1 -->
-
-          <!-- Start Column 2 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
-              <img
-                src="../images/pc1.jpg"
-                class="img-fluid product-thumbnail"
-                style="mix-blend-mode: multiply"
-              />
-              <h3 class="product-title">MSI</h3>
-              <strong class="product-price">11500.00 DH</strong>
-
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- End Column 2 -->
-
-          <!-- Start Column 3 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
-              <img
-                src="../images/product-2.png"
-                class="img-fluid product-thumbnail"
-              />
-              <h3 class="product-title">Kruzo Aero Chair</h3>
-              <strong class="product-price">400.00 DH</strong>
-
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- End Column 3 -->
-
-          <!-- Start Column 4 -->
-          <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-            <a class="product-item" href="shop.html">
-              <img
-                src="../images/montre1.jpg"
-                class="img-fluid product-thumbnail"
-                style="mix-blend-mode: multiply"
-              />
-              <h3 class="product-title">World Time</h3>
-              <strong class="product-price">5000.00 DH</strong>
-
-              <span class="icon-cross">
-                <img src="../images/cross.svg" class="img-fluid" />
-              </span>
-            </a>
-          </div>
-          <!-- End Column 4 -->
-        </div>
-      </div>
-    </div>
-    <!-- End Product Section -->
+    
 
     <!-- Start Why Choose Us Section -->
-    <div class="why-choose-section">
-      <div class="container">
-        <div class="row justify-content-between">
-          <div class="col-lg-6">
-            <h2 class="section-title">Pourquoi nous choisir</h2>
-            <p>Vivez dans la simplicité pour atteindre vos objectifs..</p>
+<div class="why-choose-section">
+  <div class="container">
+    <div class="row justify-content-between">
+      <div class="col-lg-6">
+        <h2 class="section-title">Pourquoi choisir notre plateforme</h2>
+        <p>Boostez vos ventes en toute simplicité grâce à notre solution pensée pour les vendeurs.</p>
 
-            <div class="row my-5">
-              <div class="col-6 col-md-6">
-                <div class="feature">
-                  <div class="icon">
-                    <img src="../images/truck.svg" alt="Image" class="imf-fluid" />
-                  </div>
-                  <h3>Rapide &amp; Livraison gratuite</h3>
-                  <p>
-                    Vivez avec de la simplicité pour atteindre vos objectifs,
-                    tout en gardant la motivation et une relation de respect.
-                  </p>
-                </div>
+        <div class="row my-5">
+          <div class="col-6 col-md-6">
+            <div class="feature">
+              <div class="icon">
+                <img src="../images/truck.svg" alt="Image" class="imf-fluid" />
               </div>
-
-              <div class="col-6 col-md-6">
-                <div class="feature">
-                  <div class="icon">
-                    <img src="../images/bag.svg" alt="Image" class="imf-fluid" />
-                  </div>
-                  <h3>Facile à magasiner</h3>
-                  <p>
-                    Vivez avec des besoins simples d'amélioration positive de
-                    votre communauté directe.
-                  </p>
-                </div>
-              </div>
-
-              <div class="col-6 col-md-6">
-                <div class="feature">
-                  <div class="icon">
-                    <img
-                      src="../images/support.svg"
-                      alt="Image"
-                      class="imf-fluid"
-                    />
-                  </div>
-                  <h3>24/7 Support</h3>
-                  <p>
-                    Vivez avec de la simplicité pour atteindre vos objectifs.
-                  </p>
-                </div>
-              </div>
-
-              <div class="col-6 col-md-6">
-                <div class="feature">
-                  <div class="icon">
-                    <img
-                      src="../images/return.svg"
-                      alt="Image"
-                      class="imf-fluid"
-                    />
-                  </div>
-                  <h3>Retours sans tracas</h3>
-                  <p>Adoptez la simplicité pour favoriser votre progression.</p>
-                </div>
-              </div>
+              <h3>Livraison rapide & gratuite</h3>
+              <p>
+                Offrez à vos clients une expérience d’achat fluide avec une livraison rapide et sans frais.
+              </p>
             </div>
           </div>
 
-          <div class="col-lg-5">
-            <div class="img-wrap">
-              <img
-                src="../images/why-choose-us-img.jpg"
-                alt="Image"
-                class="img-fluid"
-              />
+          <div class="col-6 col-md-6">
+            <div class="feature">
+              <div class="icon">
+                <img src="../images/bag.svg" alt="Image" class="imf-fluid" />
+              </div>
+              <h3>Gestion simple des ventes</h3>
+              <p>
+                Gérez facilement vos produits, commandes et promotions depuis une interface intuitive.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-6">
+            <div class="feature">
+              <div class="icon">
+                <img
+                  src="../images/support.svg"
+                  alt="Image"
+                  class="imf-fluid"
+                />
+              </div>
+              <h3>Support dédié 24/7</h3>
+              <p>
+                Bénéficiez d’un accompagnement continu pour répondre à toutes vos questions rapidement.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-6">
+            <div class="feature">
+              <div class="icon">
+                <img
+                  src="../images/return.svg"
+                  alt="Image"
+                  class="imf-fluid"
+                />
+              </div>
+              <h3>Processus de retour simplifié</h3>
+              <p>
+                Facilitez la gestion des retours et augmentez la satisfaction de vos clients.
+              </p>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- End Why Choose Us Section -->
 
-    <!-- Start Simple Product Carousel Section (Remplace We Help Section) -->
-    <div class="simple-carousel-section">
-      <div class="container">
-        <div class="row mb-5">
-          <div class="col-12 text-center">
-            <h2 class="section-title">Nos Produits Vedettes</h2>
-            <p class="section-subtitle">Découvrez notre sélection de produits premium pour votre intérieur</p>
-          </div>
-        </div>
-
-        <div class="simple-carousel-wrapper">
-          <div class="simple-carousel-container">
-            <div class="simple-carousel-track" id="simpleCarouselTrack">
-              <!-- Produit 1 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=400&fit=crop" alt="Chaise Design Moderne">
-                  <div class="simple-product-badge">Mobilier</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Chaise Design Moderne</h3>
-                  <div class="simple-product-price">1299.00 DH</div>
-                </div>
-              </div>
-
-              <!-- Produit 2 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop" alt="Canapé Luxe Confort">
-                  <div class="simple-product-badge">Mobilier</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Canapé Luxe Confort</h3>
-                  <div class="simple-product-price">4999.00 DH</div>
-                </div>
-              </div>
-
-              <!-- Produit 3 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=400&h=400&fit=crop" alt="Table à Manger Élégante">
-                  <div class="simple-product-badge">Mobilier</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Table à Manger Élégante</h3>
-                  <div class="simple-product-price">3599.00 DH</div>
-                </div>
-              </div>
-
-              <!-- Produit 4 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop" alt="Lampe Design Premium">
-                  <div class="simple-product-badge">Éclairage</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Lampe Design Premium</h3>
-                  <div class="simple-product-price">899.00 DH</div>
-                </div>
-              </div>
-
-              <!-- Produit 5 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=400&h=400&fit=crop" alt="Bibliothèque Moderne">
-                  <div class="simple-product-badge">Rangement</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Bibliothèque Moderne</h3>
-                  <div class="simple-product-price">2499.00 DH</div>
-                </div>
-              </div>
-
-              <!-- Produit 6 -->
-              <div class="simple-product-card">
-                <div class="simple-product-image">
-                  <img src="https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=400&h=400&fit=crop" alt="Fauteuil Confort Plus">
-                  <div class="simple-product-badge">Mobilier</div>
-                </div>
-                <div class="simple-product-info">
-                  <h3 class="simple-product-name">Fauteuil Confort Plus</h3>
-                  <div class="simple-product-price">2199.00 DH</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="simple-carousel-navigation">
-            <button class="simple-nav-btn" id="simplePrevBtn">‹</button>
-            <div class="simple-carousel-dots" id="simpleDots">
-              <div class="simple-dot active" data-slide="0"></div>
-              <div class="simple-dot" data-slide="1"></div>
-              <div class="simple-dot" data-slide="2"></div>
-            </div>
-            <button class="simple-nav-btn" id="simpleNextBtn">›</button>
-          </div>
+      <div class="col-lg-5">
+        <div class="img-wrap">
+          <img
+            src="../images/why-choose-us-img.jpg"
+            alt="Image"
+            class="img-fluid"
+          />
         </div>
       </div>
     </div>
-    <!-- End Simple Product Carousel Section -->
+  </div>
+</div>
+<!-- End Why Choose Us Section -->
 
-    <!-- Start Testimonial Slider -->
-    <div class="testimonial-section before-footer-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-7 mx-auto text-center">
-            <h2 class="section-title">Témoignages</h2>
+
+    <!-- Start Simple Product Carousel Section (Adaptée pour Vendeur) -->
+<div class="simple-carousel-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="section-title">Vos Produits Vedettes</h2>
+        <p class="section-subtitle">Voici une sélection de vos meilleurs produits pour booster vos ventes</p>
+      </div>
+    </div>
+
+    <div class="simple-carousel-wrapper">
+      <div class="simple-carousel-container">
+        <div class="simple-carousel-track" id="simpleCarouselTrack">
+          <!-- Produit 1 -->
+          <div class="simple-product-card">
+            <div class="simple-product-image">
+              <img src="https://cdn.affilizz.com/__s__/images/products/fr_FR/67912a80/5ab03c/21d0/2856a9_main.webp?p=wc_picture" alt="Téléphone Haut de Gamme" style="mix-blend-mode: multiply">
+              <div class="simple-product-badge">Téléphone</div>
+            </div>
+            <div class="simple-product-info">
+              <h3 class="simple-product-name">Téléphone Haut de Gamme</h3>
+              <div class="simple-product-price">23000.00 DH</div>
+            </div>
           </div>
-        </div>
 
-        <div class="row justify-content-center">
-          <div class="col-lg-12">
-            <div class="testimonial-slider-wrap text-center">
-              <div id="testimonial-nav">
-                <span class="prev" data-controls="prev"
-                  ><span class="fa fa-chevron-left"></span
-                ></span>
-                <span class="next" data-controls="next"
-                  ><span class="fa fa-chevron-right"></span
-                ></span>
-              </div>
+          <!-- Produit 2 -->
+          <div class="simple-product-card">
+            <div class="simple-product-image">
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop" alt="Montre Classique">
+              <div class="simple-product-badge">Montre</div>
+            </div>
+            <div class="simple-product-info">
+              <h3 class="simple-product-name">Montre Classique</h3>
+              <div class="simple-product-price">1299.00 DH</div>
+            </div>
+          </div>
 
-              <div class="testimonial-slider">
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;La diversité des produits et le service
-                            client de qualité m'ont vraiment
-                            impressionné.&rdquo;
-                          </p>
-                        </blockquote>
+          <!-- Produit 3 -->
+          <div class="simple-product-card">
+            <div class="simple-product-image">
+              <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" alt="Montre Tactile">
+              <div class="simple-product-badge">Montre Tactile</div>
+            </div>
+            <div class="simple-product-info">
+              <h3 class="simple-product-name">Montre Tactile Sport</h3>
+              <div class="simple-product-price">1799.00 DH</div>
+            </div>
+          </div>
 
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Youssef Amrani"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Youssef Amrani</h3>
-                          <span class="position d-block mb-3"
-                            >PDG, Tech Innovate Maroc</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- FIN item -->
+          <!-- Produit 4 -->
+          <div class="simple-product-card">
+            <div class="simple-product-image">
+              <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop" alt="PC Portable Ultra-Puissant">
+              <div class="simple-product-badge">PC</div>
+            </div>
+            <div class="simple-product-info">
+              <h3 class="simple-product-name">PC Portable Ultra-Puissant</h3>
+              <div class="simple-product-price">8999.00 DH</div>
+            </div>
+          </div>
 
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;Les produits sont arrivés rapidement et en
-                            parfait état. Une plateforme de confiance.&rdquo;
-                          </p>
-                        </blockquote>
+          <!-- Produit 5 -->
+          <div class="simple-product-card">
+            <div class="simple-product-image">
+            <img src="https://m.media-amazon.com/images/I/715RcGknqwL.jpg" alt="Chaise Gamer Ergonomique">
 
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Fatima Zahra Benali"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Fatima Zahra Benali</h3>
-                          <span class="position d-block mb-3"
-                            >Architecte d'intérieur, Design Élégance</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- FIN item -->
 
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;J'ai trouvé exactement ce dont j'avais besoin
-                            à un excellent prix. Le site est facile à naviguer,
-                            et le service est impeccable.&rdquo;
-                          </p>
-                        </blockquote>
-
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Karim Tazi"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Karim Tazi</h3>
-                          <span class="position d-block mb-3"
-                            >Propriétaire, Café Lumière</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- FIN item -->
-              </div>
+              <div class="simple-product-badge">Chaise Gamer</div>
+            </div>
+            <div class="simple-product-info">
+              <h3 class="simple-product-name">Chaise Gamer Ergonomique</h3>
+              <div class="simple-product-price">2599.00 DH</div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="simple-carousel-navigation">
+        <button class="simple-nav-btn" id="simplePrevBtn">‹</button>
+        <div class="simple-carousel-dots" id="simpleDots">
+          <div class="simple-dot active" data-slide="0"></div>
+          <div class="simple-dot" data-slide="1"></div>
+          <div class="simple-dot" data-slide="2"></div>
+        </div>
+        <button class="simple-nav-btn" id="simpleNextBtn">›</button>
+      </div>
     </div>
-    <!-- Fin du Slider de Témoignages -->
+  </div>
+</div>
+<!-- End Simple Product Carousel Section -->
+
+
+   <!-- Start Testimonial Slider -->
+<div class="testimonial-section before-footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 mx-auto text-center">
+        <h2 class="section-title">Témoignages de nos vendeurs</h2>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        <div class="testimonial-slider-wrap text-center">
+          <div id="testimonial-nav">
+            <span class="prev" data-controls="prev"
+              ><span class="fa fa-chevron-left"></span
+            ></span>
+            <span class="next" data-controls="next"
+              ><span class="fa fa-chevron-right"></span
+            ></span>
+          </div>
+
+          <div class="testimonial-slider">
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Je vends des smartphones depuis des années, mais c'est la première fois que je trouve une plateforme aussi fluide, avec une visibilité exceptionnelle.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Omar Benhassine" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Omar Benhassine</h3>
+                      <span class="position d-block mb-3">Vendeur de téléphones mobiles</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;J’ai pu écouler toute ma collection de montres connectées en quelques semaines. La gestion des stocks est super intuitive.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Sanae Kabbaj" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Sanae Kabbaj</h3>
+                      <span class="position d-block mb-3">Spécialiste montres & accessoires</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;En tant que revendeur de PC, je suis impressionné par la rapidité des commandes et la satisfaction des clients.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Reda El Idrissi" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Reda El Idrissi</h3>
+                      <span class="position d-block mb-3">Distributeur PC & accessoires</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Les fans de gaming adorent mes chaises ergonomiques, et grâce à cette plateforme, mes ventes ont décollé.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Yassine Akdim" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Yassine Akdim</h3>
+                      <span class="position d-block mb-3">Vendeur de chaises gamer</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- end .testimonial-slider -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin du Slider de Témoignages -->
 
     <!-- Start Blog Section -->
     <div class="blog-section" id="blog">

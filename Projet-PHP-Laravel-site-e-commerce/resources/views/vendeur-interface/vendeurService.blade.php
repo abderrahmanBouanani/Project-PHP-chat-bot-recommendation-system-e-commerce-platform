@@ -32,186 +32,179 @@
     </div>
     <!-- Fin de la section Héros -->
 
-    <!-- Début de la section Pourquoi nous choisir -->
-    <div class="why-choose-section" id="service">
-      <div class="container">
-        <div class="row my-5">
-          <div class="col-6 col-md-6 col-lg-3 mb-4">
-            <div class="feature">
-              <div class="icon">
-                <img src="../images/truck.svg" alt="Image" class="imf-fluid" />
-              </div>
-              <h3>Livraison rapide et gratuite</h3>
-              <p>
-                Profitez d'une livraison rapide et gratuite pour tous vos achats
-                sur ShopAll.
-              </p>
-            </div>
+    <!-- Début de la section Pourquoi devenir vendeur -->
+<div class="why-choose-section" id="service">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Pourquoi devenir vendeur sur ShopAll ?</h2>
+    <div class="row my-5">
+      <div class="col-6 col-md-6 col-lg-3 mb-4">
+        <div class="feature">
+          <div class="icon">
+            <img src="../images/truck.svg" alt="Livraison gérée" class="imf-fluid" />
           </div>
+          <h3>Livraison gérée par ShopAll</h3>
+          <p>
+            Nous nous occupons de la logistique pour que vous puissiez vous concentrer sur vos ventes.
+          </p>
+        </div>
+      </div>
 
-          <div class="col-6 col-md-6 col-lg-3 mb-4">
-            <div class="feature">
-              <div class="icon">
-                <img src="../images/bag.svg" alt="Image" class="imf-fluid" />
-              </div>
-              <h3>Achat facile</h3>
-              <p>
-                Notre plateforme intuitive rend vos achats simples et agréables.
-              </p>
-            </div>
+      <div class="col-6 col-md-6 col-lg-3 mb-4">
+        <div class="feature">
+          <div class="icon">
+            <img src="../images/bag.svg" alt="Interface simple" class="imf-fluid" />
           </div>
+          <h3>Interface de gestion simple</h3>
+          <p>
+            Ajoutez, modifiez ou supprimez vos produits facilement via votre espace vendeur.
+          </p>
+        </div>
+      </div>
 
-          <div class="col-6 col-md-6 col-lg-3 mb-4">
-            <div class="feature">
-              <div class="icon">
-                <img src="../images/support.svg" alt="Image" class="imf-fluid" />
-              </div>
-              <h3>Support 24/7</h3>
-              <p>
-                Notre équipe de support est disponible à tout moment pour
-                répondre à vos questions.
-              </p>
-            </div>
+      <div class="col-6 col-md-6 col-lg-3 mb-4">
+        <div class="feature">
+          <div class="icon">
+            <img src="../images/support.svg" alt="Support dédié" class="imf-fluid" />
           </div>
+          <h3>Support vendeur dédié</h3>
+          <p>
+            Une équipe à votre écoute pour vous accompagner dans votre activité.
+          </p>
+        </div>
+      </div>
 
-          <div class="col-6 col-md-6 col-lg-3 mb-4">
-            <div class="feature">
-              <div class="icon">
-                <img src="../images/return.svg" alt="Image" class="imf-fluid" />
-              </div>
-              <h3>Retours sans tracas</h3>
-              <p>
-                Politique de retour simple pour votre tranquillité d'esprit.
-              </p>
-            </div>
+      <div class="col-6 col-md-6 col-lg-3 mb-4">
+        <div class="feature">
+          <div class="icon">
+            <img src="../images/return.svg" alt="Paiements rapides" class="imf-fluid" />
           </div>
+          <h3>Paiements rapides</h3>
+          <p>
+            Recevez vos paiements en toute sécurité, sans délai inutile.
+          </p>
         </div>
       </div>
     </div>
-    <!-- Fin de la section Pourquoi nous choisir -->
+  </div>
+</div>
+<!-- Fin de la section Pourquoi devenir vendeur -->
+
 
    
+ <!-- Start Testimonial Slider -->
+ <div class="testimonial-section before-footer-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 mx-auto text-center">
+        <h2 class="section-title">Témoignages de nos vendeurs</h2>
+      </div>
+    </div>
 
-    <!-- Début du Slider de Témoignages -->
-    <div class="testimonial-section before-footer-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-7 mx-auto text-center">
-            <h2 class="section-title">Témoignages</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        <div class="testimonial-slider-wrap text-center">
+          <div id="testimonial-nav">
+            <span class="prev" data-controls="prev"
+              ><span class="fa fa-chevron-left"></span
+            ></span>
+            <span class="next" data-controls="next"
+              ><span class="fa fa-chevron-right"></span
+            ></span>
           </div>
-        </div>
 
-        <div class="row justify-content-center">
-          <div class="col-lg-12">
-            <div class="testimonial-slider-wrap text-center">
-              <div id="testimonial-nav">
-                <span class="prev" data-controls="prev"
-                  ><span class="fa fa-chevron-left"></span
-                ></span>
-                <span class="next" data-controls="next"
-                  ><span class="fa fa-chevron-right"></span
-                ></span>
-              </div>
+          <div class="testimonial-slider">
 
-              <div class="testimonial-slider">
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;La diversité des produits et le service
-                            client de qualité m'ont vraiment
-                            impressionné.&rdquo;
-                          </p>
-                        </blockquote>
-
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Youssef Amrani"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Youssef Amrani</h3>
-                          <span class="position d-block mb-3"
-                            >PDG, Tech Innovate Maroc</span
-                          >
-                        </div>
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Je vends des smartphones depuis des années, mais c'est la première fois que je trouve une plateforme aussi fluide, avec une visibilité exceptionnelle.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Omar Benhassine" class="img-fluid" />
                       </div>
+                      <h3 class="font-weight-bold">Omar Benhassine</h3>
+                      <span class="position d-block mb-3">Vendeur de téléphones mobiles</span>
                     </div>
                   </div>
                 </div>
-                <!-- FIN item -->
-
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;Les produits sont arrivés rapidement et en
-                            parfait état. Une plateforme de confiance.&rdquo;
-                          </p>
-                        </blockquote>
-
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Fatima Zahra Benali"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Fatima Zahra Benali</h3>
-                          <span class="position d-block mb-3"
-                            >Architecte d'intérieur, Design Élégance</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- FIN item -->
-
-                <div class="item">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-8 mx-auto">
-                      <div class="testimonial-block text-center">
-                        <blockquote class="mb-5">
-                          <p>
-                            &ldquo;J'ai trouvé exactement ce dont j'avais besoin
-                            à un excellent prix. Le site est facile à naviguer,
-                            et le service est impeccable.&rdquo;
-                          </p>
-                        </blockquote>
-
-                        <div class="author-info">
-                          <div class="author-pic">
-                            <img
-                              src="../images/user-img.png"
-                              alt="Karim Tazi"
-                              class="img-fluid"
-                            />
-                          </div>
-                          <h3 class="font-weight-bold">Karim Tazi</h3>
-                          <span class="position d-block mb-3"
-                            >Propriétaire, Café Lumière</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- FIN item -->
               </div>
             </div>
-          </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;J’ai pu écouler toute ma collection de montres connectées en quelques semaines. La gestion des stocks est super intuitive.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Sanae Kabbaj" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Sanae Kabbaj</h3>
+                      <span class="position d-block mb-3">Spécialiste montres & accessoires</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;En tant que revendeur de PC, je suis impressionné par la rapidité des commandes et la satisfaction des clients.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Reda El Idrissi" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Reda El Idrissi</h3>
+                      <span class="position d-block mb-3">Distributeur PC & accessoires</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="row justify-content-center">
+                <div class="col-lg-8 mx-auto">
+                  <div class="testimonial-block text-center">
+                    <blockquote class="mb-5">
+                      <p>
+                        &ldquo;Les fans de gaming adorent mes chaises ergonomiques, et grâce à cette plateforme, mes ventes ont décollé.&rdquo;
+                      </p>
+                    </blockquote>
+                    <div class="author-info">
+                      <div class="author-pic">
+                        <img src="../images/user-img.png" alt="Yassine Akdim" class="img-fluid" />
+                      </div>
+                      <h3 class="font-weight-bold">Yassine Akdim</h3>
+                      <span class="position d-block mb-3">Vendeur de chaises gamer</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- end .testimonial-slider -->
         </div>
       </div>
     </div>
-    <!-- Fin du Slider de Témoignages -->
+  </div>
+</div>
+<!-- Fin du Slider de Témoignages -->
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
 
 

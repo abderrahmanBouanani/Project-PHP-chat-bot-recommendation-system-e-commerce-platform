@@ -119,7 +119,7 @@
                 <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir supprimer ce produit ?');">
                 @csrf
                 @method('DELETE')
-                <td><button class="btn btn-danger btn-sm remove-product">Supprimer</button></td>
+                <td><button class="btn btn-danger btn-sm remove-product"> <i class="fas fa-trash"></i></button></td>
                 </form>
               </tr>
               @endforeach

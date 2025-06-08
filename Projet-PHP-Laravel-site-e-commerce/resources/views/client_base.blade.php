@@ -152,7 +152,7 @@
     <footer class="footer-section">
       <div class="container relative">
         <div class="sofa-img">
-          <img src="{{ asset('images/sofa.png') }}" alt="Image" class="img-fluid" />
+          <img src="{{ asset('images/chaiseFooter-Photoroom.png') }}" alt="Image" class="img-fluid" />
         </div>
 
         <div class="row">

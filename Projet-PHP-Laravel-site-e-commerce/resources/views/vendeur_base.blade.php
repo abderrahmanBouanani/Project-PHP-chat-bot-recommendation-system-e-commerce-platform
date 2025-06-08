@@ -17,6 +17,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link href="{{ asset('assets/css/tiny-slider.css')}}" rel="stylesheet" />
     <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/shop.css')}}" />
@@ -100,7 +102,7 @@
    <footer class="footer-section">
       <div class="container relative">
         <div class="sofa-img">
-          <img src="{{ asset('images/sofa.png') }}" alt="Image" class="img-fluid" />
+          <img src="{{ asset('images/chaiseFooter-Photoroom.png') }}" alt="Image" class="img-fluid" />
         </div>
 
         <div class="row">
