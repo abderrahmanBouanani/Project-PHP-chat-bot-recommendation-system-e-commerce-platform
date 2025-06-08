@@ -78,7 +78,7 @@ class AdminOrderController extends Controller
                    break;
            }
 
-           $commandes = $query->paginate(8);
+           $commandes = $query->paginate(6);
            
            // Si c'est une requête AJAX, retourner une réponse JSON
            if ($request->ajax() || $request->wantsJson()) {
@@ -140,20 +140,38 @@ class AdminOrderController extends Controller
     */
    public function show($id)
    {
-       $commande = Commande::with(['client', 'facturation', 'paiement'])->findOrFail($id);
+       try {
+           $commande = Commande::with([
+               'client', 
+               'facturation', 
+               'paiement',
+               'produits' => function($query) {
+                   $query->withPivot('quantite');
+               }
+           ])->findOrFail($id);
 
-       // Récupérer les produits de la commande sans utiliser les timestamps
-       $produits = DB::table('commande_produit')
-           ->join('produits', 'commande_produit.produit_id', '=', 'produits.id')
-           ->where('commande_produit.commande_id', $id)
-           ->select('produits.*', 'commande_produit.quantite')
-           ->get();
+           // Si c'est une requête AJAX, retourner une réponse JSON
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => true,
+                   'commande' => $commande
+               ]);
+           }
 
-       return view('admin-interface.commande-details', [
-           'page' => 'ShopAll - Détails commande',
-           'commande' => $commande,
-           'produits' => $produits
-       ]);
+           // Sinon, retourner la vue
+           return view('admin-interface.commande-details', [
+               'page' => 'ShopAll - Détails commande',
+               'commande' => $commande
+           ]);
+       } catch (\Exception $e) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Erreur lors de la récupération des détails de la commande: ' . $e->getMessage()
+               ], 500);
+           }
+           return back()->with('error', 'Erreur lors de la récupération des détails de la commande.');
+       }
    }
 
    /**

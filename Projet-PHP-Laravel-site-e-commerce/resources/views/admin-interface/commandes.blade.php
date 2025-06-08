@@ -110,11 +110,6 @@
         </tbody>
       </table>
 
-      <!-- Pagination Links -->
-      <div class="d-flex justify-content-center mt-4">
-        {{ $commandes->links() }}
-      </div>
-      
       <!-- Pagination -->
       <div class="d-flex justify-content-center mt-4 pagination-container">
         <!-- La pagination sera générée dynamiquement en JavaScript -->
@@ -134,11 +129,6 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <tbody id="modalProductsList">
-                  <!-- Les produits seront ajoutés ici dynamiquement -->
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </div>
@@ -408,19 +398,14 @@
         modal.show();
         
         // Récupérer les détails de la commande via AJAX
-        fetch(`/admin/commande/${commandeId}/details`, {
+        fetch(`/admin/commande/${commandeId}`, {
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
           }
         })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Erreur lors du chargement des détails de la commande');
-          }
-          return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
           if (data.success && data.commande) {
             const commande = data.commande;
@@ -469,7 +454,7 @@
             
             // Ajouter chaque produit
             commande.produits.forEach(produit => {
-              const prixUnitaire = parseFloat(produit.pivot.prix_unitaire);
+              const prixUnitaire = parseFloat(produit.prix_unitaire);
               const quantite = parseInt(produit.pivot.quantite);
               const total = prixUnitaire * quantite;
               
@@ -477,7 +462,7 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
-                      <img src="${produit.images && produit.images.length > 0 ? '/storage/' + produit.images[0].chemin : '/assets/images/no-image.png'}" 
+                      <img src="${produit.image ? '/storage/' + produit.image : '/assets/images/no-image.png'}" 
                            alt="${produit.nom}" 
                            class="img-thumbnail me-3"
                            style="width: 60px; height: 60px; object-fit: contain;">
@@ -551,37 +536,19 @@
         });
       }
 
-      function getStatusBadge(status) {
+      function getStatusBadgeClass(status) {
         switch(status) {
           case 'Confirmée':
-            return '<span class="badge bg-warning text-dark">Confirmée</span>';
+            return 'bg-warning text-dark';
           case 'En cours de livraison':
-            return '<span class="badge bg-primary">En cours de livraison</span>';
+            return 'bg-primary';
           case 'Livrée':
-            return '<span class="badge bg-success">Livrée</span>';
+            return 'bg-success';
           case 'Annulée':
-            return '<span class="badge bg-danger">Annulée</span>';
+            return 'bg-danger';
           default:
-            return '<span class="badge bg-secondary">En attente</span>';
+            return 'bg-secondary';
         }
-      }
-
-      function getActionButtons(order) {
-        if (order.statut === 'En attente') {
-          return `
-            <form action="/admin/commande/${order.id}/status" method="POST" class="d-inline">
-              <input type="hidden" name="_token" value="{{ csrf_token() }}">
-              <input type="hidden" name="statut" value="Confirmée">
-              <button type="submit" class="btn btn-sm btn-success me-2">Confirmer</button>
-            </form>
-            <form action="/admin/commande/${order.id}/status" method="POST" class="d-inline">
-              <input type="hidden" name="_token" value="{{ csrf_token() }}">
-              <input type="hidden" name="statut" value="Annulée">
-              <button type="submit" class="btn btn-sm btn-danger">Annuler</button>
-            </form>
-          `;
-        }
-        return '';
       }
     </script>
 @endsection <!-- Ici finit le contenu spécifique à cette page -->
