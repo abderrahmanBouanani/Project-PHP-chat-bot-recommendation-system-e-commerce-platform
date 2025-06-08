@@ -1,44 +1,156 @@
-/* Style global pour les inputs */
+/* Variables CSS pour une cohérence globale */
+:root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --text-light: #f8f9fa;
+  --text-dark: #212529;
+  --bg-dark: #1a1a2e;
+  --transition-speed: 0.4s;
+  --cubic-bezier: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Style global pour les inputs - Version Premium */
+.hero .form-control {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.hero .form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  transform: translateY(0);
+  transition: transform var(--transition-speed) ease;
+}
+
 .hero input,
 .hero select {
-  border: 2px solid #fff;
-  border-radius: 5px;
-  padding: 10px;
-  color: #333;
-  background-color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
   width: 100%;
-  transition: all 0.3s ease;
+  max-width: 400px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all var(--transition-speed) var(--cubic-bezier);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Survol des inputs */
+/* Placeholder stylisé */
+.hero input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+}
+
+/* Animation au survol */
+.hero input:hover,
+.hero select:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation au focus */
 .hero input:focus,
 .hero select:focus {
-  outline: none; /* Supprime le contour par défaut */
-  border-color: #007bff; /* Bordure bleue au survol */
-  background-color: #fff; /* Fond solide */
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3), 0 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
 }
 
-/* Style pour le label */
-.hero .form-label {
-  font-weight: bold; /* Texte en gras */
-  margin-bottom: 5px; /* Espacement sous le label */
-  display: block; /* Label au-dessus des inputs */
+/* Label qui bouge légèrement quand l'input est focus */
+.hero input:focus + .form-label,
+.hero select:focus + .form-label {
+  transform: translateY(-5px);
+  color: var(--primary-color);
 }
 
-/* Style spécifique pour les conteneurs */
-.hero .form-control {
-  margin-bottom: 15px; /* Espacement entre les champs */
-}
-
-/* Style spécifique pour le champ de recherche */
+/* Style spécifique pour le champ de recherche avec icône */
 .hero #search {
-  width: 80%; /* Largeur personnalisée */
-  max-width: 400px; /* Largeur maximum */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-size: 18px;
+  padding-left: 45px;
 }
 
-/* Style spécifique pour le champ de filtrage */
-.hero #filtrer {
-  width: 80%; /* Largeur personnalisée */
-  max-width: 400px; /* Largeur maximum */
+/* Animation d'apparition pour le select de catégorie */
+.hero #categorie {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  transition: all 0.5s ease-out;
+}
+
+.hero #categorie.show {
+  opacity: 1;
+  height: auto;
+  padding: 14px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  margin-top: 10px;
+}
+
+/* Style personnalisé pour le select */
+.hero select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px;
+  padding-right: 45px;
+  cursor: pointer;
+}
+
+/* Animation de flottement pour le titre */
+.hero .intro-excerpt h1 {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Effet de vague sur les inputs au focus */
+.hero input:focus::after,
+.hero select:focus::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px;
+  animation: wave 1.5s infinite;
+  pointer-events: none;
+}
+
+@keyframes wave {
+  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero input,
+  .hero select {
+    max-width: 100%;
+  }
+  
+  .hero .col-lg-7 {
+    margin-right: 0 !important;
+  }
+}
+
+.hero .form-control select {
+  color: var(--text-light);
 }

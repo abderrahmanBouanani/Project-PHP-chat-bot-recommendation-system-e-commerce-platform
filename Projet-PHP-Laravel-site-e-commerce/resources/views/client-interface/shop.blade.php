@@ -164,7 +164,7 @@
             </div>
           </div>
           <div class="col-lg-7" style="margin-right: 200px">
-            <label for="search" class="form-label text-light">Rechercher</label>
+            <label for="search" class="form-label">Rechercher</label>
             <input
               type="text"
               id="search"
@@ -172,15 +172,16 @@
               placeholder="Tapez pour chercher"
             />
             <br />
-            <label for="filtrer" class="form-label text-light">Filtrer</label>
+            <label for="filtrer" class="form-label">Filtrer</label>
             <select id="filtrer" class="form-control w-50">
               <option value="">Tous les produits</option>
               <option value="prix">Prix (croissant)</option>
               <option value="categorie">Catégorie</option>
+              <option value="stock">Stock</option>
             </select>
             <label
               for="categorie"
-              class="form-label text-light mt-3"
+              class="form-label mt-3"
               style="display: none"
               >Choisissez une catégorie</label
             >
@@ -345,6 +346,7 @@
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     <script src="{{ asset('assets/js/chatbot.js') }}"></script>
     <script src="{{ asset('assets/js/cart-badge.js') }}"></script>
+    <script src="{{ asset('assets/js/shop-hero.js') }}"></script>
   </body>
 </html>
 

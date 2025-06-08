@@ -183,7 +183,7 @@
           <div class="col-lg-5">
             <div class="img-wrap">
               <img
-                src="../images/why-choose-us-img.jpg"
+                src="../images/why2.jpg"
                 alt="Image"
                 class="img-fluid"
               />

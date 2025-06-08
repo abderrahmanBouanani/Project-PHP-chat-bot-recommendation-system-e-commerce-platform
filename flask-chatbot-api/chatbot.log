@@ -1,0 +1,20 @@
+2025-06-08 10:25:50,685 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.11.109:5000
+2025-06-08 10:25:50,686 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-06-08 10:25:50,691 - werkzeug - INFO -  * Restarting with stat
+2025-06-08 10:25:52,450 - werkzeug - WARNING -  * Debugger is active!
+2025-06-08 10:25:52,462 - werkzeug - INFO -  * Debugger PIN: 111-443-184
+2025-06-08 10:26:14,024 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:14] "OPTIONS /ask HTTP/1.1" 200 -
+2025-06-08 10:26:14,270 - __main__ - INFO - Nouvelle requête: client_id=2, message='recommander moi des produits'
+2025-06-08 10:26:18,499 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-06-08 10:26:18,501 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:18] "POST /ask HTTP/1.1" 200 -
+2025-06-08 10:26:30,858 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:30] "OPTIONS /ask HTTP/1.1" 200 -
+2025-06-08 10:26:31,171 - __main__ - INFO - Nouvelle requête: client_id=2, message='recommande moi'
+2025-06-08 10:26:31,190 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-06-08 10:26:31,199 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:31] "POST /ask HTTP/1.1" 200 -
+2025-06-08 10:26:48,359 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:48] "OPTIONS /ask HTTP/1.1" 200 -
+2025-06-08 10:26:48,671 - __main__ - INFO - Nouvelle requête: client_id=2, message='les montres existe dans le site?'
+2025-06-08 10:26:48,698 - __main__ - ERROR - Erreur lors de l'enregistrement de l'interaction: 1146 (42S02): Table 'shopall.interaction_logs' doesn't exist
+2025-06-08 10:26:48,699 - werkzeug - INFO - 127.0.0.1 - - [08/Jun/2025 10:26:48] "POST /ask HTTP/1.1" 200 -

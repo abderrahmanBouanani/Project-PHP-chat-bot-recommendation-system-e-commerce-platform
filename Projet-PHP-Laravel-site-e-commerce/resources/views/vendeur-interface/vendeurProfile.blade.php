@@ -74,7 +74,7 @@
                 <button type="submit" class="nav-link border-0 bg-transparent p-0" style="cursor: pointer;">
                   <img
                     src="../images/logout2.png"
-                    style="height: 30px; width: 30px; margin-left: 15px"
+                    style="height: 30px; width: 30px; margin-left: 15px;margin-top: 7px;"
                     alt="Déconnexion"
                   />
                 </button>
