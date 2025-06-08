@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Commande;
 
 class AdminUserController extends Controller
 {
@@ -89,14 +90,64 @@ class AdminUserController extends Controller
      */
     public function destroy($id)
     {
-        // Vérifier les droits d'édition
-       $check = $this->checkEditRights();
-       if ($check) {
-           return $check;
-       }
-        $user = User::findOrFail($id);
-        $user->delete();
+        try {
+            // Vérifier les droits d'édition
+            $check = $this->checkEditRights();
+            if ($check) {
+                return $check;
+            }
 
-        return redirect()->back()->with('success', 'Utilisateur supprimé avec succès');
+            // Récupérer l'utilisateur
+            $user = User::findOrFail($id);
+
+            // Vérifier si l'utilisateur est un client avec des commandes
+            if ($user->type === 'client' && $user->commandes()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cet utilisateur ne peut pas être supprimé car il a des commandes associées.'
+                ], 400);
+            }
+
+            // Vérifier si l'utilisateur est un livreur avec des commandes en cours
+            if ($user->type === 'livreur') {
+                $commandesEnCours = Commande::where('livreur_id', $user->id)
+                    ->whereIn('statut', ['En cours de livraison', 'Confirmée'])
+                    ->count();
+                
+                if ($commandesEnCours > 0) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Cet utilisateur ne peut pas être supprimé car il a des commandes en cours de livraison.'
+                    ], 400);
+                }
+            }
+
+            // Vérifier si l'utilisateur est un vendeur avec des produits
+            if ($user->type === 'vendeur' && $user->produits()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cet utilisateur ne peut pas être supprimé car il a des produits associés.'
+                ], 400);
+            }
+
+            // Supprimer l'utilisateur
+            $user->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Utilisateur supprimé avec succès'
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Erreur lors de la suppression de l\'utilisateur', [
+                'user_id' => $id,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la suppression de l\'utilisateur: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

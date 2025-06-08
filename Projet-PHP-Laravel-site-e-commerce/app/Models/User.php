@@ -32,8 +32,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany(Commande::class, 'client_id');
     }
 
-    // public function livraisons()
-    // {
-    //     return $this->hasMany(Livraison::class, 'livreur_id');
-    // }
+    public function livraisons()
+    {
+        return $this->hasMany(Livraison::class, 'livreur_id');
+    }
 }
