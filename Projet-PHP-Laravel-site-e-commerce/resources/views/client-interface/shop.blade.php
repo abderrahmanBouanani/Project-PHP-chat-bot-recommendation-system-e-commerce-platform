@@ -240,6 +240,10 @@
         </div>
         -->
 
+        <div class="sofa-img">
+          <img src="{{ asset('images/laptop.png') }}" alt="Image" class="img-fluid" style="width: 800px; height: auto;" />
+        </div>
+
         
 
         <div class="row g-5 mb-5">
@@ -248,7 +252,7 @@
               <a href="#" class="footer-logo">ShopAll<span>.</span></a>
             </div>
             <p class="mb-4">
-            ShopAll est une plateforme e-commerce dédiée à la vente de produits électroniques tels que des smartphones, ordinateurs, tablettes et accessoires. Elle offre une expérience d’achat simple, rapide et sécurisée, avec un large choix de produits de qualité à des prix compétitifs.
+            ShopAll est une plateforme e-commerce dédiée à la vente de produits électroniques tels que des smartphones, ordinateurs, tablettes et accessoires. Elle offre une expérience d'achat simple, rapide et sécurisée, avec un large choix de produits de qualité à des prix compétitifs.
             </p>
 
             <ul class="list-unstyled custom-social">
