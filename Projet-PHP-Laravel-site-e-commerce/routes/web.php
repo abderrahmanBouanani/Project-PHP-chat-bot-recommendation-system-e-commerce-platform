@@ -101,16 +101,16 @@ Route::prefix('admin')->middleware(['web'])->group(function () {
     // Route principale pour afficher la liste des produits
     Route::get('/produits', [AdminProductController::class, 'index'])->name('admin.produits');
     
+    // Route pour la recherche AJAX (doit être avant les routes avec paramètres)
+    Route::get('/produits/search', [AdminProductController::class, 'search'])->name('admin.produits.search');
+    
     // Routes pour la gestion des produits (CRUD)
     Route::get('/produits/create', [AdminProductController::class, 'create'])->name('admin.produits.create');
     Route::post('/produits', [AdminProductController::class, 'store'])->name('admin.produits.store');
     Route::get('/produits/{id}', [AdminProductController::class, 'show'])->name('admin.produits.show');
     Route::get('/produits/{id}/edit', [AdminProductController::class, 'edit'])->name('admin.produits.edit');
     Route::put('/produits/{id}', [AdminProductController::class, 'update'])->name('admin.produits.update');
-    Route::delete('/produits/{id}', [AdminProductController::class, 'destroy'])->name('admin.produits.destroy');
-    
-    // Route pour la recherche AJAX
-    Route::get('/produits/search', [AdminProductController::class, 'search'])->name('admin.produits.search');
+    Route::delete('/produits/{id}', [AdminProductController::class, 'destroy'])->name('admin.produits.delete');
 });
 
 // Routes pour le client
