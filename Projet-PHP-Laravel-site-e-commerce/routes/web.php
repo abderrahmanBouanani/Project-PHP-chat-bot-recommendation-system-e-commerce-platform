@@ -273,6 +273,13 @@ Route::post('/chatbot/ask', [\App\Http\Controllers\ChatController::class, 'ask']
 // Route pour obtenir le nombre d'articles dans le panier
 Route::get('/api/cart/count', [CartController::class, 'getCartCount']);
 
+// --- Livreur ---
+Route::get('/livreur/livraisons-disponibles', [LivreurController::class, 'livraisonsDisponibles'])->name('livreur.livraisons.disponibles');
+Route::get('/livreur/mes-livraisons', [LivreurController::class, 'mesLivraisons'])->name('livreur.mes.livraisons');
+Route::get('/livreur/commande-actuelle', [LivreurController::class, 'commandeActuelle'])->name('livreur.commande.actuelle');
+Route::post('/livreur/accepter/{id}', [LivreurController::class, 'accepter'])->name('livreur.accepter');
+Route::post('/livreur/livree/{id}', [LivreurController::class, 'livree'])->name('livreur.livree');
+
 
 
 

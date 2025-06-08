@@ -33,9 +33,17 @@
       </div>
 
       <nav class="side-bar-content">
-        <a href="{{ url('/livreur_livraison') }}" class="nav-link {{ request()->is('livreur_livraison') ? 'active' : '' }} d-flex align-items-center">
+        <a href="{{ route('livreur.livraisons.disponibles') }}" class="nav-link {{ request()->routeIs('livreur.livraisons.disponibles') ? 'active' : '' }} d-flex align-items-center">
           <i class="bi bi-truck me-3"></i>
-          <span>Livraisons</span>
+          <span>Livraisons disponibles</span>
+        </a>
+        <a href="{{ route('livreur.commande.actuelle') }}" class="nav-link {{ request()->routeIs('livreur.commande.actuelle') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-clock-history me-3"></i>
+          <span>Commande actuelle</span>
+        </a>
+        <a href="{{ route('livreur.mes.livraisons') }}" class="nav-link {{ request()->routeIs('livreur.mes.livraisons') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-box-seam me-3"></i>
+          <span>Mes livraisons</span>
         </a>
         <a href="{{ url('/livreur_profile') }}" class="nav-link {{ request()->is('livreur_profile') ? 'active' : '' }} d-flex align-items-center">
           <i class="bi bi-person me-3"></i>

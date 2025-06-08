@@ -37,35 +37,37 @@ class LivreurController extends Controller
     public function accepter($id)
     {
         try {
-             // Vérifier les droits d'édition
-       $check = $this->checkEditRights();
-       if ($check) {
-           return $check;
-       }
+            // Vérifier les droits d'édition
+            $check = $this->checkEditRights();
+            if ($check) {
+                return $check;
+            }
             $commande = Commande::findOrFail($id);
             if ($commande->statut === 'Confirmée') {
+                // Vérifier si le livreur a déjà une commande en cours de livraison
+                $livreurId = session('user')['id'] ?? null;
+                if (!$livreurId) {
+                    return redirect()->route('login')->with('error', 'Livreur non connecté.');
+                }
+                $commandeEnCours = Commande::where('livreur_id', $livreurId)
+                    ->where('statut', 'En cours de livraison')
+                    ->first();
+                if ($commandeEnCours) {
+                    return redirect()->route('livreur.commande.actuelle')->with('error', 'Vous avez déjà une commande en cours de livraison.');
+                }
                 $commande->statut = 'En cours de livraison';
+                $commande->livreur_id = $livreurId;
                 $commande->save();
 
                 // Log the status change
                 \Log::info("Commande {$id} acceptée par le livreur, nouveau statut: En cours de livraison");
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Commande acceptée.',
-                    'newStatus' => 'En cours de livraison'
-                ]);
+                return redirect()->route('livreur.commande.actuelle')->with('success', 'Commande acceptée avec succès.');
             }
-            return response()->json([
-                'success' => false,
-                'message' => 'Commande non disponible pour acceptation. Statut actuel: ' . $commande->statut
-            ], 400);
+            return redirect()->route('livreur.livraisons.disponibles')->with('error', 'Commande non disponible pour acceptation. Statut actuel: ' . $commande->statut);
         } catch (\Exception $e) {
             \Log::error("Erreur lors de l'acceptation de la commande {$id}: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de l\'acceptation de la commande: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('livreur.livraisons.disponibles')->with('error', 'Erreur lors de l\'acceptation de la commande: ' . $e->getMessage());
         }
     }
 
@@ -73,11 +75,11 @@ class LivreurController extends Controller
     public function livree($id)
     {
         try {
-             // Vérifier les droits d'édition
-       $check = $this->checkEditRights();
-       if ($check) {
-           return $check;
-       }
+            // Vérifier les droits d'édition
+            $check = $this->checkEditRights();
+            if ($check) {
+                return $check;
+            }
             $commande = Commande::findOrFail($id);
             if ($commande->statut === 'En cours de livraison') {
                 $commande->statut = 'Livrée';
@@ -86,22 +88,12 @@ class LivreurController extends Controller
                 // Log the status change
                 \Log::info("Commande {$id} marquée comme livrée, nouveau statut: Livrée");
 
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Commande livrée.',
-                    'newStatus' => 'Livrée'
-                ]);
+                return redirect()->route('livreur.commande.actuelle')->with('success', 'Commande marquée comme livrée avec succès.');
             }
-            return response()->json([
-                'success' => false,
-                'message' => 'Commande non disponible pour livraison. Statut actuel: ' . $commande->statut
-            ], 400);
+            return redirect()->route('livreur.commande.actuelle')->with('error', 'Commande non disponible pour livraison. Statut actuel: ' . $commande->statut);
         } catch (\Exception $e) {
             \Log::error("Erreur lors de la mise à jour du statut de livraison pour la commande {$id}: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Erreur lors de la mise à jour du statut: ' . $e->getMessage()
-            ], 500);
+            return redirect()->route('livreur.commande.actuelle')->with('error', 'Erreur lors de la mise à jour du statut: ' . $e->getMessage());
         }
     }
 
@@ -354,5 +346,52 @@ class LivreurController extends Controller
                 'message' => 'Erreur lors de la récupération des détails de la commande: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Affiche les commandes non acceptées par un livreur (juste validées par l'admin)
+     */
+    public function livraisonsDisponibles()
+    {
+        $commandes = \App\Models\Commande::where('statut', 'Confirmée')
+            ->whereNull('livreur_id')
+            ->orderBy('created_at', 'desc')
+            ->paginate(8);
+        return view('livreur-interface.livraisons_disponibles', [
+            'commandes' => $commandes
+        ]);
+    }
+
+    /**
+     * Affiche les commandes livrées par le livreur connecté
+     */
+    public function mesLivraisons()
+    {
+        $livreurId = session('user')['id'];
+        $commandes = \App\Models\Commande::where('livreur_id', $livreurId)
+            ->where('statut', 'Livrée')
+            ->orderBy('created_at', 'desc')
+            ->paginate(8);
+        return view('livreur-interface.mes_livraisons', [
+            'commandes' => $commandes
+        ]);
+    }
+
+    /**
+     * Affiche la commande actuelle en cours de livraison du livreur
+     */
+    public function commandeActuelle()
+    {
+        $livreurId = session('user')['id'] ?? null;
+        if (!$livreurId) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+        $commande = \App\Models\Commande::where('livreur_id', $livreurId)
+            ->where('statut', 'En cours de livraison')
+            ->orderBy('created_at', 'desc')
+            ->first();
+        return view('livreur-interface.commande_actuelle', [
+            'commande' => $commande
+        ]);
     }
 }
