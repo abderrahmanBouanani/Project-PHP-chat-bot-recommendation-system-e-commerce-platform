@@ -78,10 +78,38 @@ class ProduitController extends Controller
     //Suppression
     public function destroy($id){
         $produit = Produit::findOrFail($id);
-        $produit->delete();
+        $produit->quantite = 0;
+        $produit->save();
 
-        return redirect()->back()->with('success', 'Produit supprimé avec succès.');
+        return redirect()->back()->with('success', 'Produit mis hors stock avec succès.');
     }
+
+    /**
+     * Met à jour la quantité d'un produit
+     */
+    public function updateQuantity(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'quantite' => 'required|integer|min:0'
+            ]);
+
+            $produit = Produit::findOrFail($id);
+            
+            // Vérifier que le produit appartient bien au vendeur connecté
+            if ($produit->vendeur_id !== session('user')['id']) {
+                return redirect()->back()->with('error', 'Non autorisé à modifier ce produit');
+            }
+
+            $produit->quantite = $request->quantite;
+            $produit->save();
+
+            return redirect()->back()->with('success', 'Quantité mise à jour avec succès');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erreur lors de la mise à jour de la quantité: ' . $e->getMessage());
+        }
+    }
+
     //Récuperation
     public function getProduits(Request $request){
         try {

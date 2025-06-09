@@ -115,10 +115,20 @@
                 <td>{{ $produit->nom }}</td>
                 <td>{{ number_format($produit->prix_unitaire) }} DH</td>
                 <td>{{ $produit->categorie }}</td>
-                <td>{{ $produit->quantite }}</td>
-                <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir supprimer ce produit ?');">
+                <td>
+                    <form action="{{ route('produits.updateQuantity', $produit->id) }}" method="POST" class="d-flex align-items-center">
+                        @csrf
+                        <input type="number" class="form-control form-control-sm quantity-input" 
+                               name="quantite"
+                               value="{{ $produit->quantite }}" min="0" 
+                               style="width: 80px;">
+                        <button type="submit" class="btn btn-primary btn-sm ms-2">
+                            <i class="fas fa-save"></i>
+                        </button>
+                    </form>
+                </td>
+                <form action="{{ route('produits.destroy', $produit->id) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir mettre ce produit hors stock ?');">
                 @csrf
-                @method('DELETE')
                 <td><button class="btn btn-danger btn-sm remove-product"> <i class="fas fa-trash"></i></button></td>
                 </form>
               </tr>
@@ -137,4 +147,4 @@
     <!-- End Product Table Section -->
 @endif
 @endsection
- <!-- Ici finit le contenu spécifique à cette page -->
+<!-- Ici finit le contenu spécifique à cette page -->

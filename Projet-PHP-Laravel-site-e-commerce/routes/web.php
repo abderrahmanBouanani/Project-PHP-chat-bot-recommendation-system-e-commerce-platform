@@ -56,9 +56,10 @@ Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name(
 //---vendeur---
 // Gérer l'envoi du formulaire d'ajout du produit
 Route::post('/produit', [ProduitController::class, 'store'])->name('vendeur.addProduct');
-Route::delete('/vendeur_shop/{id}', [ProduitController::class, 'destroy'])->name('produits.destroy');
-
-
+// Route pour mettre à jour la quantité d'un produit
+Route::post('/vendeur_shop/{id}/quantity', [ProduitController::class, 'updateQuantity'])->name('produits.updateQuantity');
+// Route pour mettre un produit hors stock
+Route::post('/vendeur_shop/{id}/out-of-stock', [ProduitController::class, 'destroy'])->name('produits.destroy');
 
 Route::get('/vendeur_shop', [ProduitController::class, 'index'])->name('vendeur.shop');
 
