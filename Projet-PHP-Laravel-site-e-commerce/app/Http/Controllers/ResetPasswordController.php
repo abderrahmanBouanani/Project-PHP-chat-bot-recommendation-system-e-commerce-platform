@@ -53,7 +53,7 @@ class ResetPasswordController extends Controller
             return back()->withErrors(['email' => 'Aucun utilisateur trouvé avec cette adresse email.']);
         }
 
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $user->save();
 
         // Supprimer le token

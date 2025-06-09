@@ -34,7 +34,7 @@ class ForgotPasswordController extends Controller
             return back()->with('error', 'Aucun utilisateur trouvé avec cette adresse email.');
         }
 
-        // Générer un token unique
+        // Générer un token unique et sécurisé
         $token = Str::random(64);
 
         // Stocker le token dans la base de données

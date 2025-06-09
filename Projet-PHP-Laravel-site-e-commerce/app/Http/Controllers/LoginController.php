@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -17,11 +18,9 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'motdepasse');
 
         // Vérifier d'abord dans la base de données
-        $user = User::where('email', $credentials['email'])
-                    ->where('password', $credentials['motdepasse'])
-                    ->first();
+        $user = User::where('email', $credentials['email'])->first();
 
-        if ($user) {
+        if ($user && Hash::check($credentials['motdepasse'], $user->password)) {
             // Vérifier si l'utilisateur est bloqué
             if ($user->blocked) {
                 return back()->with('error', 'Votre compte a été bloqué par l\'administrateur. Veuillez contacter le support pour plus d\'informations.');

@@ -19,7 +19,7 @@ class SignupController extends Controller
             'nom' => $request->input('nom'),
             'prenom' => $request->input('prenom'),
             'email' => $request->input('email'),
-            'password' => $request->input('motdepasse'),
+            'password' => bcrypt($request->input('motdepasse')),
             'telephone' => $request->input('telephone'),
             'type' => $request->input('type_utilisateur'),
         ]);
