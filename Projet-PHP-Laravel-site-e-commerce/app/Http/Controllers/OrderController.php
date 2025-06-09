@@ -29,7 +29,7 @@ class OrderController extends Controller
             'customer.city' => 'required|string|max:100',
             'customer.state' => 'required|string|max:100',
             'customer.postal_code' => 'required|string|max:20',
-            'payment_method' => 'sometimes|string|in:carte,espece',
+            'payment_method' => 'required|string|in:carte,espece,paypal',
         ]);
 
         if ($validator->fails()) {

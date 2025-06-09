@@ -247,140 +247,98 @@ function displayCartItemsWithoutSession() {
                     errorMessage += `<li>${product.nom_produit}</li>`;
                 });
                 errorMessage += "</ul>Veuillez retirer ces produits de votre panier avant de continuer.";
-                
-                // Afficher le message d'erreur
                 showNotification(errorMessage, "error");
                 return;
             }
 
-            // Si pas de vendeurs bloqués, continuer avec la validation des champs
-            const requiredFields = [
-                { id: "c_fname", name: "Prénom" },
-                { id: "c_lname", name: "Nom" },
-                { id: "c_address", name: "Adresse" },
-                { id: "c_state_country", name: "Région" },
-                { id: "c_postal_zip", name: "Code postal" },
-                { id: "c_email_address", name: "Email" },
-                { id: "c_phone", name: "Téléphone" }
-            ];
+            // Récupérer la méthode de paiement choisie
+            const paymentMethod = document.getElementById('payment_method').value;
+            console.log("Méthode de paiement sélectionnée:", paymentMethod);
 
-            let isValid = true;
-            let firstInvalidField = null;
+            // Récupérer les données du formulaire
+            const formData = {
+                customer: {
+                    first_name: document.getElementById('c_fname').value,
+                    last_name: document.getElementById('c_lname').value,
+                    email: document.getElementById('c_email_address').value,
+                    phone: document.getElementById('c_phone').value,
+                    address: document.getElementById('c_address').value,
+                    city: document.getElementById('c_country').value,
+                    state: document.getElementById('c_state_country').value,
+                    postal_code: document.getElementById('c_postal_zip').value
+                },
+                payment_method: paymentMethod
+            };
 
-            requiredFields.forEach(field => {
-                const element = document.getElementById(field.id);
-                if (!element || !element.value.trim()) {
-                    isValid = false;
-                    if (!firstInvalidField) {
-                        firstInvalidField = element;
-                    }
-                    element.classList.add("is-invalid");
-                    
-                    // Ajouter un message d'erreur si n'existe pas déjà
-                    const errorId = `${field.id}-error`;
-                    if (!document.getElementById(errorId)) {
-                        const errorMsg = document.createElement("div");
-                        errorMsg.id = errorId;
-                        errorMsg.className = "invalid-feedback";
-                        errorMsg.textContent = `Le champ ${field.name} est obligatoire.`;
-                        element.parentNode.appendChild(errorMsg);
-                    }
-                } else {
-                    // Validation spécifique pour l'email
-                    if (field.id === "c_email_address" && !isValidEmail(element.value.trim())) {
-                        isValid = false;
-                        if (!firstInvalidField) {
-                            firstInvalidField = element;
-                        }
-                        element.classList.add("is-invalid");
-                    } else {
-                        element.classList.remove("is-invalid");
-                        const errorMsg = document.getElementById(`${field.id}-error`);
-                        if (errorMsg) {
-                            errorMsg.remove();
-                        }
-                    }
-                }
-            });
+            console.log("Données du formulaire:", formData);
 
-            if (!isValid) {
-                if (firstInvalidField) {
-                    firstInvalidField.focus();
-                }
+            // Valider les données
+            if (!formData.customer.first_name || !formData.customer.last_name || 
+                !formData.customer.email || !formData.customer.phone || 
+                !formData.customer.address || !formData.customer.city || 
+                !formData.customer.state || !formData.customer.postal_code) {
+                showNotification("Veuillez remplir tous les champs obligatoires", "error");
                 return;
             }
 
-            // Si tout est valide, continuer avec la soumission de la commande
-            const orderData = {
-                nom: document.getElementById("c_fname").value.trim(),
-                prenom: document.getElementById("c_lname").value.trim(),
-                email: document.getElementById("c_email_address").value.trim(),
-                telephone: document.getElementById("c_phone").value.trim(),
-                adresse_livraison: document.getElementById("c_address").value.trim(),
-                ville_livraison: document.getElementById("c_state_country").value.trim(),
-                code_postal_livraison: document.getElementById("c_postal_zip").value.trim(),
-                pays_livraison: document.getElementById("c_country").value.trim(),
-                notes: document.getElementById("c_order_notes").value.trim(),
-                methode_paiement: getSelectedPaymentMethod()
-            };
+            if (!isValidEmail(formData.customer.email)) {
+                showNotification("Veuillez entrer une adresse email valide", "error");
+                return;
+            }
 
-            submitOrder(orderData);
+            // Envoyer la commande au serveur
+            submitOrder(formData);
         })
         .catch(error => {
             console.error("Erreur lors de la vérification des vendeurs:", error);
-            showNotification("Une erreur est survenue lors de la vérification des produits. Veuillez réessayer.", "error");
+            showNotification("Une erreur est survenue lors de la vérification des produits", "error");
         });
   }
   
   // Fonction pour soumettre la commande au serveur
   function submitOrder(orderData) {
     // Afficher un indicateur de chargement
-    const orderButton = document.getElementById("place-order")
-    const originalButtonText = orderButton.textContent
-    orderButton.disabled = true
-    orderButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Traitement en cours...'
-  
-    console.log("Données de commande envoyées:", orderData)
-  
+    const placeOrderButton = document.getElementById("place-order");
+    const originalButtonText = placeOrderButton.innerHTML;
+    placeOrderButton.disabled = true;
+    placeOrderButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Traitement en cours...';
+
+    console.log("Envoi des données de commande:", orderData);
+
     // Envoyer la commande au serveur
-    fetch("http://127.0.0.1:8000/api/orders/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "",
-        "X-Requested-With": "XMLHttpRequest"
-      },
-      body: JSON.stringify(orderData)
+    fetch("/api/orders/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(orderData)
     })
-      .then(response => {
+    .then(response => {
         if (!response.ok) {
-          return response.json().then(data => {
-            throw new Error(data.message || "Erreur lors de la création de la commande")
-          })
+            return response.json().then(data => {
+                throw new Error(data.message || "Erreur lors de la création de la commande");
+            });
         }
-        return response.json()
-      })
-      .then(data => {
+        return response.json();
+    })
+    .then(data => {
+        console.log("Réponse du serveur:", data);
         if (data.success) {
-          // Rediriger vers la page de remerciement existante
-          showNotification("Commande passée avec succès!", "success")
-          
-          // Rediriger vers la page de remerciement après un court délai
-          setTimeout(() => {
-            window.location.href = "http://127.0.0.1:8000/client/thankyou"
-          }, 1500)
+            // Rediriger vers la page de remerciement
+            window.location.href = `/client/thankyou`;
         } else {
-          throw new Error(data.message || "Erreur lors de la création de la commande")
+            throw new Error(data.message || "Erreur lors de la création de la commande");
         }
-      })
-      .catch(error => {
-        console.error("Erreur:", error)
-        showNotification(error.message || "Erreur lors de la création de la commande", "error")
-        
+    })
+    .catch(error => {
+        console.error("Erreur:", error);
+        showNotification(error.message || "Une erreur est survenue lors de la création de la commande", "error");
         // Réactiver le bouton
-        orderButton.disabled = false
-        orderButton.textContent = originalButtonText
-      })
+        placeOrderButton.disabled = false;
+        placeOrderButton.innerHTML = originalButtonText;
+    });
   }
   
   // Fonction pour déterminer la méthode de paiement sélectionnée

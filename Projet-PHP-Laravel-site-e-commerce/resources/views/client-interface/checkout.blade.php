@@ -236,6 +236,15 @@
                     </div>
                   </div>
 
+                  <div class="form-group mb-4">
+                    <label for="payment_method" class="text-black">Méthode de paiement <span class="text-danger">*</span></label>
+                    <select id="payment_method" name="payment_method" class="form-control">
+                      <option value="espece" selected>Espèces</option>
+                      <option value="carte">Carte bancaire</option>
+                      <option value="paypal">PayPal</option>
+                    </select>
+                  </div>
+
                   <div class="form-group">
                     <button
                       class="btn btn-black btn-lg py-3 btn-block"
