@@ -15,7 +15,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use HasFactory, Notifiable, Authenticatable, CanResetPassword;
 
     protected $fillable = [
-        'nom', 'prenom', 'email', 'password','telephone', 'type'
+        'nom', 'prenom', 'email', 'password','telephone', 'type', 'blocked'
     ];
 
     protected $hidden = [

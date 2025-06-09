@@ -22,6 +22,11 @@ class LoginController extends Controller
                     ->first();
 
         if ($user) {
+            // Vérifier si l'utilisateur est bloqué
+            if ($user->blocked) {
+                return back()->with('error', 'Votre compte a été bloqué par l\'administrateur. Veuillez contacter le support pour plus d\'informations.');
+            }
+
             session([
                 'user' => [
                     'id' => $user->id,
@@ -62,7 +67,7 @@ class LoginController extends Controller
             return redirect('/admin_home');
         }
 
-            return back()->with('error', 'Email ou mot de passe incorrect.');
+        return back()->with('error', 'Email ou mot de passe incorrect.');
     }
     
     /**

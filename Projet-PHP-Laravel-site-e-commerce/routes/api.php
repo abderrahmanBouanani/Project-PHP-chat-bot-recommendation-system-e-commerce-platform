@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CompteurController;
+use App\Http\Controllers\Admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/produit/search', [AdminProductController::class, 'search']);
     Route::get('/produit/categories', [AdminProductController::class, 'getCategories']);
 });
+
+// User API Routes
+Route::post('/admin/users/{user}/toggle-block', [UserController::class, 'toggleBlock']);
 
 
 

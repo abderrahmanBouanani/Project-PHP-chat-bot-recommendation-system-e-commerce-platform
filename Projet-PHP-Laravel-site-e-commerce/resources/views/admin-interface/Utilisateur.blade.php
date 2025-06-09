@@ -75,6 +75,7 @@
               <th><i class="bi bi-envelope me-1"></i>Email</th>
               <th><i class="bi bi-telephone me-1"></i>Téléphone</th>
               <th><i class="bi bi-person-badge me-1"></i>Type</th>
+              <th><i class="bi bi-lock me-1"></i>Bloqué</th>
               <th><i class="bi bi-gear me-1"></i>Actions</th>
             </tr>
           </thead>
@@ -86,6 +87,13 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->telephone }}</td>
                 <td>{{ $user->type }}</td>
+                <td>
+                  <button class="btn btn-sm {{ $user->blocked ? 'btn-danger' : 'btn-success' }} toggle-block-btn" 
+                          onclick="toggleBlock({{ $user->id }}, {{ $user->blocked ? 'false' : 'true' }})"
+                          data-user-id="{{ $user->id }}">
+                    {{ $user->blocked ? 'Bloqué' : 'Non bloqué' }}
+                  </button>
+                </td>
                 <td>
                   <i class="fas fa-trash-alt text-danger delete-btn" 
                      onclick="deleteUser({{ $user->id }})"
@@ -222,6 +230,13 @@
           <td>${user.telephone}</td>
           <td>${user.type}</td>
           <td>
+            <button class="btn btn-sm {{ $user->blocked ? 'btn-danger' : 'btn-success' }} toggle-block-btn" 
+                    onclick="toggleBlock(${user.id}, ${user.blocked})"
+                    data-user-id="${user.id}">
+              {{ $user->blocked ? 'Bloqué' : 'Non bloqué' }}
+            </button>
+          </td>
+          <td>
             <i class="fas fa-trash-alt text-danger delete-btn" 
                onclick="deleteUser(${user.id})"
                title="Supprimer"></i>
@@ -229,6 +244,45 @@
         </tr>
       `;
       clientTable.insertAdjacentHTML("beforeend", row);
+    });
+  }
+
+  function toggleBlock(userId, shouldBlock) {
+    if (!confirm(shouldBlock ? 'Êtes-vous sûr de vouloir bloquer cet utilisateur ?' : 'Êtes-vous sûr de vouloir débloquer cet utilisateur ?')) {
+      return;
+    }
+
+    const button = event.target;
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = 'Chargement...';
+
+    fetch(`/api/admin/users/${userId}/toggle-block`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({ blocked: shouldBlock })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        button.classList.remove(shouldBlock ? 'btn-success' : 'btn-danger');
+        button.classList.add(shouldBlock ? 'btn-danger' : 'btn-success');
+        button.textContent = shouldBlock ? 'Bloqué' : 'Non bloqué';
+        showNotification(data.message, 'success');
+      } else {
+        throw new Error(data.message || 'Erreur lors du changement de statut');
+      }
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+      showNotification(error.message, 'danger');
+      button.textContent = originalText;
+    })
+    .finally(() => {
+      button.disabled = false;
     });
   }
 </script>

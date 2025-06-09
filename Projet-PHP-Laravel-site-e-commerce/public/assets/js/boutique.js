@@ -104,6 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
             ${isOutOfStock ? '<div class="overlay-disabled">INDISPONIBLE</div>' : ""}
           </div>
           <h3 class="product-title ${isOutOfStock ? "text-muted" : ""}">${product.nom}</h3>
+          ${product.vendeur && product.vendeur.blocked ? 
+            '<div class="blocked-vendor-info"><span class="blocked-icon">⚠️</span> Vendeur bloqué - Produit inaccessible</div>' : ''}
           <strong class="product-price ${isOutOfStock ? "text-muted" : ""}">${product.prix_unitaire} DH</strong>
           <span class="icon-cross ${isOutOfStock ? "disabled" : ""}">
             <img src="../images/cross.svg" class="img-fluid">
@@ -308,61 +310,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fonction pour ajouter au panier avec vérification de stock
   function addToCart(productId, productName, productPrice, productImage, productQuantity = 0) {
-    // Vérifier le stock avant d'ajouter au panier
-    if (productQuantity === 0) {
-      showNotification("Ce produit n'est plus en stock", "error")
+    // Vérifier si l'utilisateur est connecté
+    if (!window.sessionId) {
+      showNotification("Veuillez vous connecter pour ajouter des produits au panier", "error")
+      return
+    }
+
+    // Vérifier si le produit est en stock
+    if (productQuantity <= 0) {
+      showNotification("Ce produit n'est plus disponible en stock", "error")
       return
     }
 
     // Récupérer le token CSRF
     const csrfToken = getCSRFToken()
 
-    // Extraire juste le nom du fichier de l'URL complète
-    let imageFileName = productImage
-    if (productImage.includes("/")) {
-      imageFileName = productImage.split("/").pop()
-    }
-
-    // Préparer les données à envoyer
-    const cartData = {
-      produit_id: productId,
-      nom_produit: productName,
-      image: imageFileName,
-      prix: productPrice,
-    }
-
-    console.log("Envoi de la requête à:", "http://127.0.0.1:8000/api/cart/add")
-    console.log("Données envoyées:", cartData)
-
-    // Envoyer les données au serveur
-    fetch("http://127.0.0.1:8000/api/cart/add", {
+    // Envoyer la requête AJAX
+    fetch("/api/cart/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
         "X-CSRF-TOKEN": csrfToken,
       },
-      credentials: "include",
-      body: JSON.stringify(cartData),
+      body: JSON.stringify({
+        produit_id: productId,
+        nom_produit: productName,
+        prix: productPrice,
+        image: productImage,
+      }),
     })
-      .then((response) => {
-        console.log("Statut de la réponse:", response.status)
-        if (!response.ok) {
-          return response.text().then((text) => {
-            console.error("Erreur détaillée:", text)
-            throw new Error("Erreur lors de l'ajout au panier (Statut: " + response.status + ")")
-          })
-        }
-        return response.json()
-      })
+      .then((response) => response.json())
       .then((data) => {
-        console.log("Réponse du serveur:", data)
-        showNotification("Produit ajouté au panier avec succès!", "success")
-        updateCartCount() // Mettre à jour le compteur du panier
-        closePopup()
+        if (data.success) {
+          showNotification(data.message, "success")
+          updateCartCount()
+          closePopup()
+        } else {
+          // Gérer le cas spécifique où le vendeur est bloqué
+          if (data.message && data.message.includes("vendeur de ce produit a été bloqué")) {
+            showNotification("Le vendeur de ce produit a été bloqué par l'administrateur. Le produit n'est plus disponible.", "error")
+          } else {
+            showNotification(data.message || "Erreur lors de l'ajout au panier", "error")
+          }
+        }
       })
       .catch((error) => {
-        console.error("Erreur:", error)
+        console.error("Erreur lors de l'ajout au panier:", error)
         showNotification("Erreur lors de l'ajout au panier", "error")
       })
   }

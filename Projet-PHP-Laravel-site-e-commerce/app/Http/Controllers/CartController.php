@@ -10,50 +10,58 @@ use Illuminate\Support\Facades\Auth as FacadesAuth;
 class CartController extends Controller
 {
     public function addToCart(Request $request)
-{
-    $request->validate([
-        'produit_id' => 'required|exists:produits,id',
-        'nom_produit' => 'required|string',
-        'image' => 'required|string',
-        'prix' => 'required|numeric'
-    ]);
+    {
+        $request->validate([
+            'produit_id' => 'required|exists:produits,id',
+            'nom_produit' => 'required|string',
+            'image' => 'required|string',
+            'prix' => 'required|numeric'
+        ]);
 
-    // Récupérer l'ID du client connecté
-    $clientId = session('user')['id'];
+        // Récupérer l'ID du client connecté
+        $clientId = session('user')['id'];
 
-    if (!$clientId) {
+        if (!$clientId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Veuillez vous connecter pour ajouter des produits au panier'
+            ], 401);
+        }
+
+        // Vérifier si le vendeur du produit est bloqué
+        $produit = \App\Models\Produit::with('vendeur')->find($request->produit_id);
+        if ($produit && $produit->vendeur && $produit->vendeur->blocked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Le vendeur de ce produit a été bloqué par l\'administrateur. Le produit n\'est plus disponible.'
+            ], 403);
+        }
+
+        // Vérifier si le produit existe déjà dans le panier du client
+        $existingCartItem = Cart::where('client_id', $clientId)
+            ->where('produit_id', $request->produit_id)
+            ->first();
+
+        if ($existingCartItem) {
+            // Le produit existe, on augmente la quantité
+            $existingCartItem->increment('quantite', 1);
+        } else {
+            // Le produit n'existe pas, on l'ajoute avec quantite = 1
+            Cart::create([
+                'client_id' => $clientId,
+                'produit_id' => $request->produit_id,
+                'nom_produit' => $request->nom_produit,
+                'image' => $request->image,
+                'prix' => $request->prix,
+                'quantite' => 1
+            ]);
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Veuillez vous connecter pour ajouter des produits au panier'
-        ], 401);
-    }
-
-    // Vérifier si le produit existe déjà dans le panier du client
-    $existingCartItem = Cart::where('client_id', $clientId)
-        ->where('produit_id', $request->produit_id)
-        ->first();
-
-    if ($existingCartItem) {
-        // Le produit existe, on augmente la quantité
-        $existingCartItem->increment('quantite', 1);
-    } else {
-        // Le produit n'existe pas, on l'ajoute avec quantite = 1
-        Cart::create([
-            'client_id' => $clientId,
-            'produit_id' => $request->produit_id,
-            'nom_produit' => $request->nom_produit,
-            'image' => $request->image,
-            'prix' => $request->prix,
-            'quantite' => 1
+            'success' => true,
+            'message' => 'Produit ajouté au panier avec succès'
         ]);
     }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Produit ajouté au panier avec succès'
-    ]);
-}
-
 
     // Méthode pour récupérer tous les éléments du panier
     public function getCart()
@@ -75,59 +83,69 @@ class CartController extends Controller
             $clientId = session('user')['id'];
             \Log::info('ID du client: ' . $clientId);
             
-            // Récupérer les éléments du panier
-            $cartItems = Cart::where('client_id', $clientId)->get();
-            \Log::info('Produits du panier: ' . $cartItems);
+            // Récupérer les éléments du panier avec les informations du produit et du vendeur
+            $cartItems = Cart::with(['produit.vendeur'])
+                ->where('client_id', $clientId)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'produit_id' => $item->produit_id,
+                        'nom_produit' => $item->nom_produit,
+                        'prix' => $item->prix,
+                        'quantite' => $item->quantite,
+                        'image' => $item->image,
+                        'vendeur_blocked' => $item->produit && $item->produit->vendeur ? $item->produit->vendeur->blocked : false
+                    ];
+                });
             
             return response()->json([
                 'success' => true,
                 'data' => $cartItems
             ]);
         } catch (\Exception $e) {
-            \Log::error('Erreur lors du chargement du panier: ' . $e->getMessage());
+            \Log::error('Erreur lors de la récupération du panier: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors du chargement du panier',
-                'error' => $e->getMessage()
+                'message' => 'Erreur lors de la récupération du panier: ' . $e->getMessage()
             ], 500);
         }
     }
 
     // Méthode pour mettre à jour la quantité d'un élément du panier
-public function updateCartItem(Request $request, $id)
-{
-    try {
-        $cartItem = Cart::findOrFail($id);
+    public function updateCartItem(Request $request, $id)
+    {
+        try {
+            $cartItem = Cart::findOrFail($id);
 
-        // Vérifier que l'élément appartient bien au client actuel
-        $clientId = session('user')['id'];
-        if ($cartItem->client_id != $clientId) {
+            // Vérifier que l'élément appartient bien au client actuel
+            $clientId = session('user')['id'];
+            if ($cartItem->client_id != $clientId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Non autorisé'
+                ], 403);
+            }
+
+            // Mettre à jour la quantité
+            $cartItem->quantite = $request->input('quantity');
+            $cartItem->save();
+
+            // Retourner une réponse JSON
+            return response()->json([
+                'success' => true,
+                'message' => 'Quantité mise à jour',
+                'updatedQuantity' => $cartItem->quantite,
+                'total' => $cartItem->prix * $cartItem->quantite
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Non autorisé'
-            ], 403);
+                'message' => 'Erreur lors de la mise à jour du panier: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Mettre à jour la quantité
-        $cartItem->quantite = $request->input('quantity');
-        $cartItem->save();
-
-        // Retourner une réponse JSON
-        return response()->json([
-            'success' => true,
-            'message' => 'Quantité mise à jour',
-            'updatedQuantity' => $cartItem->quantite,
-            'total' => $cartItem->prix * $cartItem->quantite
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Erreur lors de la mise à jour du panier: ' . $e->getMessage()
-        ], 500);
     }
-}
 
-    
     // Méthode pour supprimer un élément du panier
     public function removeCartItem($id)
     {
@@ -206,86 +224,78 @@ public function updateCartItem(Request $request, $id)
         }
     }
 
+    /**
+     * Mettre à jour les totaux du panier dans la session
+     * Cette méthode est appelée depuis le JavaScript pour stocker les totaux
+     */
+    public function updateTotals(Request $request)
+    {
+        // Valider les données
+        $validated = $request->validate([
+            'subtotal' => 'required|numeric',
+            'discount' => 'required|numeric',
+            'total' => 'required|numeric',
+            'coupon_code' => 'nullable|string'
+        ]);
 
-
-
-
-/**
- * Mettre à jour les totaux du panier dans la session
- * Cette méthode est appelée depuis le JavaScript pour stocker les totaux
- */
-public function updateTotals(Request $request)
-{
-    // Valider les données
-    $validated = $request->validate([
-        'subtotal' => 'required|numeric',
-        'discount' => 'required|numeric',
-        'total' => 'required|numeric',
-        'coupon_code' => 'nullable|string'
-    ]);
-
-    // Stocker les totaux dans la session
-    session(['cart_subtotal' => $validated['subtotal']]);
-    session(['cart_discount' => $validated['discount']]);
-    session(['cart_total' => $validated['total']]);
-    
-    if (isset($validated['coupon_code'])) {
-        session(['cart_coupon_code' => $validated['coupon_code']]);
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Totaux mis à jour avec succès',
-        'data' => [
-            'subtotal' => $validated['subtotal'],
-            'discount' => $validated['discount'],
-            'total' => $validated['total'],
-            'coupon_code' => $validated['coupon_code'] ?? null
-        ]
-    ]);
-}
-
-/**
- * Récupérer les totaux du panier depuis la session
- * Cette méthode est appelée depuis le JavaScript pour afficher les totaux sur la page de checkout
- */
-public function getTotals()
-{
-    return response()->json([
-        'subtotal' => session('cart_subtotal', 0),
-        'discount' => session('cart_discount', 0),
-        'total' => session('cart_total', 0),
-        'coupon_code' => session('cart_coupon_code')
-    ]);
-}
-
-
-
-
-
-// Méthode pour obtenir le nombre d'articles dans le panier
-public function getCartCount()
-{
-    try {
-        // Récupérer l'ID du client
-        $clientId = session('user')['id'];
+        // Stocker les totaux dans la session
+        session(['cart_subtotal' => $validated['subtotal']]);
+        session(['cart_discount' => $validated['discount']]);
+        session(['cart_total' => $validated['total']]);
         
-        // Récupérer les éléments du panier
-        $cartItems = Cart::where('client_id', $clientId)->get();
-        
-        // Calculer le nombre total d'articles (en tenant compte des quantités)
-        $itemCount = $cartItems->sum('quantite');
-        
+        if (isset($validated['coupon_code'])) {
+            session(['cart_coupon_code' => $validated['coupon_code']]);
+        }
+
         return response()->json([
             'success' => true,
-            'count' => $itemCount
+            'message' => 'Totaux mis à jour avec succès',
+            'data' => [
+                'subtotal' => $validated['subtotal'],
+                'discount' => $validated['discount'],
+                'total' => $validated['total'],
+                'coupon_code' => $validated['coupon_code'] ?? null
+            ]
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Erreur lors du comptage des articles',
-            'error' => $e->getMessage()
-        ], 500);
     }
-}
+
+    /**
+     * Récupérer les totaux du panier depuis la session
+     * Cette méthode est appelée depuis le JavaScript pour afficher les totaux sur la page de checkout
+     */
+    public function getTotals()
+    {
+        return response()->json([
+            'subtotal' => session('cart_subtotal', 0),
+            'discount' => session('cart_discount', 0),
+            'total' => session('cart_total', 0),
+            'coupon_code' => session('cart_coupon_code')
+        ]);
+    }
+
+    // Méthode pour obtenir le nombre d'articles dans le panier
+    public function getCartCount()
+    {
+        try {
+            // Récupérer l'ID du client
+            $clientId = session('user')['id'];
+            
+            // Récupérer les éléments du panier
+            $cartItems = Cart::where('client_id', $clientId)->get();
+            
+            // Calculer le nombre total d'articles (en tenant compte des quantités)
+            $itemCount = $cartItems->sum('quantite');
+            
+            return response()->json([
+                'success' => true,
+                'count' => $itemCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors du comptage des articles',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

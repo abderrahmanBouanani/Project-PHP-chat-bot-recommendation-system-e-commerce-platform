@@ -37,6 +37,28 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
   });
+
+  // Modifier le bouton "Procéder au paiement" pour vérifier les vendeurs bloqués
+  const checkoutButton = document.querySelector('button[onclick*="client/checkout"]');
+  if (checkoutButton) {
+    checkoutButton.removeAttribute('onclick');
+    checkoutButton.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      try {
+        const canProceed = await checkBlockedVendors();
+        if (!canProceed) {
+          return false; // Empêcher la redirection
+        }
+        window.location.href = "/client/checkout";
+      } catch (error) {
+        console.error("Erreur:", error);
+        showNotification("Une erreur est survenue lors de la vérification du panier", "error");
+        return false;
+      }
+    });
+  }
 });
 
 // Fonction pour ajouter un produit au panier
@@ -94,6 +116,7 @@ function displayCartItems() {
       return response.json();
     })
     .then((data) => {
+      console.log("Données du panier reçues:", data); // Ajout pour le débogage
       if (!data.success) {
         throw new Error(data.message || "Erreur lors du chargement des produits du panier");
       }
@@ -106,12 +129,28 @@ function displayCartItems() {
       }
 
       data.data.forEach((item) => {
+        console.log("Item du panier:", item); // Afficher l'item complet
+        console.log("Vendeur bloqué:", item.vendeur_blocked); // Afficher le statut du vendeur
+        
         const row = document.createElement("tr");
         row.setAttribute("data-product-id", item.id);
+        
+        // Vérifier si le vendeur est bloqué
+        const isVendeurBlocked = Boolean(item.vendeur_blocked);
+        console.log("isVendeurBlocked:", isVendeurBlocked); // Afficher la valeur de isVendeurBlocked
+        
+        // Créer le contenu de la ligne
         row.innerHTML = `
-          <td><img src="/storage/images/${item.image}" alt="${item.nom_produit}" width="100" style="mix-blend-mode: multiply"></td>
-          <td>${item.nom_produit}</td>
-          <td class="product-price" data-price="${item.prix}">${item.prix} DH</td>
+          <td>
+            <img src="${item.image.startsWith('http') ? '' : '/'}${item.image}" alt="${item.nom_produit}" width="100" style="mix-blend-mode: multiply">
+          </td>
+          <td>
+            ${item.nom_produit}
+            ${isVendeurBlocked ? '<div class="text-danger mt-1"><small>⚠️ Vendeur bloqué - Produit inaccessible</small></div>' : ''}
+          </td>
+          <td class="product-price" data-price="${item.prix}">
+            ${item.prix} DH
+          </td>
           <td class="quantity-container">
             <div class="quantity-controls">
               <button type="button" class="decrease" data-id="${item.id}">−</button>
@@ -119,8 +158,12 @@ function displayCartItems() {
               <button type="button" class="increase" data-id="${item.id}">+</button>
             </div>
           </td>
-          <td id="total-${item.id}" class="product-total" data-price="${item.prix}">${(item.prix * item.quantite).toFixed(2)} DH</td>
-          <td><button type="button" class="remove-btn" onclick="removeFromCart(${item.id})">×</button></td>
+          <td id="total-${item.id}" class="product-total" data-price="${item.prix}">
+            ${(item.prix * item.quantite).toFixed(2)} DH
+          </td>
+          <td>
+            <button type="button" class="remove-btn" onclick="removeFromCart(${item.id})">×</button>
+          </td>
         `;
         cartItemsContainer.appendChild(row);
       });
@@ -596,3 +639,34 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 });
+
+// Fonction pour vérifier les vendeurs bloqués
+function checkBlockedVendors() {
+  return fetch("/cart")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erreur lors de la vérification des vendeurs");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (!data.success) {
+        throw new Error(data.message || "Erreur lors de la vérification des vendeurs");
+      }
+
+      const blockedProducts = data.data.filter(item => item.vendeur_blocked);
+      
+      if (blockedProducts.length > 0) {
+        const productNames = blockedProducts.map(item => item.nom_produit).join(", ");
+        showNotification(`Impossible de procéder au paiement. Les produits suivants ne sont plus disponibles car leurs vendeurs ont été bloqués : ${productNames}`, "error");
+        return false;
+      }
+      
+      return true;
+    })
+    .catch((error) => {
+      console.error("Erreur:", error);
+      showNotification(error.message || "Erreur lors de la vérification des vendeurs", "error");
+      return false;
+    });
+}

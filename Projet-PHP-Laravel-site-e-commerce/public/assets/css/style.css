@@ -1306,6 +1306,80 @@ textarea {
   transform: scale(1.1);
 }
 
+/* Styles pour les produits bloqués dans le panier */
+.blocked-product {
+  opacity: 0.7;
+  position: relative;
+}
+
+.blocked-product-image {
+  filter: grayscale(100%);
+  opacity: 0.7;
+}
+
+.blocked-badge {
+  background-color: #ff3b3b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 8px;
+  display: inline-block;
+}
+
+.blocked-price {
+  color: #ff3b3b;
+  font-weight: bold;
+}
+
+.blocked-quantity {
+  color: #ff3b3b;
+  font-style: italic;
+}
+
+.quantity-container .blocked-quantity {
+  display: block;
+  text-align: center;
+  padding: 4px;
+  background-color: #fff3f3;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  margin: 4px 0;
+}
+
+/* Amélioration de l'interface du panier */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-controls button {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.quantity-controls button:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+.quantity-amount {
+  width: 40px;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 5px;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .simple-product-card {
@@ -1351,6 +1425,28 @@ textarea {
   .simple-product-info {
     padding: 20px;
   }
+}
+
+.blocked-vendor-info {
+  background-color: #fff3f3;
+  border: 1px solid #ffcdd2;
+  color: #d32f2f;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 8px 0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blocked-vendor-info .blocked-icon {
+  font-size: 16px;
+}
+
+.product-section .product-item:hover .blocked-vendor-info {
+  background-color: #ffe5e5;
+  border-color: #ffb3b3;
 }
 
 
