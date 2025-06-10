@@ -43,6 +43,18 @@ Route::get('/signup', [SignupController::class, 'showSignupForm'])->name('signup
 // Soumettre le formulaire d'inscription
 Route::post('/signup', [SignupController::class, 'create']);
 
+// Routes pour les pages publiques
+Route::get('/public/about', function () {
+    return view('public.about', ['page' => 'ShopAll - À propos']);
+});
+
+Route::get('/public/services', function () {
+    return view('public.services', ['page' => 'ShopAll - Services']);
+});
+
+Route::get('/public/contact', function () {
+    return view('public.contact', ['page' => 'ShopAll - Contact']);
+});
 
 // Routes pour la réinitialisation du mot de passe
 Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

@@ -193,10 +193,9 @@
 
         <div class="collapse navbar-collapse" id="navbarsShopAll">
           <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-            <li><a class="nav-link" href="about.html">À Propos</a></li>
-            <li><a class="nav-link" href="services.html">Services</a></li>
-            <li><a class="nav-link" href="blog.html">Blog</a></li>
-            <li><a class="nav-link" href="contact.html">Contactez-nous</a></li>
+            <li><a class="nav-link" href="{{ url('/public/about') }}">À Propos</a></li>
+            <li><a class="nav-link" href="{{ url('/public/services') }}">Services</a></li>
+            <li><a class="nav-link" href="{{ url('/public/contact') }}">Contactez-nous</a></li>
           </ul>
         </div>
       </div>
