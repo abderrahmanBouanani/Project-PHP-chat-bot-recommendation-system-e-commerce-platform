@@ -19,6 +19,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request as HttpRequest;
 use App\Http\Controllers\LivreurController;
+use App\Http\Controllers\LivreurDashboardController;
 
 // ---connexion & signup---
 
@@ -245,7 +246,10 @@ Route::put('/vendeur/profile/update', [App\Http\Controllers\UserController::clas
 
 //Routes pour le livreur
 
-Route::get('/livreur_livraison', [LivreurController::class, 'index']);
+// Dashboard du livreur
+Route::get('/livreur/dashboard', [LivreurDashboardController::class, 'dashboard'])->name('livreur.dashboard');
+Route::get('/livreur/dashboard/chart-data', [LivreurDashboardController::class, 'chartData'])->name('livreur.dashboard.chart-data');
+
 Route::post('/livreur/commande/{id}/accepter', [LivreurController::class, 'accepter']);
 Route::post('/livreur/commande/{id}/livree', [LivreurController::class, 'livree']);
 Route::post('/livreur/commande/{id}/update-status', [LivreurController::class, 'updateStatus']);
