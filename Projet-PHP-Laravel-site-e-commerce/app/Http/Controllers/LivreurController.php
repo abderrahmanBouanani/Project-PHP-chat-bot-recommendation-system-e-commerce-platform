@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Commande;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LivreurController extends Controller
 {   
@@ -141,13 +143,38 @@ class LivreurController extends Controller
     public function getProducts($id)
     {
         try {
-            $produits = DB::table('commande_produit')
-                ->join('produits', 'commande_produit.produit_id', '=', 'produits.id')
-                ->where('commande_produit.commande_id', $id)
-                ->select('produits.*', 'commande_produit.quantite')
-                ->get();
+            $commande = Commande::with(['produits' => function($query) {
+                $query->select('produits.*')
+                    ->addSelect(['commande_produit.quantite']);
+            }])->findOrFail($id);
 
-            return response()->json($produits->toArray());
+            if (!$commande) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Commande non trouvée'
+                ], 404);
+            }
+
+            $produits = $commande->produits->map(function($produit) {
+                return [
+                    'id' => $produit->id,
+                    'nom' => $produit->nom,
+                    'image' => $produit->image,
+                    'prix_unitaire' => $produit->prix_unitaire,
+                    'quantite' => $produit->pivot->quantite,
+                    'total' => $produit->prix_unitaire * $produit->pivot->quantite
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'produits' => $produits,
+                'commande' => [
+                    'id' => $commande->id,
+                    'total' => $commande->total,
+                    'statut' => $commande->statut
+                ]
+            ]);
         } catch (\Exception $e) {
             \Log::error('Error in getProducts: ' . $e->getMessage());
             return response()->json([
@@ -262,88 +289,22 @@ class LivreurController extends Controller
      * @param int $id ID de la commande
      * @return \Illuminate\Http\JsonResponse
      */
-    public function showDetails($id)
+    public function getCommandeDetails($id)
     {
         try {
-            // Charger la commande avec les relations nécessaires
-            $commande = Commande::with([
-                'client', 
-                'produits' => function($query) {
-                    $query->withPivot('quantite');
-                }
-            ])->findOrFail($id);
-            
-            // Log pour déboguer les données brutes
-            \Log::info('Commande chargée:', [
-                'commande_id' => $commande->id,
-                'produits_count' => $commande->produits->count(),
-                'produits' => $commande->produits->map(function($p) {
-                    return [
-                        'produit_id' => $p->id,
-                        'pivot' => $p->pivot ? [
-                            'quantite' => $p->pivot->quantite,
-                            'commande_id' => $p->pivot->commande_id,
-                            'produit_id' => $p->pivot->produit_id
-                        ] : null
-                    ];
-                })
-            ]);
-            
-            // Calculer le sous-total si nécessaire
-            if (!isset($commande->sous_total)) {
-                $commande->sous_total = $commande->produits->sum(function($produit) {
-                    return $produit->prix_unitaire * $produit->pivot->quantite;
-                });
-            }
-            
-            // Préparer les données pour la réponse JSON
-            $response = [
-                'id' => $commande->id,
-                'client' => [
-                    'id' => $commande->client->id,
-                    'nom' => $commande->client->nom,
-                    'prenom' => $commande->client->prenom,
-                    'email' => $commande->client->email,
-                    'telephone' => $commande->client->telephone ?? ''
-                ],
-                'adresse' => $commande->adresse,
-                'adresse_livraison' => $commande->adresse, // Utiliser le même champ que l'adresse
-                'ville_livraison' => '',
-                'code_postal_livraison' => '',
-                'pays_livraison' => 'Maroc',
-                'statut' => $commande->statut,
-                'total' => $commande->total,
-                'sous_total' => $commande->sous_total ?? $commande->total,
-                'frais_livraison' => 0,
-                'remise' => $commande->reduction ?? 0,
-                'created_at' => $commande->created_at,
-                'produits' => $commande->produits->map(function($produit) {
-                    return [
-                        'id' => $produit->id,
-                        'nom' => $produit->nom,
-                        'reference' => $produit->reference ?? 'N/A',
-                        'prix_unitaire' => $produit->prix_unitaire ?? 0,
-                        'quantite' => $produit->pivot->quantite,
-                        'image' => $produit->image ?? ''
-                    ];
-                })
-            ];
-            
-            $jsonResponse = [
+            $commande = Commande::with(['client', 'produits' => function($query) {
+                $query->withPivot('quantite');
+            }])->findOrFail($id);
+
+            return response()->json([
                 'success' => true,
-                'commande' => (object)$response
-            ];
-            
-            // Log de la réponse complète
-            \Log::info('Réponse JSON complète:', $jsonResponse);
-            
-            return response()->json($jsonResponse);
-            
+                'commande' => $commande
+            ]);
         } catch (\Exception $e) {
-            \Log::error('Erreur lors de la récupération des détails de la commande: ' . $e->getMessage());
+            \Log::error('Erreur dans getCommandeDetails: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de la récupération des détails de la commande: ' . $e->getMessage()
+                'message' => 'Erreur lors de la récupération des détails de la commande'
             ], 500);
         }
     }
@@ -392,6 +353,83 @@ class LivreurController extends Controller
             ->first();
         return view('livreur-interface.commande_actuelle', [
             'commande' => $commande
+        ]);
+    }
+
+    public function dashboard()
+    {
+        $livreur = Auth::user();
+        
+        // Statistiques générales
+        $stats = [
+            'total_livraisons' => Commande::where('livreur_id', $livreur->id)->count(),
+            'livraisons_en_cours' => Commande::where('livreur_id', $livreur->id)
+                ->where('statut', 'En cours de livraison')
+                ->count(),
+            'livraisons_terminees' => Commande::where('livreur_id', $livreur->id)
+                ->where('statut', 'Livrée')
+                ->count(),
+            'livraisons_disponibles' => Commande::whereNull('livreur_id')
+                ->where('statut', 'Confirmée')
+                ->count()
+        ];
+
+        // Données pour le graphique des 7 derniers jours
+        $dates = [];
+        $totals = [];
+        
+        // Obtenir la date d'aujourd'hui
+        $endDate = now()->startOfDay();
+        $startDate = $endDate->copy()->subDays(6); // 7 jours au total (aujourd'hui + 6 jours précédents)
+
+        // Générer les dates et compter les livraisons
+        $currentDate = $startDate;
+        while ($currentDate <= $endDate) {
+            $count = Commande::where('livreur_id', $livreur->id)
+                ->whereDate('created_at', $currentDate->format('Y-m-d'))
+                ->count();
+            
+            $dates[] = $currentDate->format('d/m');
+            $totals[] = $count;
+            
+            $currentDate->addDay();
+        }
+
+        // Livraisons récentes (triées par date de mise à jour)
+        $commandes_recentes = Commande::where('livreur_id', $livreur->id)
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('livreur-interface.dashboard', compact('stats', 'dates', 'totals', 'commandes_recentes'));
+    }
+
+    public function chartData()
+    {
+        $livreurId = session('user')['id'];
+        $dates = [];
+        $totals = [];
+        
+        $livraisons_par_jour = Commande::where('livreur_id', $livreurId)
+            ->where('statut', 'Livrée')
+            ->where('created_at', '>=', Carbon::now()->subDays(30))
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('count(*) as total'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get()
+            ->keyBy('date');
+
+        for ($i = 29; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i)->format('Y-m-d');
+            $formattedDate = Carbon::now()->subDays($i)->format('d/m');
+            
+            $dates[] = $formattedDate;
+            $totals[] = $livraisons_par_jour->get($date, (object)['total' => 0])->total;
+        }
+
+        return response()->json([
+            'dates' => $dates,
+            'totals' => $totals
         ]);
     }
 }

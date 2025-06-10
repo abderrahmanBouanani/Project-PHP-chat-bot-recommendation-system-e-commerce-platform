@@ -101,7 +101,7 @@
                             @if($commande->statut === 'En cours de livraison')
                             <form method="POST" action="{{ route('livreur.livree', $commande->id) }}" class="mt-3">
                                 @csrf
-                                <button type="submit" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
+                                <button type="submit" class="btn btn-success btn-lg w-100 d-flex align-items-center justify-content-center">
                                     <i class="fas fa-check-circle me-2"></i>
                                     Marquer comme livrée
                                 </button>

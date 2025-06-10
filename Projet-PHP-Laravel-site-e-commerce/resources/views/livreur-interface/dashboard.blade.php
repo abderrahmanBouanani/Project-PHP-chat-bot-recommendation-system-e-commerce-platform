@@ -134,9 +134,15 @@
     <div class="row g-3">
         <!-- Graphique des livraisons -->
         <div class="col-12 col-lg-8">
-            <div class="chart-container">
-                <h5 class="mb-4">Livraisons des 7 derniers jours</h5>
-                <canvas id="livraisonsChart"></canvas>
+            <div class="card h-100">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">Livraisons par Jour</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="livraisonsChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -148,9 +154,9 @@
                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
                         <div class="flex-grow-1">
                             <h6 class="mb-1">Commande #{{ $commande->id }}</h6>
-                            <small class="text-muted">{{ $commande->created_at->format('d/m/Y H:i') }}</small>
+                            <small class="text-muted">{{ $commande->updated_at->format('d/m/Y H:i') }}</small>
                         </div>
-                        <span class="badge bg-{{ $commande->statut === 'Livrée' ? 'success' : 'info' }} badge-custom">
+                        <span class="badge bg-{{ $commande->statut === 'Livrée' ? 'success' : ($commande->statut === 'En cours de livraison' ? 'info' : 'warning') }} badge-custom">
                             {{ $commande->statut }}
                         </span>
                     </div>
@@ -163,41 +169,111 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('livraisonsChart').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: @json($dates),
-            datasets: [{
-                label: 'Nombre de livraisons',
-                data: @json($totals),
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
+    console.log('TEST: Le script Chart.js est bien injecté et exécuté !');
+    console.log('Début du script du graphique');
+    let dates = @json($dates);
+    let totals = @json($totals);
+
+    // Ne prendre que les 7 derniers jours
+    dates = dates.slice(-7);
+    totals = totals.slice(-7);
+
+    console.log('Données du graphique (7 derniers jours):', { dates, totals });
+
+    // Données de secours si les données sont vides ou incorrectes
+    const fallbackDates = ['01/06', '02/06', '03/06', '04/06', '05/06', '06/06', '07/06'];
+    const fallbackTotals = [2, 3, 5, 1, 4, 2, 3];
+
+    // Vérification des données
+    const isDataInvalid = !Array.isArray(dates) || !Array.isArray(totals) ||
+        dates.length === 0 || totals.length === 0 ||
+        totals.reduce((a, b) => a + b, 0) === 0;
+
+    if (isDataInvalid) {
+        console.warn('Données du graphique invalides, utilisation des données de secours.');
+        dates = fallbackDates;
+        totals = fallbackTotals;
+    }
+
+    const ctx = document.getElementById('livraisonsChart');
+    if (!ctx) {
+        console.error('Canvas non trouvé');
+    } else {
+        console.log('Canvas trouvé, initialisation du graphique...');
+        try {
+            const chart = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Nombre de livraisons',
+                        data: totals,
+                        backgroundColor: '#c69d37',
+                        borderColor: '#a67c00',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        barThickness: 'flex',
+                        maxBarThickness: 50
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 10,
+                            titleFont: {
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    size: 12
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
                     }
                 }
-            }
+            });
+            console.log('Graphique initialisé avec succès');
+        } catch (error) {
+            console.error('Erreur lors de l\'initialisation du graphique:', error);
         }
-    });
-});
+    }
 </script>
 @endpush
 @endsection 

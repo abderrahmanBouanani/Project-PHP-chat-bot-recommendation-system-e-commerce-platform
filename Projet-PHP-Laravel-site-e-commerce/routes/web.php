@@ -248,22 +248,20 @@ Route::put('/vendeur/profile/update', [App\Http\Controllers\UserController::clas
 
 // Dashboard du livreur
 Route::get('/livreur/dashboard', [LivreurDashboardController::class, 'dashboard'])->name('livreur.dashboard');
-Route::get('/livreur/dashboard/chart-data', [LivreurDashboardController::class, 'chartData'])->name('livreur.dashboard.chart-data');
 
-Route::post('/livreur/commande/{id}/accepter', [LivreurController::class, 'accepter']);
-Route::post('/livreur/commande/{id}/livree', [LivreurController::class, 'livree']);
-Route::post('/livreur/commande/{id}/update-status', [LivreurController::class, 'updateStatus']);
-Route::get('/livreur/commande/{id}/produits', [LivreurController::class, 'getProducts']);
-Route::get('/livreur/commande/{id}/details', [LivreurController::class, 'showDetails'])->name('livreur.commande.details');
-
-Route::get('/livreur_profile',function(){
-    return view('livreur-interface.profil-livreur',['user' => session('user')]);
+// Routes pour les commandes du livreur
+Route::prefix('livreur')->group(function () {
+    Route::get('/commandes', [LivreurController::class, 'index'])->name('livreur.commandes');
+    Route::get('/commandes/disponibles', [LivreurController::class, 'livraisonsDisponibles'])->name('livreur.livraisons.disponibles');
+    Route::get('/commandes/mes-livraisons', [LivreurController::class, 'mesLivraisons'])->name('livreur.mes.livraisons');
+    Route::get('/commande/actuelle', [LivreurController::class, 'commandeActuelle'])->name('livreur.commande.actuelle');
+    Route::get('/commande/{id}/details', [LivreurController::class, 'getCommandeDetails'])->name('livreur.commande.details');
+    Route::get('/commande/{id}/produits', [LivreurController::class, 'getProducts'])->name('livreur.commande.produits');
+    Route::post('/commande/{id}/accepter', [LivreurController::class, 'accepter'])->name('livreur.accepter');
+    Route::post('/commande/{id}/livree', [LivreurController::class, 'livree'])->name('livreur.livree');
+    Route::post('/commande/{id}/status', [LivreurController::class, 'updateStatus'])->name('livreur.commande.status');
+    Route::get('/commandes/search', [LivreurController::class, 'search'])->name('livreur.commandes.search');
 });
-
-Route::post('/livreur/profile/update', [LivreurController::class, 'updateProfile']);
-
-// Routes pour le livreur
-Route::post('/livreur/update-profile', [LivreurController::class, 'updateProfile'])->name('livreur.updateProfile');
 
 // Routes API pour la recherche
 Route::get('/api/admin/commande/search', [AdminOrderController::class, 'search']);

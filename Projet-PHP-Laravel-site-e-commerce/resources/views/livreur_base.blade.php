@@ -71,6 +71,7 @@
     <script src="{{ asset('assets/js/livraisons.js')}}" type="module"></script>
     <script src="{{ asset('assets/js/profil-livreur.js')}}" type="module"></script>
     <script src="{{ asset('assets/js/livreur/commandes.js')}}" type="module"></script>
+    @stack('scripts')
   </body>
 </html>
 

@@ -18,6 +18,64 @@
         .table-hover > tbody > tr:hover {
             --bs-table-accent-bg: rgba(0, 0, 0, 0.02);
         }
+        .btn-outline-success {
+            border-color: #28a745;
+            color: #28a745;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1rem;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead th {
+            border-bottom: 2px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+        }
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 500;
+            border-radius: 6px;
+        }
+        .btn-group .btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            margin: 0 2px;
+        }
+        .btn-group .btn i {
+            font-size: 0.9rem;
+        }
     </style>
 @endpush
 
@@ -25,57 +83,6 @@
 <div class="main-content">
     <h1 class="h3 mb-4"><i class="fas fa-truck me-2"></i>Livraisons disponibles</h1>
 
-    <form id="searchForm" class="mb-4">
-        <div class="row g-3">
-            <div class="col-md-5">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                    <input type="text" 
-                           class="form-control" 
-                           id="searchInput" 
-                           placeholder="Rechercher par ID, adresse ou client"
-                           value="{{ request('search', '') }}">
-                </div>
-            </div>
-            <div class="col-md-3">
-                <select class="form-select" id="statusFilter" name="status">
-                    <option value="all" {{ request('status', 'all') === 'all' ? 'selected' : '' }}>Tous les statuts</option>
-                    <option value="Confirmée" {{ request('status') === 'Confirmée' ? 'selected' : '' }}>En attente</option>
-                    <option value="En cours de livraison" {{ request('status') === 'En cours de livraison' ? 'selected' : '' }}>En cours de livraison</option>
-                    <option value="Livrée" {{ request('status') === 'Livrée' ? 'selected' : '' }}>Livrée</option>
-                </select>
-            </div>
-        </div>
-    </form>
-
     @include('livreur-interface.partials.liste_commandes', ['commandes' => $commandes, 'type' => 'disponibles'])
 </div>
-
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const statusFilter = document.getElementById('statusFilter');
-
-        function filterDeliveries() {
-            const searchTerm = searchInput.value;
-            const status = statusFilter.value;
-            
-            fetch(`/api/livreur/livraison/search?search=${searchTerm}&status=${status}`)
-                .then(response => response.json())
-                .then(data => {
-                    // Mettre à jour la liste des livraisons
-                    const deliveriesList = document.getElementById('deliveriesList');
-                    // Mettre à jour le contenu de la liste
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        searchInput.addEventListener('input', filterDeliveries);
-        statusFilter.addEventListener('change', filterDeliveries);
-    });
-</script>
-@endpush
 @endsection 

@@ -262,11 +262,15 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(`/livreur/commande/${orderId}/produits`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error('Erreur lors du chargement des détails de la commande');
                 }
                 return response.json();
             })
-            .then(products => {
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.message || 'Erreur lors du chargement des détails de la commande');
+                }
+
                 const modalProductsList = document.getElementById("modalProductsList");
                 const productsModal = document.getElementById("productsModal");
                 
@@ -276,19 +280,54 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 modalProductsList.innerHTML = '';
                 
-                if (!products || products.length === 0) {
+                if (!data.produits || data.produits.length === 0) {
                     modalProductsList.innerHTML = `<tr><td colspan="4" class="text-center">Aucun produit dans cette commande</td></tr>`;
                 } else {
-                    products.forEach(item => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = `
-                            <td>${item.nom}</td>
-                            <td>${item.quantite}</td>
-                            <td>${parseFloat(item.prix_unitaire).toFixed(2)} DH</td>
-                            <td>${(item.quantite * item.prix_unitaire).toFixed(2)} DH</td>
-                        `;
-                        modalProductsList.appendChild(row);
+                    let html = `
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th class="text-end">Prix unitaire</th>
+                                        <th class="text-center">Quantité</th>
+                                        <th class="text-end">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+                    data.produits.forEach(produit => {
+                        html += `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="${produit.image ? '/storage/' + produit.image : '/assets/images/no-image.png'}" 
+                                             alt="${produit.nom}" 
+                                             class="img-thumbnail me-3"
+                                             style="width: 50px; height: 50px; object-fit: contain;">
+                                        <div>
+                                            <h6 class="mb-1">${produit.nom}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end">${parseFloat(produit.prix_unitaire).toFixed(2)} DH</td>
+                                <td class="text-center">${produit.quantite}</td>
+                                <td class="text-end">${parseFloat(produit.total).toFixed(2)} DH</td>
+                            </tr>`;
                     });
+
+                    html += `
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-active">
+                                        <th colspan="3" class="text-end">Total de la commande:</th>
+                                        <th class="text-end">${parseFloat(data.commande.total).toFixed(2)} DH</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>`;
+
+                    modalProductsList.innerHTML = html;
                 }
                 
                 const myModal = new bootstrap.Modal(productsModal);
