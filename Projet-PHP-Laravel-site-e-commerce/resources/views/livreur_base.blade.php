@@ -27,12 +27,16 @@
     <div class="sidebar">
       <div class="sidebar-header px-3 py-4">
         <div class="livreur-interface-badge mb-2">LIVREUR INTERFACE</div>
-        <a class="navbar-brand" href="{{ url('/livreur_livraison') }}">
+        <a class="navbar-brand" href="{{ route('livreur.dashboard') }}">
           <span class="shopall-text">ShopAll</span><span class="dot">.</span>
         </a>
       </div>
 
       <nav class="side-bar-content">
+        <a href="{{ route('livreur.dashboard') }}" class="nav-link {{ request()->routeIs('livreur.dashboard') ? 'active' : '' }} d-flex align-items-center">
+          <i class="bi bi-grid me-3"></i>
+          <span>Tableau de Bord</span>
+        </a>
         <a href="{{ route('livreur.livraisons.disponibles') }}" class="nav-link {{ request()->routeIs('livreur.livraisons.disponibles') ? 'active' : '' }} d-flex align-items-center">
           <i class="bi bi-truck me-3"></i>
           <span>Livraisons disponibles</span>

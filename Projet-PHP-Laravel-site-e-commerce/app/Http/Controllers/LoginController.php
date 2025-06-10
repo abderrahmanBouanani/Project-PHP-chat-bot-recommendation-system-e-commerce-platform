@@ -43,7 +43,7 @@ class LoginController extends Controller
                 case 'vendeur':
                     return redirect('/vendeur_home');
                 case 'livreur':
-                    return redirect('/livreur_livraison');
+                    return redirect()->route('livreur.dashboard');
                 case 'admin':
                     return redirect('/admin_home');
                 default:
