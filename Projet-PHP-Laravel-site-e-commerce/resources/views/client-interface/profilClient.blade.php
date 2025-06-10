@@ -20,6 +20,7 @@
     <link href="{{ asset('assets/css/tiny-slider.css')}}" rel="stylesheet" />
     <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/accessibilité.css')}}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Informations utilisateur</title>
 
@@ -30,9 +31,20 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+   
   </head>
 
   <body>
+    <!-- Bouton d'accessibilité -->
+    <button id="accessibilityReaderBtn" class="accessibility-reader-btn" title="Activer/Désactiver la lecture vocale">
+        <i class="fas fa-volume-up"></i>
+    </button>
+    
+    <!-- Indicateur de lecture -->
+    <div id="readingIndicator" class="reading-indicator"></div>
+    
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
     <nav
       class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark"
       aria-label="Furni navigation bar"
@@ -264,6 +276,6 @@ $(document).ready(function() {
   });
 });
 </script>
-
+<script src="{{ asset('assets/js/accessibility-reader.js') }}"></script>
   </body>
 </html>

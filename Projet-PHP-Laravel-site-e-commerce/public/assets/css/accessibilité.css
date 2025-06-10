@@ -1,0 +1,70 @@
+/* Styles pour le bouton d'accessibilité */
+.accessibility-reader-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #2f4f4f, #1c3030);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .accessibility-reader-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+
+  .accessibility-reader-btn.active {
+    background: linear-gradient(135deg, #ffd700 0%, #ffd700 100%);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+  }
+
+  .reading-indicator {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+    max-width: 300px;
+    word-wrap: break-word;
+  }
+
+  .being-read {
+    outline: 3px solid #ff6b6b !important;
+    outline-offset: 2px;
+    background-color: rgba(255, 107, 107, 0.1) !important;
+    transition: all 0.2s ease;
+  }
+
+  .tooltip {
+    position: fixed;
+    background: rgba(0,0,0,0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1001;
+    display: none;
+  }

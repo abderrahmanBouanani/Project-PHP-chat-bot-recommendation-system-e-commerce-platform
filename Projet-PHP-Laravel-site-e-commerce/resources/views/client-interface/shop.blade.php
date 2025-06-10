@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
     <link href="{{ asset('assets/css/chatbot.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/accessibilité.css')}}" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
 
     <style>
@@ -61,10 +62,21 @@
   .rounded-pill {
     border-radius: 50rem !important;
   }
+  
 </style>
   </head>
 
   <body>
+    <!-- Bouton d'accessibilité -->
+    <button id="accessibilityReaderBtn" class="accessibility-reader-btn" title="Activer/Désactiver la lecture vocale">
+        <i class="fas fa-volume-up"></i>
+    </button>
+    
+    <!-- Indicateur de lecture -->
+    <div id="readingIndicator" class="reading-indicator"></div>
+    
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
     @if(!session('user'))
     <div class="alert alert-warning mb-0 rounded-0 text-center" role="alert">
         <i class="bi bi-eye-fill me-2"></i> Vous êtes en mode consultation seule. <a href="{{ route('login') }}" class="alert-link">Connectez-vous</a> pour accéder à toutes les fonctionnalités.
@@ -353,6 +365,7 @@
     <script src="{{ asset('assets/js/chatbot.js') }}"></script>
     <script src="{{ asset('assets/js/cart-badge.js') }}"></script>
     <script src="{{ asset('assets/js/shop-hero.js') }}"></script>
+    <script src="{{ asset('assets/js/accessibility-reader.js') }}"></script>
   </body>
 </html>
 

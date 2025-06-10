@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/profileclient.css')}}" />
     <link href="{{ asset('assets/css/chatbot.css')}}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/pagination.css')}}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/accessibilité.css')}}" />
     <title>{{ $page ?? 'ShopAll - Home' }}</title>
 
     <style>
@@ -62,10 +63,23 @@
   .rounded-pill {
     border-radius: 50rem !important;
   }
+
+  
 </style>
   </head>
 
   <body>
+    <!-- Bouton d'accessibilité -->
+    <button id="accessibilityReaderBtn" class="accessibility-reader-btn" title="Activer/Désactiver la lecture vocale">
+        <i class="fas fa-volume-up"></i>
+    </button>
+    
+    <!-- Indicateur de lecture -->
+    <div id="readingIndicator" class="reading-indicator"></div>
+    
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+    
     @if(!session('user'))
     <div class="alert alert-warning mb-0 rounded-0 text-center" role="alert">
         <i class="bi bi-eye-fill me-2"></i> Vous êtes en mode consultation seule. <a href="{{ route('login') }}" class="alert-link">Connectez-vous</a> pour accéder à toutes les fonctionnalités.
@@ -94,35 +108,33 @@
         <div class="collapse navbar-collapse" id="navbarsFurni">
         <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
     <li class="nav-item {{ request()->is('client_home') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/client_home') }}">Accueil</a>
+        <a class="nav-link" href="{{ url('/client_home') }}" data-text="Page d'accueil du site">Accueil</a>
     </li>
     <li class="nav-item {{ request()->is('client_shop') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/client_shop') }}">Boutique</a>
+        <a class="nav-link" href="{{ url('/client_shop') }}" data-text="Boutique - Voir tous nos produits">Boutique</a>
     </li>
     <li class="nav-item {{ request()->is('client_about') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/client_about') }}">À propos</a>
+        <a class="nav-link" href="{{ url('/client_about') }}" data-text="À propos - En savoir plus sur nous">À propos</a>
     </li>
     <li class="nav-item {{ request()->is('client_service') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/client_service') }}">Services</a>
+        <a class="nav-link" href="{{ url('/client_service') }}" data-text="Services - Nos services disponibles">Services</a>
     </li>
     <li class="nav-item {{ request()->is('client_contact') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ url('/client_contact') }}">Contact</a>
+        <a class="nav-link" href="{{ url('/client_contact') }}" data-text="Contact - Nous contacter">Contact</a>
     </li>
     <li class="nav-item {{ request()->is('client/commandes*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('client.commandes') }}">Mes Commandes</a>
+        <a class="nav-link" href="{{ route('client.commandes') }}" data-text="Mes commandes - Voir l'historique de vos commandes">Mes Commandes</a>
     </li>
 </ul>
 
-
-
           <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
             <li>
-              <a class="nav-link" href="{{url('/client_profile')}}"
+              <a class="nav-link" href="{{url('/client_profile')}}" data-text="Profil utilisateur"
                 ><img src="{{ asset('images/user.svg') }}"
               /></a>
             </li>
             <li>
-  <a class="nav-link position-relative" href="{{url('/client_cart')}}">
+  <a class="nav-link position-relative" href="{{url('/client_cart')}}" data-text="Panier d'achat">
     <img src="{{ asset('images/cart.svg') }}" />
     <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem; display: none;">
       0
@@ -132,7 +144,7 @@
             <li>
               <form method="POST" action="{{ route('logout') }}" class="d-inline">
                 @csrf
-                <button type="submit" class="nav-link border-0 bg-transparent" style="cursor: pointer;">
+                <button type="submit" class="nav-link border-0 bg-transparent" style="cursor: pointer;" data-text="Se déconnecter">
                   <img
                     src="{{ asset('images/logout2.png') }}"
                     style="height: 30px; width: 30px; margin-left: 15px"
@@ -174,6 +186,7 @@
                     type="text"
                     class="form-control"
                     placeholder="Entrez votre nom"
+                    data-text="Champ pour entrer votre nom"
                   />
                 </div>
                 <div class="col-auto">
@@ -181,10 +194,11 @@
                     type="email"
                     class="form-control"
                     placeholder="Entrez votre email"
+                    data-text="Champ pour entrer votre adresse email"
                   />
                 </div>
                 <div class="col-auto">
-                  <button class="btn btn-primary">
+                  <button class="btn btn-primary" data-text="S'abonner à la newsletter">
                     <span class="fa fa-paper-plane"></span>
                   </button>
                 </div>
@@ -204,16 +218,16 @@
 
             <ul class="list-unstyled custom-social">
               <li>
-                <a href="#"><span class="fa fa-brands fa-facebook-f"></span></a>
+                <a href="#" data-text="Facebook"><span class="fa fa-brands fa-facebook-f"></span></a>
               </li>
               <li>
-                <a href="#"><span class="fa fa-brands fa-twitter"></span></a>
+                <a href="#" data-text="Twitter"><span class="fa fa-brands fa-twitter"></span></a>
               </li>
               <li>
-                <a href="#"><span class="fa fa-brands fa-instagram"></span></a>
+                <a href="#" data-text="Instagram"><span class="fa fa-brands fa-instagram"></span></a>
               </li>
               <li>
-                <a href="#"><span class="fa fa-brands fa-linkedin"></span></a>
+                <a href="#" data-text="LinkedIn"><span class="fa fa-brands fa-linkedin"></span></a>
               </li>
             </ul>
           </div>
@@ -222,7 +236,7 @@
             <div class="row links-wrap">
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="{{ url('/client_about') }}">À propos de nous</a></li>
+                  <li><a href="{{ url('/client_about') }}" data-text="À propos de nous - En savoir plus sur notre entreprise">À propos de nous</a></li>
                   
                   
                 </ul>
@@ -230,27 +244,27 @@
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                <li><a href="{{ url('/client_service') }}">Services</a></li>
+                <li><a href="{{ url('/client_service') }}" data-text="Services - Découvrir nos services">Services</a></li>
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                  <li><a href="{{ url('/client_about') }}#equipe">Notre équipe</a></li>
+                  <li><a href="{{ url('/client_about') }}#equipe" data-text="Notre équipe - Découvrir les membres de notre équipe">Notre équipe</a></li>
                   
                 </ul>
               </div>
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                <li><a href="{{ url('/client_contact') }}#contact">Contactez-nous</a></li>
+                <li><a href="{{ url('/client_contact') }}#contact" data-text="Contactez-nous - Formulaire de contact">Contactez-nous</a></li>
                 </ul>
               </div>
 
 
               <div class="col-6 col-sm-6 col-md-3">
                 <ul class="list-unstyled">
-                <li><a href="{{ url('/client_home') }}#blog">Blog</a></li>
+                <li><a href="{{ url('/client_home') }}#blog" data-text="Blog - Lire nos derniers articles">Blog</a></li>
                 </ul>
               </div>
             </div>
@@ -273,9 +287,9 @@
             <div class="col-lg-6 text-center text-lg-end">
               <ul class="list-unstyled d-inline-flex ms-auto">
                 <li class="me-4">
-                  <a href="#">Termes &amp; Conditions</a>
+                  <a href="#" data-text="Termes et conditions d'utilisation">Termes &amp; Conditions</a>
                 </li>
-                <li><a href="#">Politique de confidentialité</a></li>
+                <li><a href="#" data-text="Politique de confidentialité">Politique de confidentialité</a></li>
               </ul>
             </div>
           </div>
@@ -314,5 +328,8 @@
     @endif
     <script src="{{ asset('assets/js/chatbot.js') }}"></script>
     <script src="{{ asset('assets/js/cart-badge.js') }}"></script>
+    
+    <!-- Script d'accessibilité -->
+    <script src="{{ asset('assets/js/accessibility-reader.js') }}"></script>
   </body>
 </html>
