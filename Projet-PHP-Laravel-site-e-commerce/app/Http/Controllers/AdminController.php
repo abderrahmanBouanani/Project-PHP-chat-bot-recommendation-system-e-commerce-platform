@@ -14,6 +14,28 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         // Récupérer les statistiques pour le tableau de bord
         $totalClients = User::where('type', 'client')->count();
         $totalVendeurs = User::where('type', 'vendeur')->count();
@@ -38,6 +60,28 @@ class AdminController extends Controller
      */
     public function profile()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         // Récupérer les informations de l'administrateur connecté
         $admin = session('user');
         
@@ -52,6 +96,28 @@ class AdminController extends Controller
      */
     public function updateProfile(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         // Validation des données
         $validated = $request->validate([
             'nom' => 'required|string|max:255',

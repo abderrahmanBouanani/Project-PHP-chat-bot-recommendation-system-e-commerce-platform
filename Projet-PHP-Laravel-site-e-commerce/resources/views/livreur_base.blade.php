@@ -24,6 +24,19 @@
         <i class="bi bi-eye-fill me-2"></i> Vous êtes en mode consultation seule. <a href="{{ route('login') }}" class="alert-link">Connectez-vous</a> pour accéder à toutes les fonctionnalités.
     </div>
     @endif
+
+    @if(session('success'))
+    <div class="alert alert-success mb-0 rounded-0 text-center" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger mb-0 rounded-0 text-center" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i> {{ session('error') }}
+    </div>
+    @endif
+
     <div class="sidebar">
       <div class="sidebar-header px-3 py-4">
         <div class="livreur-interface-badge mb-2">LIVREUR INTERFACE</div>
@@ -49,7 +62,7 @@
           <i class="bi bi-box-seam me-3"></i>
           <span>Mes livraisons</span>
         </a>
-        <a href="{{ url('/livreur_profile') }}" class="nav-link {{ request()->is('livreur_profile') ? 'active' : '' }} d-flex align-items-center">
+        <a href="{{ route('livreur.profile') }}" class="nav-link {{ request()->routeIs('livreur.profile') ? 'active' : '' }} d-flex align-items-center">
           <i class="bi bi-person me-3"></i>
           <span>Profil</span>
         </a>

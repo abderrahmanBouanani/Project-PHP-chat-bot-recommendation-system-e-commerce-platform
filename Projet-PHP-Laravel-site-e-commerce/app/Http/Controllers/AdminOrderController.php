@@ -38,6 +38,28 @@ class AdminOrderController extends Controller
     */
    public function index(Request $request)
    {
+       // Vérification de la session
+       if (!session('user') || !isset(session('user')['id'])) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Veuillez vous connecter pour effectuer cette action.'
+               ], 401);
+           }
+           return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+       }
+
+       // Vérification du type d'utilisateur
+       if (session('user')['type'] !== 'admin') {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Accès non autorisé.'
+               ], 403);
+           }
+           return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+       }
+
        try {
            $searchTerm = $request->input('search', '');
            $sort = $request->input('sort', 'date-desc');
@@ -119,6 +141,28 @@ class AdminOrderController extends Controller
     */
    public function getProducts($commandeId)
    {
+       // Vérification de la session
+       if (!session('user') || !isset(session('user')['id'])) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Veuillez vous connecter pour effectuer cette action.'
+               ], 401);
+           }
+           return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+       }
+
+       // Vérification du type d'utilisateur
+       if (session('user')['type'] !== 'admin') {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Accès non autorisé.'
+               ], 403);
+           }
+           return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+       }
+
        try {
            $produits = DB::table('commande_produit')
                ->join('produits', 'commande_produit.produit_id', '=', 'produits.id')
@@ -140,6 +184,28 @@ class AdminOrderController extends Controller
     */
    public function show($id)
    {
+       // Vérification de la session
+       if (!session('user') || !isset(session('user')['id'])) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Veuillez vous connecter pour effectuer cette action.'
+               ], 401);
+           }
+           return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+       }
+
+       // Vérification du type d'utilisateur
+       if (session('user')['type'] !== 'admin') {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Accès non autorisé.'
+               ], 403);
+           }
+           return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+       }
+
        try {
            $commande = Commande::with([
                'client', 
@@ -179,61 +245,81 @@ class AdminOrderController extends Controller
     */
    public function updateStatus(Request $request, $id)
    {
-       // Vérifier les droits d'édition
-       $check = $this->checkEditRights();
-       if ($check) {
-           return $check;
+       // Vérification de la session
+       if (!session('user') || !isset(session('user')['id'])) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Veuillez vous connecter pour effectuer cette action.'
+               ], 401);
+           }
+           return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
        }
 
-       $commande = Commande::with('produits')->findOrFail($id);
-       $nouveauStatut = $request->input('statut');
+       // Vérification du type d'utilisateur
+       if (session('user')['type'] !== 'admin') {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Accès non autorisé.'
+               ], 403);
+           }
+           return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+       }
 
-       \Log::info('Statut actuel et nouveau statut', [
-           'ancien_statut' => $commande->statut, 
-           'nouveau_statut' => $nouveauStatut
-       ]);
+       try {
+           $commande = Commande::with('produits')->findOrFail($id);
+           $nouveauStatut = $request->input('statut');
 
-       // Si la commande est confirmée, on diminue les quantités des produits
-       if (strtolower($nouveauStatut) === 'confirmée' && strtolower($commande->statut) !== 'confirmée') {
-           \Log::info('Mise à jour des quantités des produits pour la commande', ['commande_id' => $id]);
-           
-           foreach ($commande->produits as $produit) {
-               // Récupérer la quantité commandée depuis la table pivot
-               $quantiteCommandee = $produit->pivot->quantite;
-               $ancienneQuantite = $produit->quantite;
+           \Log::info('Statut actuel et nouveau statut', [
+               'ancien_statut' => $commande->statut, 
+               'nouveau_statut' => $nouveauStatut
+           ]);
+
+           // Si la commande est confirmée, on diminue les quantités des produits
+           if (strtolower($nouveauStatut) === 'confirmée' && strtolower($commande->statut) !== 'confirmée') {
+               \Log::info('Mise à jour des quantités des produits pour la commande', ['commande_id' => $id]);
                
-               \Log::info('Avant mise à jour du produit', [
-                   'produit_id' => $produit->id,
-                   'ancienne_quantite' => $ancienneQuantite,
-                   'quantite_commandee' => $quantiteCommandee
-               ]);
-               
-               // Mettre à jour la quantité en stock
-               $produit->decrement('quantite', $quantiteCommandee);
-               
-               // Recharger le produit pour obtenir la nouvelle quantité
-               $produit->refresh();
-               
-               \Log::info('Après mise à jour du produit', [
-                   'produit_id' => $produit->id,
-                   'nouvelle_quantite' => $produit->quantite
-               ]);
-               
-               // Vérifier si le stock est épuisé
-               if ($produit->quantite < 0) {
-                   $produit->quantite = 0;
-                   $produit->save();
+               foreach ($commande->produits as $produit) {
+                   // Récupérer la quantité commandée depuis la table pivot
+                   $quantiteCommandee = $produit->pivot->quantite;
+                   $ancienneQuantite = $produit->quantite;
+                   
+                   \Log::info('Avant mise à jour du produit', [
+                       'produit_id' => $produit->id,
+                       'ancienne_quantite' => $ancienneQuantite,
+                       'quantite_commandee' => $quantiteCommandee
+                   ]);
+                   
+                   // Mettre à jour la quantité en stock
+                   $produit->decrement('quantite', $quantiteCommandee);
+                   
+                   // Recharger le produit pour obtenir la nouvelle quantité
                    $produit->refresh();
-                   \Log::info('Stock épuisé pour le produit', ['produit_id' => $produit->id]);
+                   
+                   \Log::info('Après mise à jour du produit', [
+                       'produit_id' => $produit->id,
+                       'nouvelle_quantite' => $produit->quantite
+                   ]);
+                   
+                   // Vérifier si le stock est épuisé
+                   if ($produit->quantite < 0) {
+                       $produit->quantite = 0;
+                       $produit->save();
+                       $produit->refresh();
+                       \Log::info('Stock épuisé pour le produit', ['produit_id' => $produit->id]);
+                   }
                }
            }
+
+           // Mettre à jour le statut de la commande
+           $commande->statut = $nouveauStatut;
+           $commande->save();
+
+           return redirect()->back()->with('success', 'Statut de la commande mis à jour avec succès');
+       } catch (\Exception $e) {
+           return redirect()->back()->with('error', 'Erreur lors de la mise à jour du statut de la commande: ' . $e->getMessage());
        }
-
-       // Mettre à jour le statut de la commande
-       $commande->statut = $nouveauStatut;
-       $commande->save();
-
-       return redirect()->back()->with('success', 'Statut de la commande mis à jour avec succès');
    }
 
    /**
@@ -241,56 +327,85 @@ class AdminOrderController extends Controller
     */
    public function search(Request $request)
    {
-       $searchTerm = $request->input('search', '');
-       $sort = $request->input('sort', 'date-desc');
-       $status = $request->input('status', 'all');
-
-       $query = Commande::with(['client']);
-
-       // Recherche par ID ou nom du client
-       if (!empty($searchTerm)) {
-           if (is_numeric($searchTerm)) {
-               $query->where('id', $searchTerm);
-           } else {
-               $query->whereHas('client', function($q) use ($searchTerm) {
-                   $q->where('nom', 'like', "%{$searchTerm}%")
-                     ->orWhere('prenom', 'like', "%{$searchTerm}%");
-               });
+       // Vérification de la session
+       if (!session('user') || !isset(session('user')['id'])) {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Veuillez vous connecter pour effectuer cette action.'
+               ], 401);
            }
+           return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
        }
 
-       // Filtrer par statut
-       if ($status !== 'all') {
-           $query->where('statut', $status);
+       // Vérification du type d'utilisateur
+       if (session('user')['type'] !== 'admin') {
+           if (request()->ajax() || request()->wantsJson()) {
+               return response()->json([
+                   'success' => false,
+                   'message' => 'Accès non autorisé.'
+               ], 403);
+           }
+           return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
        }
 
-       // Appliquer le tri
-       switch ($sort) {
-           case 'date-asc':
-               $query->orderBy('created_at', 'asc');
-               break;
-           case 'total-desc':
-               $query->orderBy('total', 'desc');
-               break;
-           case 'total-asc':
-               $query->orderBy('total', 'asc');
-               break;
-           default: // date-desc
-               $query->orderBy('created_at', 'desc');
-               break;
+       try {
+           $searchTerm = $request->input('search', '');
+           $sort = $request->input('sort', 'date-desc');
+           $status = $request->input('status', 'all');
+
+           $query = Commande::with(['client']);
+
+           // Recherche par ID ou nom du client
+           if (!empty($searchTerm)) {
+               if (is_numeric($searchTerm)) {
+                   $query->where('id', $searchTerm);
+               } else {
+                   $query->whereHas('client', function($q) use ($searchTerm) {
+                       $q->where('nom', 'like', "%{$searchTerm}%")
+                         ->orWhere('prenom', 'like', "%{$searchTerm}%");
+                   });
+               }
+           }
+
+           // Filtrer par statut
+           if ($status !== 'all') {
+               $query->where('statut', $status);
+           }
+
+           // Appliquer le tri
+           switch ($sort) {
+               case 'date-asc':
+                   $query->orderBy('created_at', 'asc');
+                   break;
+               case 'total-desc':
+                   $query->orderBy('total', 'desc');
+                   break;
+               case 'total-asc':
+                   $query->orderBy('total', 'asc');
+                   break;
+               default: // date-desc
+                   $query->orderBy('created_at', 'desc');
+                   break;
+           }
+
+           $perPage = 8;
+
+           $commandes = $query->paginate($perPage, ['*'], 'page', $request->input('page', 1));
+
+           return response()->json([
+               'data' => $commandes->items(),
+               'total' => $commandes->total(),
+               'current_page' => $commandes->currentPage(),
+               'per_page' => $commandes->perPage(),
+               'last_page' => $commandes->lastPage()
+           ]);
+       } catch (\Exception $e) {
+           return response()->json([
+               'success' => false,
+               'message' => 'Erreur lors de la recherche des commandes: ' . $e->getMessage()
+           ], 500);
        }
-
-       $perPage = 8;
-
-       $commandes = $query->paginate($perPage, ['*'], 'page', $request->input('page', 1));
-
-       return response()->json([
-           'data' => $commandes->items(),
-           'total' => $commandes->total(),
-           'current_page' => $commandes->currentPage(),
-           'per_page' => $commandes->perPage(),
-           'last_page' => $commandes->lastPage()
-       ]);
    }
    
    /**

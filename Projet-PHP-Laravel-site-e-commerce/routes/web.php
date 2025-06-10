@@ -273,6 +273,8 @@ Route::prefix('livreur')->group(function () {
     Route::post('/commande/{id}/livree', [LivreurController::class, 'livree'])->name('livreur.livree');
     Route::post('/commande/{id}/status', [LivreurController::class, 'updateStatus'])->name('livreur.commande.status');
     Route::get('/commandes/search', [LivreurController::class, 'search'])->name('livreur.commandes.search');
+    Route::get('/profile', [LivreurController::class, 'profile'])->name('livreur.profile');
+    Route::post('/update-profile', [LivreurController::class, 'updateProfile'])->name('livreur.update-profile');
 });
 
 // Routes API pour la recherche

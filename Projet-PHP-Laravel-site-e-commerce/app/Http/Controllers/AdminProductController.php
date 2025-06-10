@@ -14,6 +14,28 @@ class AdminProductController extends Controller
      */
     public function index(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         try {
             $searchTerm = $request->input('search', '');
             $category = $request->input('category', '');
@@ -87,6 +109,28 @@ class AdminProductController extends Controller
      */
     public function show($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         try {
             $produit = Produit::with('vendeur')->findOrFail($id);
             
@@ -119,6 +163,28 @@ class AdminProductController extends Controller
      */
     public function search(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         try {
             $searchTerm = $request->input('search', '');
             $category = $request->input('category', '');

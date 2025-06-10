@@ -25,6 +25,28 @@ class LivreurController extends Controller
     // Affiche la liste des commandes à livrer pour le livreur
     public function index()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         // Récupérer toutes les commandes, y compris celles qui sont livrées
         $commandes = Commande::whereIn('statut', ['Confirmée', 'En cours de livraison', 'Livrée'])
             ->orderBy('created_at', 'desc')
@@ -38,6 +60,28 @@ class LivreurController extends Controller
     // Le livreur accepte la commande (statut -> En cours de livraison)
     public function accepter($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         try {
             // Vérifier les droits d'édition
             $check = $this->checkEditRights();
@@ -76,6 +120,28 @@ class LivreurController extends Controller
     // Le livreur marque la commande comme livrée (statut -> Livrée)
     public function livree($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         try {
             // Vérifier les droits d'édition
             $check = $this->checkEditRights();
@@ -102,6 +168,28 @@ class LivreurController extends Controller
     // Mettre à jour le statut d'une commande
     public function updateStatus(Request $request, $id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $request->validate([
             'status' => 'required|in:Confirmée,En cours de livraison,Livrée'
         ]);
@@ -142,6 +230,28 @@ class LivreurController extends Controller
     // Récupérer les produits d'une commande
     public function getProducts($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         try {
             $commande = Commande::with(['produits' => function($query) {
                 $query->select('produits.*')
@@ -186,6 +296,28 @@ class LivreurController extends Controller
 
     public function updateProfile(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         try {
             $user = session('user');
             if (!$user) {
@@ -250,6 +382,28 @@ class LivreurController extends Controller
      */
     public function search(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $searchTerm = $request->input('search', '');
         $statusFilter = $request->input('status', 'all');
 
@@ -291,6 +445,28 @@ class LivreurController extends Controller
      */
     public function getCommandeDetails($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         try {
             $commande = Commande::with(['client', 'produits' => function($query) {
                 $query->withPivot('quantite');
@@ -314,6 +490,28 @@ class LivreurController extends Controller
      */
     public function livraisonsDisponibles()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $commandes = \App\Models\Commande::where('statut', 'Confirmée')
             ->whereNull('livreur_id')
             ->orderBy('created_at', 'desc')
@@ -328,6 +526,28 @@ class LivreurController extends Controller
      */
     public function mesLivraisons()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $livreurId = session('user')['id'];
         $commandes = \App\Models\Commande::where('livreur_id', $livreurId)
             ->where('statut', 'Livrée')
@@ -343,6 +563,28 @@ class LivreurController extends Controller
      */
     public function commandeActuelle()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $livreurId = session('user')['id'] ?? null;
         if (!$livreurId) {
             return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
@@ -358,6 +600,28 @@ class LivreurController extends Controller
 
     public function dashboard()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $livreur = Auth::user();
         
         // Statistiques générales
@@ -406,6 +670,28 @@ class LivreurController extends Controller
 
     public function chartData()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
         $livreurId = session('user')['id'];
         $dates = [];
         $totals = [];
@@ -430,6 +716,35 @@ class LivreurController extends Controller
         return response()->json([
             'dates' => $dates,
             'totals' => $totals
+        ]);
+    }
+
+    public function profile()
+    {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'livreur') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux livreurs.');
+        }
+
+        return view('livreur-interface.profil-livreur', [
+            'user' => session('user')
         ]);
     }
 }

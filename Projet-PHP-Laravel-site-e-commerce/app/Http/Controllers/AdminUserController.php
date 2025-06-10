@@ -26,6 +26,28 @@ class AdminUserController extends Controller
      } 
     public function index()
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         $users = User::paginate(8);
 
         return view('admin-interface.Utilisateur', [
@@ -39,6 +61,28 @@ class AdminUserController extends Controller
      */
     public function search(Request $request)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         $searchTerm = $request->input('search', '');
         $typeFilter = $request->input('type', 'all');
 
@@ -77,6 +121,28 @@ class AdminUserController extends Controller
      */
     public function show($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         $user = User::findOrFail($id);
 
         return view('admin-interface.user-details', [
@@ -90,6 +156,28 @@ class AdminUserController extends Controller
      */
     public function destroy($id)
     {
+        // Vérification de la session
+        if (!session('user') || !isset(session('user')['id'])) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Veuillez vous connecter pour effectuer cette action.'
+                ], 401);
+            }
+            return redirect('/')->with('error', 'Veuillez vous connecter pour accéder à cette page.');
+        }
+
+        // Vérification du type d'utilisateur
+        if (session('user')['type'] !== 'admin') {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Accès non autorisé.'
+                ], 403);
+            }
+            return redirect('/')->with('error', 'Accès réservé aux administrateurs.');
+        }
+
         try {
             // Vérifier les droits d'édition
             $check = $this->checkEditRights();
